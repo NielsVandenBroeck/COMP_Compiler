@@ -1,15 +1,101 @@
 grammar mathematicalExpressions;
 
-r : program;
-program : body SEMICOLON program | body SEMICOLON;
-body : unary | LBRACE body RBRACE | NUMBER | body OPERATION body;
-unary : MINUS body | PLUS body;
+program
+    : (body SEMICOLON)+
+    ;
 
-PLUS : SPACE '+' SPACE;
-MINUS : SPACE '-' SPACE;
-SEMICOLON : SPACE ';' SPACE;
-LBRACE : SPACE '(' SPACE;
-RBRACE : SPACE ')' SPACE;
-OPERATION : SPACE [+,-,*,/,<,>,==,&&,||] SPACE;
-NUMBER : SPACE '!' SPACE [0-9]+ SPACE | SPACE [0-9]+ SPACE;
-SPACE: [ \n\t\r]+ -> skip;
+body
+    : (MINUS | PLUS) body
+    | LPAREN body RPAREN
+    | NUMBER
+    | body operation body
+    ;
+
+operation
+    : PLUS
+    | MINUS
+    | TIMES
+    | DIV
+    | GT
+    | LT
+    | EQ
+    | GTE
+    | LTE
+    | NEQ
+    | MOD
+    | AND
+    | OR
+    ;
+
+PLUS
+    : '+'
+    ;
+
+MINUS
+    : '-'
+    ;
+
+TIMES
+   : '*'
+   ;
+
+DIV
+   : '/'
+   ;
+
+GT
+   : '>'
+   ;
+
+LT
+   : '<'
+   ;
+
+EQ
+   : '=='
+   ;
+
+GTE
+   : '>='
+   ;
+
+LTE
+   : '<='
+   ;
+
+NEQ
+   : '!='
+   ;
+
+MOD
+   : '%'
+   ;
+
+AND
+   : '&&'
+   ;
+
+OR
+   : '||'
+   ;
+
+SEMICOLON
+    : ';'
+    ;
+
+LPAREN
+    : '('
+    ;
+
+RPAREN
+    : ')'
+    ;
+
+NUMBER
+    : '!'  [0-9]+
+    | [0-9]+
+    ;
+
+WS
+    : [ \n\t\r]+ -> skip
+    ;
