@@ -1,7 +1,7 @@
 grammar mathematicalExpressions;
 
 program
-    : (body SEMICOLON)+
+    : (body SEMICOLON)*
     ;
 
 body
