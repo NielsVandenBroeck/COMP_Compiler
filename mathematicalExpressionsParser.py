@@ -370,7 +370,6 @@ class mathematicalExpressionsParser ( Parser ):
     def body_sempred(self, localctx, predIndex):
             if predIndex == 0:
                 return self.precpred(self._ctx, 1)
-         
 
 
 
