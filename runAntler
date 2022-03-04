@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Generating..."
+java -jar antlr-4.9.3-complete.jar -Dlanguage=Python2 grammar1.g4 -visitor

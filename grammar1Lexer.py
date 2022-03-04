@@ -1,4 +1,4 @@
-# Generated from ../grammars/mathematicalExpressions.g4 by ANTLR 4.9.3
+# Generated from grammar1.g4 by ANTLR 4.9.3
 # encoding: utf-8
 from __future__ import print_function
 from antlr4 import *
@@ -45,7 +45,7 @@ def serializedATN():
         return buf.getvalue()
 
 
-class mathematicalExpressionsLexer(Lexer):
+class grammar1Lexer(Lexer):
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
@@ -88,10 +88,10 @@ class mathematicalExpressionsLexer(Lexer):
                   u"GTE", u"LTE", u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", 
                   u"LPAREN", u"RPAREN", u"NUMBER", u"WS" ]
 
-    grammarFileName = u"mathematicalExpressions.g4"
+    grammarFileName = u"grammar1.g4"
 
     def __init__(self, input=None, output=sys.stdout):
-        super(mathematicalExpressionsLexer, self).__init__(input, output=output)
+        super(grammar1Lexer, self).__init__(input, output=output)
         self.checkVersion("4.9.3")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
