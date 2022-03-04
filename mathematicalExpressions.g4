@@ -5,8 +5,14 @@ program
     ;
 
 body
-    : (MINUS | PLUS) body
+    : (MINUS | PLUS) unary
     | LPAREN body RPAREN
+    | NUMBER
+    | body operation body
+    ;
+
+unary
+    : LPAREN body RPAREN
     | NUMBER
     | body operation body
     ;
