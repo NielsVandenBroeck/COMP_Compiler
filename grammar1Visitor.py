@@ -15,8 +15,33 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#unary.
-    def visitUnary(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#leftOperationBody.
+    def visitLeftOperationBody(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#unaryBody.
+    def visitUnaryBody(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#unaryExpression.
+    def visitUnaryExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#OperationExpression.
+    def visitOperationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#ParenExpression.
+    def visitParenExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#NumberExpression.
+    def visitNumberExpression(self, ctx):
         return self.visitChildren(ctx)
 
 

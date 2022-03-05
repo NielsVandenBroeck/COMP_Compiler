@@ -1,20 +1,42 @@
 grammar grammar1;
 
 program
-    : (body SEMICOLON)*
+    : (line=body SEMICOLON)*
     ;
 
 body
-    : (MINUS | PLUS) unary
-    | LPAREN body RPAREN
-    | NUMBER
-    | body operation body
+    : paren
+    | number
+    | bodyOperationBody
+    | unary
+    ;
+
+leftOperationBody
+    :paren
+    |number
+    |unary
+    ;
+
+unaryBody
+    : paren
+    | number
+    | bodyOperationBody
     ;
 
 unary
-    : LPAREN body RPAREN
-    | NUMBER
-    | body operation body
+    :sign=(PLUS | MINUS) value=unaryBody        #unaryExpression
+    ;
+
+bodyOperationBody
+    : lValue=leftOperationBody op=operation rValue=body  #OperationExpression
+    ;
+
+paren
+    : LPAREN value=body RPAREN                #ParenExpression
+    ;
+
+number
+    : value=NUMBER                            #NumberExpression
     ;
 
 operation
