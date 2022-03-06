@@ -4,12 +4,19 @@ from grammar1Visitor import *
 
 class VisitorSubclass(grammar1Visitor):
 
-    def visitProgram(self, ctx):
-        return self.visitChildren(ctx.line)
+    # Visit a parse tree produced by grammar1Parser#start.
+    def visitStart(self, ctx):
+        program = AST("program", "")
+        print(ctx.getChildCount())
+        for line in ctx.getChildren():
+            program.addNode(self.visitProgramLine(line))
+        return program
 
-    # Visit a parse tree produced by grammar1Parser#body.
-    def visitBody(self, ctx):
-        return self.visitChildren(ctx)
+    def visitProgramLine(self, ctx):
+        print("line")
+        line = AST("line", "")
+        line.addNode(self.visitChildren(ctx.line))
+        return line
 
     # Visit a parse tree produced by grammar1Parser#leftOperationBody.
     def visitLeftOperationBody(self, ctx):
@@ -42,23 +49,27 @@ class VisitorSubclass(grammar1Visitor):
 
         #TODO volgorde van bewerkingen controleren
         #len(node2.nodes) > 1 is voor unary getallen te onderscheiden van gewone
-        if node2.value in dict1 and dict1[node2.value] < dict1[rootnode.value] and len(node2.nodes) > 1:
+        if node2.value in dict1 and dict1[node2.value] < dict1[rootnode.value] and len(node2.nodes) > 1 and node2.type != "paren":
             print("test")
-            tempNode2 = AST(rootnode.value, "")
+            tempNode2 = AST(rootnode.value, "op")
             tempNode2.addNode(rootnode.getNode(0))
             tempNode2.addNode(node2.getNode(0))
 
             tempRootNode = AST(node2.value, "op")
+            tempRootNode.addNode(tempNode2)
             tempRootNode.addNode(node2.getNode(1))
 
-            node2 = tempNode2
-            tempRootNode.addNode(node2)
             rootnode = tempRootNode
+        elif node2.type == "paren":
+            node2.type = None
+
         return rootnode
 
     # Visit a parse tree produced by grammar1Parser#ParenExpression.
     def visitParenExpression(self, ctx):
-        return self.visit(ctx.value)
+        rootnode = self.visit(ctx.value)
+        rootnode.type = "paren"
+        return rootnode
 
     # Visit a parse tree produced by grammar1Parser#NumberExpression.
     def visitNumberExpression(self, ctx):

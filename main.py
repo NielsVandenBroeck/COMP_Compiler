@@ -14,7 +14,7 @@ def main():
     lexer = grammar1Lexer(input_stream)
     stream = CommonTokenStream(lexer)
     parser = grammar1Parser(stream)
-    tree = parser.program()
+    tree = parser.start()
 
     visistor = VisitorSubclass()
     output = visistor.visit(tree)#TODO nog een fout in volgorde van bewerkingen! (lijn 1,2 in inputfile haakjes zijn nog fout) + (weet niet zeker of de vistitor ineens mag omzetten naar AST)

@@ -4,12 +4,21 @@ from antlr4 import *
 # This class defines a complete listener for a parse tree produced by grammar1Parser.
 class grammar1Listener(ParseTreeListener):
 
-    # Enter a parse tree produced by grammar1Parser#program.
-    def enterProgram(self, ctx):
+    # Enter a parse tree produced by grammar1Parser#start.
+    def enterStart(self, ctx):
         pass
 
-    # Exit a parse tree produced by grammar1Parser#program.
-    def exitProgram(self, ctx):
+    # Exit a parse tree produced by grammar1Parser#start.
+    def exitStart(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#programLine.
+    def enterProgramLine(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#programLine.
+    def exitProgramLine(self, ctx):
         pass
 
 

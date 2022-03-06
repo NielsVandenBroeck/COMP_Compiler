@@ -5,8 +5,13 @@ from antlr4 import *
 
 class grammar1Visitor(ParseTreeVisitor):
 
-    # Visit a parse tree produced by grammar1Parser#program.
-    def visitProgram(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#start.
+    def visitStart(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#programLine.
+    def visitProgramLine(self, ctx):
         return self.visitChildren(ctx)
 
 

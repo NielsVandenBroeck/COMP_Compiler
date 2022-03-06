@@ -1,7 +1,11 @@
 grammar grammar1;
 
-program
-    : (line=body SEMICOLON)*
+start
+    : (programLine)*
+    ;
+
+programLine
+    : line=body SEMICOLON
     ;
 
 body
