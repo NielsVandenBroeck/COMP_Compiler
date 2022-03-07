@@ -28,7 +28,7 @@ unaryBody
     ;
 
 unary
-    :sign=(PLUS | MINUS) value=unaryBody        #unaryExpression
+    :sign=(PLUS | MINUS) value=unaryBody        #UnaryExpression
     ;
 
 bodyOperationBody
