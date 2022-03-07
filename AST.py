@@ -43,3 +43,33 @@ class AST():
             string += node.getDotInternal(number + 1)
 
         return string
+
+    def constantFold(self):
+        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
+        #for i in range(len(self.nodes)):
+        #    self.nodes[i].constantFold()
+        if self.nodes is None:
+            return
+        for i in self.nodes:
+            i.constantFold()
+        if len(self.nodes) != 2:
+            return
+        elif self.value in dict1 and isinstance(self.nodes[0].value, float) and isinstance(self.nodes[1].value, float):
+            ops = {
+                '&&': operator.and_,
+                '||': operator.or_,
+                '<': operator.lt,
+                '>': operator.gt,
+                '>=': operator.ge,
+                '<=': operator.le,
+                '!=': operator.ne,
+                '==': operator.eq,
+                '+': operator.add,
+                '-': operator.sub,
+                '*': operator.mul,
+                '/': operator.truediv,
+                '%': operator.mod,
+            }
+            self.value = float(ops[self.value](self.nodes[0].value, self.nodes[1].value))
+            self.nodes = None
+

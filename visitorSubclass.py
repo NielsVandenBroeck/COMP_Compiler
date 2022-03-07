@@ -10,6 +10,7 @@ class VisitorSubclass(grammar1Visitor):
         program = AST("program", "")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line))
+        program.constantFold()
         return program
 
     def visitProgramLine(self, ctx):
@@ -33,10 +34,10 @@ class VisitorSubclass(grammar1Visitor):
         rootnode.addNode(value)
 
         # Constant Folding
-        if isinstance(value.value, int):
+        if isinstance(value.value, float):
             if sign == '-':
-                rootnode = AST(int(-value.value), "")
-            else : rootnode = AST(int(value.value), "")
+                rootnode = AST(float(-value.value), "")
+            else : rootnode = AST(float(value.value), "")
         return rootnode
 
     # Visit a parse tree produced by grammar1Parser#OperationExpression.
@@ -64,25 +65,6 @@ class VisitorSubclass(grammar1Visitor):
             node2 = node2.getNode(1)
         elif node2.type == "paren":
             node2.type = None
-
-        #Constant Folding
-        if isinstance(node1.value, int) and isinstance(node2.value, int):
-            ops = {
-                '&&': operator.and_,
-                '||': operator.or_,
-                '<': operator.lt,
-                '>': operator.gt,
-                '>=': operator.ge,
-                '<=': operator.le,
-                '!=': operator.ne,
-                '==': operator.eq,
-                '+': operator.add,
-                '-': operator.sub,
-                '*': operator.mul,
-                '/': operator.truediv,
-                '%': operator.mod,
-            }
-            rootnode = AST(int(ops[rootnode.value](node1.value, node2.value)), "")
         return rootnode
 
     # Visit a parse tree produced by grammar1Parser#ParenExpression.
@@ -94,14 +76,15 @@ class VisitorSubclass(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#NumberExpression.
     def visitNumberExpression(self, ctx):
         if ctx.getText()[0] == '!':
-            tempNumber = int(ctx.getText()[1:len(ctx.getText())])
+            tempNumber = float(ctx.getText()[1:len(ctx.getText())])
             if tempNumber:
                 number = 0
             else: number = 1
-        else: number =  int(ctx.getText())
+        else: number =  float(ctx.getText())
         return AST(number, "")
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
         operation = ctx.getText()
         return AST(operation, "op")
+
