@@ -5,7 +5,14 @@ start
     ;
 
 programLine
-    : line=body SEMICOLON
+    : (dataType NAME IS)? line=body SEMICOLON
+    ;
+
+dataType
+    : INT
+    | FLOAT
+    | CHAR
+    | POINTER
     ;
 
 body
@@ -57,6 +64,26 @@ operation
     | MOD
     | AND
     | OR
+    ;
+
+INT
+    : 'int'
+    ;
+
+FLOAT
+    : 'float'
+    ;
+
+CHAR
+    : 'CHAR'
+    ;
+
+POINTER
+    : 'pointer'
+    ;
+
+NAME
+    : (('a'..'z' | 'A'..'Z')+)
     ;
 
 PLUS
@@ -124,10 +151,14 @@ RPAREN
     ;
 
 NUMBER
-    : '!'  [0-9]+
-    | [0-9]+
+    : ('!')?  [0-9]+
+    ;
+
+IS
+    : '='
     ;
 
 WS
     : [ \n\t\r]+ -> skip
     ;
+

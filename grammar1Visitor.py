@@ -15,6 +15,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#dataType.
+    def visitDataType(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#body.
     def visitBody(self, ctx):
         return self.visitChildren(ctx)
@@ -30,7 +35,7 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#unaryExpression.
+    # Visit a parse tree produced by grammar1Parser#UnaryExpression.
     def visitUnaryExpression(self, ctx):
         return self.visitChildren(ctx)
 

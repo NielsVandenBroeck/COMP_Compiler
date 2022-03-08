@@ -22,6 +22,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#dataType.
+    def enterDataType(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#dataType.
+    def exitDataType(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#body.
     def enterBody(self, ctx):
         pass
@@ -49,11 +58,11 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#unaryExpression.
+    # Enter a parse tree produced by grammar1Parser#UnaryExpression.
     def enterUnaryExpression(self, ctx):
         pass
 
-    # Exit a parse tree produced by grammar1Parser#unaryExpression.
+    # Exit a parse tree produced by grammar1Parser#UnaryExpression.
     def exitUnaryExpression(self, ctx):
         pass
 
