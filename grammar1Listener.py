@@ -22,6 +22,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#identifierOP.
+    def enterIdentifierOP(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#identifierOP.
+    def exitIdentifierOP(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#dataType.
     def enterDataType(self, ctx):
         pass
@@ -91,6 +100,15 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#NumberExpression.
     def exitNumberExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#VariableExpression.
+    def enterVariableExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#VariableExpression.
+    def exitVariableExpression(self, ctx):
         pass
 
 

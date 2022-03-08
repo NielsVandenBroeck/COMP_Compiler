@@ -5,7 +5,13 @@ start
     ;
 
 programLine
-    : (dataType NAME IS)? line=body SEMICOLON
+    : (CONST? dataType VARIABLENAME IS)? line=body SEMICOLON
+    | VARIABLENAME identifierOP SEMICOLON
+    ;
+
+identifierOP
+    : PLUS PLUS
+    | MINUS MINUS
     ;
 
 dataType
@@ -17,20 +23,20 @@ dataType
 
 body
     : paren
-    | number
+    | data
     | bodyOperationBody
     | unary
     ;
 
 leftOperationBody
     :paren
-    |number
+    |data
     |unary
     ;
 
 unaryBody
     : paren
-    | number
+    | data
     | bodyOperationBody
     ;
 
@@ -46,8 +52,9 @@ paren
     : LPAREN value=body RPAREN                #ParenExpression
     ;
 
-number
+data
     : value=NUMBER                            #NumberExpression
+    | VARIABLENAME                            #VariableExpression
     ;
 
 operation
@@ -82,8 +89,8 @@ POINTER
     : 'pointer'
     ;
 
-NAME
-    : (('a'..'z' | 'A'..'Z')+)
+VARIABLENAME
+    : ('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*
     ;
 
 PLUS
@@ -152,6 +159,10 @@ RPAREN
 
 NUMBER
     : ('!')?  [0-9]+
+    ;
+
+CONST
+    : 'const'
     ;
 
 IS

@@ -17,7 +17,7 @@ def main():
     tree = parser.start()
 
     visistor = VisitorSubclass()
-    output = visistor.visit(tree)#TODO nog een fout in volgorde van bewerkingen! (lijn 1,2 in inputfile haakjes zijn nog fout) + (weet niet zeker of de vistitor ineens mag omzetten naar AST)
+    output = visistor.visit(tree)
     print(output.getDot())
     #print(dir(tree))
     #print(output)
