@@ -162,7 +162,7 @@ NUMBER
     ;
 
 CONST
-    : 'const'
+    : 'const '
     ;
 
 IS
