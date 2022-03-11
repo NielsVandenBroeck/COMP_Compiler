@@ -5,9 +5,9 @@ start
     ;
 
 programLine
-    : CONST? dataType VARIABLENAME SEMICOLON                                    #DeclarationExpression
-    | CONST? dataType VARIABLENAME IS line=body SEMICOLON                       #DeclarationAndInitalizationExpression
-    | CONST? dataType  CONST? VARIABLENAME IS line='&'VARIABLENAME SEMICOLON    #DeclarationAndInitalizationPointerExpression
+    : CONST? types VARIABLENAME SEMICOLON                                       #DeclarationExpression
+    | CONST? types VARIABLENAME IS line=body SEMICOLON                          #DeclarationAndInitalizationExpression
+    | CONST? types  CONST? VARIABLENAME IS line='&'VARIABLENAME SEMICOLON       #DeclarationAndInitalizationPointerExpression
     | VARIABLENAME IS line=body SEMICOLON                                       #InitalizationExpression
     | VARIABLENAME IS line='&'VARIABLENAME SEMICOLON                            #InitalizationPointerExpression
     | line=body SEMICOLON                                                       #Expression
@@ -20,13 +20,11 @@ identifierOP
     | MINUS MINUS
     ;
 
-
-
-dataType
-    : type'*'?
+types
+    : dataType'*'?
     ;
 
-type
+dataType
     : INT
     | FLOAT
     | CHAR
@@ -65,7 +63,9 @@ paren
     ;
 
 data
-    : value=(CHARINPUT|INTINPUT|FLOATINPUT)                             #NumberExpression
+    : value=CHARINPUT                                                   #CharExpression
+    | value=INTINPUT                                                    #IntExpression
+    | value=FLOATINPUT                                                  #FloatExpression
     | VARIABLENAME                                                      #VariableExpression
     ;
 
@@ -95,10 +95,6 @@ FLOAT
 
 CHAR
     : 'char'
-    ;
-
-POINTER
-    : 'pointer'
     ;
 
 VARIABLENAME

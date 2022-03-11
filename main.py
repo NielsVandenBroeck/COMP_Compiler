@@ -5,7 +5,7 @@ from grammar1Parser import grammar1Parser
 from antlr4.tree.Trees import Trees
 
 from grammar1Visitor import grammar1Visitor
-from visitorSubclass import VisitorSubclass
+from ASTGenerator import ASTGenerator
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
     parser = grammar1Parser(stream)
     tree = parser.start()
 
-    visistor = VisitorSubclass()
+    visistor = ASTGenerator()
     output = visistor.visit(tree)
     print(output.getDot())
     #print(dir(tree))

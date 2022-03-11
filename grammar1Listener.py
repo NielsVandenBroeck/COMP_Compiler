@@ -13,12 +13,66 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#programLine.
-    def enterProgramLine(self, ctx):
+    # Enter a parse tree produced by grammar1Parser#DeclarationExpression.
+    def enterDeclarationExpression(self, ctx):
         pass
 
-    # Exit a parse tree produced by grammar1Parser#programLine.
-    def exitProgramLine(self, ctx):
+    # Exit a parse tree produced by grammar1Parser#DeclarationExpression.
+    def exitDeclarationExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
+    def enterDeclarationAndInitalizationExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
+    def exitDeclarationAndInitalizationExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
+    def enterDeclarationAndInitalizationPointerExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
+    def exitDeclarationAndInitalizationPointerExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#InitalizationExpression.
+    def enterInitalizationExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#InitalizationExpression.
+    def exitInitalizationExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#InitalizationPointerExpression.
+    def enterInitalizationPointerExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
+    def exitInitalizationPointerExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#Expression.
+    def enterExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#Expression.
+    def exitExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#IdentifierOperationExpression.
+    def enterIdentifierOperationExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
+    def exitIdentifierOperationExpression(self, ctx):
         pass
 
 
@@ -28,6 +82,15 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#identifierOP.
     def exitIdentifierOP(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#types.
+    def enterTypes(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#types.
+    def exitTypes(self, ctx):
         pass
 
 
@@ -94,12 +157,30 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#NumberExpression.
-    def enterNumberExpression(self, ctx):
+    # Enter a parse tree produced by grammar1Parser#CharExpression.
+    def enterCharExpression(self, ctx):
         pass
 
-    # Exit a parse tree produced by grammar1Parser#NumberExpression.
-    def exitNumberExpression(self, ctx):
+    # Exit a parse tree produced by grammar1Parser#CharExpression.
+    def exitCharExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#IntExpression.
+    def enterIntExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#IntExpression.
+    def exitIntExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#FloatExpression.
+    def enterFloatExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#FloatExpression.
+    def exitFloatExpression(self, ctx):
         pass
 
 

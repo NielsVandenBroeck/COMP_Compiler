@@ -54,7 +54,7 @@ class AST():
             i.constantFold()
         if len(self.nodes) != 2:
             return
-        elif self.value in dict1 and isinstance(self.nodes[0].value, float) and isinstance(self.nodes[1].value, float):
+        elif self.value in dict1 and (isinstance(self.nodes[0].value, float) or isinstance(self.nodes[0].value, int)) and (isinstance(self.nodes[1].value, float) or isinstance(self.nodes[1].value, int)):
             ops = {
                 '&&': operator.and_,
                 '||': operator.or_,
@@ -70,6 +70,6 @@ class AST():
                 '/': operator.truediv,
                 '%': operator.mod,
             }
-            self.value = float(ops[self.value](self.nodes[0].value, self.nodes[1].value))
+            self.value = ops[self.value](self.nodes[0].value, self.nodes[1].value)
             self.nodes = None
 

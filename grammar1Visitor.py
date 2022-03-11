@@ -10,13 +10,48 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#programLine.
-    def visitProgramLine(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#DeclarationExpression.
+    def visitDeclarationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
+    def visitDeclarationAndInitalizationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
+    def visitDeclarationAndInitalizationPointerExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
+    def visitInitalizationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
+    def visitInitalizationPointerExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#Expression.
+    def visitExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
+    def visitIdentifierOperationExpression(self, ctx):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by grammar1Parser#identifierOP.
     def visitIdentifierOP(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#types.
+    def visitTypes(self, ctx):
         return self.visitChildren(ctx)
 
 
@@ -55,8 +90,18 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#NumberExpression.
-    def visitNumberExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#CharExpression.
+    def visitCharExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#IntExpression.
+    def visitIntExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#FloatExpression.
+    def visitFloatExpression(self, ctx):
         return self.visitChildren(ctx)
 
 

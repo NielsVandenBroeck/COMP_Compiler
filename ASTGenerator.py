@@ -3,10 +3,11 @@ from grammar1Visitor import *
 import operator
 
 
-class VisitorSubclass(grammar1Visitor):
+class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#start.
     def visitStart(self, ctx):
+        print(dir(ctx))
         program = AST("program", "")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line))
@@ -18,12 +19,32 @@ class VisitorSubclass(grammar1Visitor):
         line.addNode(self.visitChildren(ctx.line))
         return line
 
-    # Visit a parse tree produced by grammar1Parser#leftOperationBody.
-    def visitLeftOperationBody(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#DeclarationExpression.
+    def visitDeclarationExpression(self, ctx):
         return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by grammar1Parser#unaryBody.
-    def visitUnaryBody(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
+    def visitDeclarationAndInitalizationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
+    def visitDeclarationAndInitalizationPointerExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
+    def visitInitalizationExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
+    def visitInitalizationPointerExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by grammar1Parser#Expression.
+    def visitExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
+    def visitIdentifierOperationExpression(self, ctx):
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
@@ -73,15 +94,35 @@ class VisitorSubclass(grammar1Visitor):
         rootnode.type = "paren"
         return rootnode
 
-    # Visit a parse tree produced by grammar1Parser#NumberExpression.
-    def visitNumberExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#IntExpression.
+    def visitIntExpression(self, ctx):
         if ctx.getText()[0] == '!':
-            tempNumber = float(ctx.getText()[1:len(ctx.getText())])
+            tempNumber = int(ctx.getText()[1:len(ctx.getText())])
             if tempNumber:
                 number = 0
             else: number = 1
-        else: number =  float(ctx.getText())
+        else: number = int(ctx.getText())
         return AST(number, "")
+
+    # Visit a parse tree produced by grammar1Parser#FloatExpression.
+    def visitFloatExpression(self, ctx):
+        if ctx.getText()[0] == '!':
+            tempNumber = float(ctx.getText()[1:len(ctx.getText())])
+            if tempNumber:
+                number = 0.0
+            else: number = 1.0
+        else: number = float(ctx.getText())
+        return AST(number, "")
+
+    # Visit a parse tree produced by grammar1Parser#CharExpression.
+    def visitCharExpression(self, ctx):
+        char = ctx.getText()
+        return AST(char, "")
+
+    # Visit a parse tree produced by grammar1Parser#VariableExpression.
+    def visitVariableExpression(self, ctx):
+        variable = ctx.getText()
+        return AST(variable, "")
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
