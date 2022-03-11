@@ -5,11 +5,13 @@ start
     ;
 
 programLine
-    : CONST? dataType VARIABLENAME SEMICOLON                #DeclarationExpression
-    | CONST? dataType VARIABLENAME IS line=body SEMICOLON   #DeclarationAndInitalizationExpression
-    | VARIABLENAME IS line=body SEMICOLON                   #InitalizationExpression
-    | line=body SEMICOLON                                   #Expression
-    | VARIABLENAME identifierOP SEMICOLON                   #IdentifierOperationExpression
+    : CONST? dataType VARIABLENAME SEMICOLON                                    #DeclarationExpression
+    | CONST? dataType VARIABLENAME IS line=body SEMICOLON                       #DeclarationAndInitalizationExpression
+    | CONST? dataType  CONST? VARIABLENAME IS line='&'VARIABLENAME SEMICOLON    #DeclarationAndInitalizationPointerExpression
+    | VARIABLENAME IS line=body SEMICOLON                                       #InitalizationExpression
+    | VARIABLENAME IS line='&'VARIABLENAME SEMICOLON                            #InitalizationPointerExpression
+    | line=body SEMICOLON                                                       #Expression
+    | VARIABLENAME identifierOP SEMICOLON                                       #IdentifierOperationExpression
     ;
 
 
@@ -18,12 +20,18 @@ identifierOP
     | MINUS MINUS
     ;
 
+
+
 dataType
+    : type'*'?
+    ;
+
+type
     : INT
     | FLOAT
     | CHAR
-    | POINTER
     ;
+
 
 body
     : paren
@@ -45,20 +53,20 @@ unaryBody
     ;
 
 unary
-    :sign=(PLUS | MINUS) value=unaryBody        #UnaryExpression
+    :sign=(PLUS | MINUS) value=unaryBody                                #UnaryExpression
     ;
 
 bodyOperationBody
-    : lValue=leftOperationBody op=operation rValue=body  #OperationExpression
+    : lValue=leftOperationBody op=operation rValue=body                 #OperationExpression
     ;
 
 paren
-    : LPAREN value=body RPAREN                #ParenExpression
+    : LPAREN value=body RPAREN                                          #ParenExpression
     ;
 
 data
-    : value=CHARINPUT                            #NumberExpression
-    | VARIABLENAME                            #VariableExpression
+    : value=(CHARINPUT|INTINPUT|FLOATINPUT)                             #NumberExpression
+    | VARIABLENAME                                                      #VariableExpression
     ;
 
 operation
@@ -86,7 +94,7 @@ FLOAT
     ;
 
 CHAR
-    : 'CHAR'
+    : 'char'
     ;
 
 POINTER
