@@ -5,9 +5,13 @@ start
     ;
 
 programLine
-    : (CONST? dataType VARIABLENAME IS)? line=body SEMICOLON
-    | VARIABLENAME identifierOP SEMICOLON
+    : CONST? dataType VARIABLENAME SEMICOLON                #DeclarationExpression
+    | CONST? dataType VARIABLENAME IS line=body SEMICOLON   #DeclarationAndInitalizationExpression
+    | VARIABLENAME IS line=body SEMICOLON                   #InitalizationExpression
+    | line=body SEMICOLON                                   #Expression
+    | VARIABLENAME identifierOP SEMICOLON                   #IdentifierOperationExpression
     ;
+
 
 identifierOP
     : PLUS PLUS
@@ -53,7 +57,7 @@ paren
     ;
 
 data
-    : value=NUMBER                            #NumberExpression
+    : value=CHARINPUT                            #NumberExpression
     | VARIABLENAME                            #VariableExpression
     ;
 
@@ -157,8 +161,16 @@ RPAREN
     : ')'
     ;
 
-NUMBER
+INTINPUT
     : ('!')?  [0-9]+
+    ;
+
+FLOATINPUT
+    : ('!')?  [0-9]+('.'[0-9]+)?
+    ;
+
+CHARINPUT
+    : '\''.'\''
     ;
 
 CONST
