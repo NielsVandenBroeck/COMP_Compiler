@@ -13,6 +13,24 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#programLine.
+    def enterProgramLine(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#programLine.
+    def exitProgramLine(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#line.
+    def enterLine(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#line.
+    def exitLine(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#DeclarationExpression.
     def enterDeclarationExpression(self, ctx):
         pass

@@ -10,6 +10,16 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#programLine.
+    def visitProgramLine(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#line.
+    def visitLine(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#DeclarationExpression.
     def visitDeclarationExpression(self, ctx):
         return self.visitChildren(ctx)

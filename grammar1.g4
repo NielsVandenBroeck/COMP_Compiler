@@ -5,13 +5,20 @@ start
     ;
 
 programLine
-    : CONST? types VARIABLENAME SEMICOLON                                       #DeclarationExpression
-    | CONST? types VARIABLENAME IS line=body SEMICOLON                          #DeclarationAndInitalizationExpression
-    | CONST? types  CONST? VARIABLENAME IS line='&'VARIABLENAME SEMICOLON       #DeclarationAndInitalizationPointerExpression
-    | VARIABLENAME IS line=body SEMICOLON                                       #InitalizationExpression
-    | VARIABLENAME IS line='&'VARIABLENAME SEMICOLON                            #InitalizationPointerExpression
-    | line=body SEMICOLON                                                       #Expression
-    | VARIABLENAME identifierOP SEMICOLON                                       #IdentifierOperationExpression
+    : l=line SEMICOLON
+    ;
+
+line: newline
+    ;
+
+newline
+    : constness=CONST? t=types name=VARIABLENAME                        #DeclarationExpression
+    | constness=CONST? t=types name=VARIABLENAME IS b=body              #DeclarationAndInitalizationExpression
+    | CONST? types  CONST? VARIABLENAME IS '&'VARIABLENAME              #DeclarationAndInitalizationPointerExpression
+    | name=VARIABLENAME IS b=body                                       #InitalizationExpression
+    | VARIABLENAME IS '&'VARIABLENAME                                   #InitalizationPointerExpression
+    | body                                                              #Expression
+    | name=VARIABLENAME op=identifierOP                                         #IdentifierOperationExpression
     ;
 
 
@@ -86,15 +93,15 @@ operation
     ;
 
 INT
-    : 'int'
+    : 'int '
     ;
 
 FLOAT
-    : 'float'
+    : 'float '
     ;
 
 CHAR
-    : 'char'
+    : 'char '
     ;
 
 VARIABLENAME

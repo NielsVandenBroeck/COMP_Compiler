@@ -2,50 +2,113 @@ from AST import AST
 from grammar1Visitor import *
 import operator
 
+class variableTable:
+    def __init__(self,type,name,constness, value=None):
+        self.type = type
+        self.name = name
+        self.value = value
+        self.constness = constness
+
 
 class ASTGenerator(grammar1Visitor):
+    def __init__(self):
+        self.variableList = []
 
     # Visit a parse tree produced by grammar1Parser#start.
     def visitStart(self, ctx):
-        print(dir(ctx))
         program = AST("program", "")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line))
-        program.constantFold()
+        #program.constantFold()
         return program
 
     def visitProgramLine(self, ctx):
         line = AST("line", "")
-        line.addNode(self.visitChildren(ctx.line))
+        line.addNode(self.visitChildren(ctx.l))
         return line
 
     # Visit a parse tree produced by grammar1Parser#DeclarationExpression.
     def visitDeclarationExpression(self, ctx):
-        return self.visitChildren(ctx)
+        constness = False
+        if ctx.constness is not None:
+            constness = True
+        name = ctx.name.text
+
+        #check if variable exists -> error
+        for var in self.variableList:
+            if(var.name is name):
+                print("Error, cannot declare a variable more than once.")
+                break
+
+        #create variable and push to list
+        newVariable = variableTable(ctx.t.getText(),name,constness)
+        self.variableList.append(newVariable)
+        return AST(name, "var")
 
     # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
     def visitDeclarationAndInitalizationExpression(self, ctx):
-        return self.visitChildren(ctx)
+        constness = False
+        if ctx.constness is not None:
+            constness = True
+        type = ctx.t.getText()
+        name = ctx.name.text
+        value = self.visit(ctx.b)
+
+        # check if variable exists -> error
+        for var in self.variableList:
+            if (var.name is name):
+                print("Error, cannot declare a variable more than once.")
+                break
+
+        # create variable and push to list
+        newVariable = variableTable(type, name, constness, value.value)
+        self.variableList.append(newVariable)
+        root = AST(name, "var")
+        child = value
+        root.addNode(child)
+        return root
 
     # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
     def visitDeclarationAndInitalizationPointerExpression(self, ctx):
-        return self.visitChildren(ctx)
+        return self.visitChildren(ctx)  #todo
 
     # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
     def visitInitalizationExpression(self, ctx):
-        return self.visitChildren(ctx)
+        name = ctx.name.text
+        # check if variable exists, else -> error
+        exists = False
+        for var in self.variableList:
+            if (var.name is name):
+                exists = True
+                break
+        if not exists:
+            print("Error, variable name doesnt exist.")
+        root = AST(name,"")
+        child = self.visit(ctx.b)
+        root.addNode(child)
+        return root
 
     # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
     def visitInitalizationPointerExpression(self, ctx):
-        return self.visitChildren(ctx)
-
-    # Visit a parse tree produced by grammar1Parser#Expression.
-    def visitExpression(self, ctx):
-        return self.visitChildren(ctx)
+        return self.visitChildren(ctx)  #todo
 
     # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
     def visitIdentifierOperationExpression(self, ctx):
-        return self.visitChildren(ctx)
+        name = ctx.name.text
+        # check if variable exists, else -> error
+        exists = False
+        for var in self.variableList:
+            if (var.name is name):
+                exists = True
+                break
+        if not exists:
+            print("Error, variable name doesnt exist.")
+        operation = ctx.op.getText()
+        root = AST(operation,"")
+        child = AST(name,"")
+        root.addNode(child)
+        return root
+
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
     def visitUnaryExpression(self, ctx):
@@ -128,4 +191,3 @@ class ASTGenerator(grammar1Visitor):
     def visitOperation(self, ctx):
         operation = ctx.getText()
         return AST(operation, "op")
-

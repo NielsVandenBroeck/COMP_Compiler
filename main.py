@@ -19,12 +19,6 @@ def main():
     visistor = ASTGenerator()
     output = visistor.visit(tree)
     print(output.getDot())
-    #print(dir(tree))
-    #print(output)
-    #print(dir(tree))
-    #print(tree.body(0))
-    #printTree(tree)
-    #print(tree.getText())
 
 def printTree(tree):
     if(tree.getText() == '(' or tree.getText() == ')'):
