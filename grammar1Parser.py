@@ -63,7 +63,7 @@ class grammar1Parser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ u"<INVALID>", u"'&'", u"'int '", u"'float '", u"'char '", 
+    literalNames = [ u"<INVALID>", u"'&'", u"'int'", u"'float'", u"'char'", 
                      u"<INVALID>", u"'+'", u"'-'", u"'*'", u"'/'", u"'>'", 
                      u"'<'", u"'=='", u"'>='", u"'<='", u"'!='", u"'%'", 
                      u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"<INVALID>", 
@@ -345,15 +345,17 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.InitalizationPointerExpressionContext, self).__init__(parser)
+            self.var1 = None # Token
+            self.var2 = None # Token
             self.copyFrom(ctx)
 
+        def IS(self):
+            return self.getToken(grammar1Parser.IS, 0)
         def VARIABLENAME(self, i=None):
             if i is None:
                 return self.getTokens(grammar1Parser.VARIABLENAME)
             else:
                 return self.getToken(grammar1Parser.VARIABLENAME, i)
-        def IS(self):
-            return self.getToken(grammar1Parser.IS, 0)
 
         def enterRule(self, listener):
             if hasattr(listener, "enterInitalizationPointerExpression"):
@@ -466,8 +468,14 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.DeclarationAndInitalizationPointerExpressionContext, self).__init__(parser)
+            self.constness = None # Token
+            self.t = None # TypesContext
+            self.var1 = None # Token
+            self.var2 = None # Token
             self.copyFrom(ctx)
 
+        def IS(self):
+            return self.getToken(grammar1Parser.IS, 0)
         def types(self):
             return self.getTypedRuleContext(grammar1Parser.TypesContext,0)
 
@@ -476,8 +484,6 @@ class grammar1Parser ( Parser ):
                 return self.getTokens(grammar1Parser.VARIABLENAME)
             else:
                 return self.getToken(grammar1Parser.VARIABLENAME, i)
-        def IS(self):
-            return self.getToken(grammar1Parser.IS, 0)
         def CONST(self, i=None):
             if i is None:
                 return self.getTokens(grammar1Parser.CONST)
@@ -587,11 +593,11 @@ class grammar1Parser ( Parser ):
                 _la = self._input.LA(1)
                 if _la==grammar1Parser.CONST:
                     self.state = 55
-                    self.match(grammar1Parser.CONST)
+                    localctx.constness = self.match(grammar1Parser.CONST)
 
 
                 self.state = 58
-                self.types()
+                localctx.t = self.types()
                 self.state = 60
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
@@ -601,13 +607,13 @@ class grammar1Parser ( Parser ):
 
 
                 self.state = 62
-                self.match(grammar1Parser.VARIABLENAME)
+                localctx.var1 = self.match(grammar1Parser.VARIABLENAME)
                 self.state = 63
                 self.match(grammar1Parser.IS)
                 self.state = 64
                 self.match(grammar1Parser.T__0)
                 self.state = 65
-                self.match(grammar1Parser.VARIABLENAME)
+                localctx.var2 = self.match(grammar1Parser.VARIABLENAME)
                 pass
 
             elif la_ == 4:
@@ -625,13 +631,13 @@ class grammar1Parser ( Parser ):
                 localctx = grammar1Parser.InitalizationPointerExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
                 self.state = 70
-                self.match(grammar1Parser.VARIABLENAME)
+                localctx.var1 = self.match(grammar1Parser.VARIABLENAME)
                 self.state = 71
                 self.match(grammar1Parser.IS)
                 self.state = 72
                 self.match(grammar1Parser.T__0)
                 self.state = 73
-                self.match(grammar1Parser.VARIABLENAME)
+                localctx.var2 = self.match(grammar1Parser.VARIABLENAME)
                 pass
 
             elif la_ == 6:

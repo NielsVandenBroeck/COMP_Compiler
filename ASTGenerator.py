@@ -37,7 +37,7 @@ class ASTGenerator(grammar1Visitor):
         #check if variable exists -> error
         for var in self.variableList:
             if(var.name is name):
-                print("Error, cannot declare a variable more than once.")
+                print("Error, cannot declare variable: \""+name+"\" more than once.")
                 break
 
         #create variable and push to list
@@ -57,20 +57,51 @@ class ASTGenerator(grammar1Visitor):
         # check if variable exists -> error
         for var in self.variableList:
             if (var.name is name):
-                print("Error, cannot declare a variable more than once.")
+                print("Error, cannot declare variable: \""+name+"\" more than once.")
                 break
 
         # create variable and push to list
         newVariable = variableTable(type, name, constness, value.value)
         self.variableList.append(newVariable)
-        root = AST(name, "var")
-        child = value
-        root.addNode(child)
+        root = AST(name,"var")
+        child1 = AST("=","")
+        child2 = value
+        root.addNode(child1)
+        child1.addNode(child2)
         return root
 
     # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
     def visitDeclarationAndInitalizationPointerExpression(self, ctx):
-        return self.visitChildren(ctx)  #todo
+        #todo constness for value (not for pointer)
+        constness = False
+        if ctx.constness is not None:
+            constness = True
+        type = ctx.t.getText()
+        name = ctx.var1.text
+        #todo value moet address zijn
+        value = ctx.var2.text
+
+        # check if variable 1 exists -> error
+        # check if variable 2 exists, else -> error
+        var2exists = False
+        for var in self.variableList:
+            if var.name is name:
+                print("Error, cannot declare variable: \""+name+"\" more than once.")
+                break
+            if var.name is value:
+                var2exists = True
+        if not var2exists:
+            print("Error, variable in initialization: \""+value+"\"  does not exists")
+
+        # create variable and push to list
+        newVariable = variableTable(type, name, constness, value)
+        self.variableList.append(newVariable)
+        root = AST(name,"var")
+        child1 = AST("=","")
+        child2 = AST(value,"")
+        root.addNode(child1)
+        child1.addNode(child2)
+        return root
 
     # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
     def visitInitalizationExpression(self, ctx):
@@ -78,19 +109,47 @@ class ASTGenerator(grammar1Visitor):
         # check if variable exists, else -> error
         exists = False
         for var in self.variableList:
-            if (var.name is name):
+            if var.name is name:
+                # check if variable is const-type
+                if var.constness:
+                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 exists = True
                 break
         if not exists:
-            print("Error, variable name doesnt exist.")
+            print("Error, variable: \""+name+"\" doesnt exist.")
         root = AST(name,"")
-        child = self.visit(ctx.b)
-        root.addNode(child)
+        child1 = AST("=","")
+        child2 = self.visit(ctx.b)
+        root.addNode(child1)
+        child1.addNode(child2)
         return root
 
     # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
     def visitInitalizationPointerExpression(self, ctx):
-        return self.visitChildren(ctx)  #todo
+        name = ctx.var1.text
+        value = ctx.var2.text
+        # check if initialization variable exists, else -> error
+        # check if variable exists, else -> error
+        var1Exists = False
+        var2Exists = False
+        for var in self.variableList:
+            if var.name is name:
+                # check if variable is const-type
+                if var.constness:
+                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
+                var1Exists = True
+            if var.name is value:
+                var2Exists = True
+        if not var1Exists:
+            print("Error, variable: \""+name+"\" doesnt exist.")
+        if not var2Exists:
+            print("Error, variable in initialization: \""+value+"\" does not exists")
+        root = AST(name,"var")
+        child1 = AST("=","")
+        child2 = AST(value,"")
+        root.addNode(child1)
+        child1.addNode(child2)
+        return root
 
     # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
     def visitIdentifierOperationExpression(self, ctx):
@@ -99,10 +158,13 @@ class ASTGenerator(grammar1Visitor):
         exists = False
         for var in self.variableList:
             if (var.name is name):
+                # check if variable is const-type
+                if var.constness:
+                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 exists = True
                 break
         if not exists:
-            print("Error, variable name doesnt exist.")
+            print("Error, variable: \""+name+"\" doesnt exist.")
         operation = ctx.op.getText()
         root = AST(operation,"")
         child = AST(name,"")
@@ -185,6 +247,14 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
         variable = ctx.getText()
+        #check if variable exists
+        exists = False
+        for var in self.variableList:
+            if (var.name is variable):
+                exists = True
+                break
+        if not exists:
+            print("Error, variable: \""+variable+"\" doesnt exist.")
         return AST(variable, "")
 
     # Visit a parse tree produced by grammar1Parser#operation.

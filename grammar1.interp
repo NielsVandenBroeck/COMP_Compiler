@@ -1,9 +1,9 @@
 token literal names:
 null
 '&'
-'int '
-'float '
-'char '
+'int'
+'float'
+'char'
 null
 '+'
 '-'

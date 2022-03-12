@@ -14,11 +14,11 @@ line: newline
 newline
     : constness=CONST? t=types name=VARIABLENAME                        #DeclarationExpression
     | constness=CONST? t=types name=VARIABLENAME IS b=body              #DeclarationAndInitalizationExpression
-    | CONST? types  CONST? VARIABLENAME IS '&'VARIABLENAME              #DeclarationAndInitalizationPointerExpression
+    | constness=CONST? t=types  CONST? var1=VARIABLENAME IS '&'var2=VARIABLENAME  #DeclarationAndInitalizationPointerExpression
     | name=VARIABLENAME IS b=body                                       #InitalizationExpression
-    | VARIABLENAME IS '&'VARIABLENAME                                   #InitalizationPointerExpression
+    | var1=VARIABLENAME IS '&'var2=VARIABLENAME                         #InitalizationPointerExpression
     | body                                                              #Expression
-    | name=VARIABLENAME op=identifierOP                                         #IdentifierOperationExpression
+    | name=VARIABLENAME op=identifierOP                                 #IdentifierOperationExpression
     ;
 
 
@@ -93,19 +93,19 @@ operation
     ;
 
 INT
-    : 'int '
+    : 'int'
     ;
 
 FLOAT
-    : 'float '
+    : 'float'
     ;
 
 CHAR
-    : 'char '
+    : 'char'
     ;
 
 VARIABLENAME
-    : ('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*
+    : (('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*)
     ;
 
 PLUS
