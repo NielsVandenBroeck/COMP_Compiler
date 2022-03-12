@@ -54,7 +54,18 @@ class AST():
             i.constantFold()
         if len(self.nodes) != 2:
             return
-        elif self.value in dict1 and (isinstance(self.nodes[0].value, float) or isinstance(self.nodes[0].value, int)) and (isinstance(self.nodes[1].value, float) or isinstance(self.nodes[1].value, int)):
+        value1 = self.nodes[0].value
+        value2 = self.nodes[1].value
+        if self.value in dict1 and (isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
+            resulttype = chr
+            if isinstance(value1, float) or isinstance(value2, float):
+                resulttype = float
+            elif isinstance(value1, int) or isinstance(value2, int):
+                resulttype = int
+            if isinstance(value1, str):
+                value1 = ord(value1[1])
+            if isinstance(value2, str):
+                value2 = ord(value2[1])
             ops = {
                 '&&': operator.and_,
                 '||': operator.or_,
@@ -70,6 +81,6 @@ class AST():
                 '/': operator.truediv,
                 '%': operator.mod,
             }
-            self.value = ops[self.value](self.nodes[0].value, self.nodes[1].value)
+            self.value = resulttype(ops[self.value](value1,value2))
             self.nodes = None
 

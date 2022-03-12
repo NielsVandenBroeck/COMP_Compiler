@@ -19,7 +19,7 @@ class ASTGenerator(grammar1Visitor):
         program = AST("program", "")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line))
-        #program.constantFold()
+        program.constantFold()
         return program
 
     def visitProgramLine(self, ctx):

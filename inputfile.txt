@@ -1,3 +1,2 @@
-const char g = '2';
-g++;
-g = 5+6;
+char c = 'a'+ 3;
+
