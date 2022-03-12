@@ -46,8 +46,6 @@ class AST():
 
     def constantFold(self):
         dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
-        #for i in range(len(self.nodes)):
-        #    self.nodes[i].constantFold()
         if self.nodes is None:
             return
         for i in self.nodes:
@@ -57,6 +55,8 @@ class AST():
         value1 = self.nodes[0].value
         value2 = self.nodes[1].value
         if self.value in dict1 and (isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
+            if (isinstance(value1, str) and (len(value1) != 3 or value1[0] != '\'')) or (isinstance(value2, str) and (len(value2) != 3 or value2[0] != '\'')):
+                return
             resulttype = chr
             if isinstance(value1, float) or isinstance(value2, float):
                 resulttype = float
