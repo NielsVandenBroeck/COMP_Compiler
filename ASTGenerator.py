@@ -6,9 +6,10 @@ class variableTable:
     def __init__(self,type,name,constness, node=None):
         self.type = type
         self.name = name
+        self.constness = constness
         #AST node
         self.value = node
-        self.constness = constness
+
 
 
 class ASTGenerator(grammar1Visitor):
@@ -38,8 +39,7 @@ class ASTGenerator(grammar1Visitor):
         #check if variable exists -> error
         for var in self.variableList:
             if var.name is name:
-                print("Error, cannot declare variable: \""+name+"\" more than once.")
-                break
+                exit("[Error] line (#todo): Cannot declare variable: \""+name+"\" more than once.")
 
         #create variable and push to list
         newVariable = variableTable(ctx.t.getText(),name,constness)
@@ -54,11 +54,10 @@ class ASTGenerator(grammar1Visitor):
         type = ctx.t.getText()
         name = ctx.name.text
         value = self.visit(ctx.b)
-
         # check if variable exists -> error
         for var in self.variableList:
             if var.name is name:
-                print("Error, cannot declare variable: \""+name+"\" more than once.")
+                exit("[Error] line (#todo): Cannot declare variable: \""+name+"\" more than once.")
                 break
 
         # create variable and push to list
@@ -86,12 +85,12 @@ class ASTGenerator(grammar1Visitor):
         var2exists = False
         for var in self.variableList:
             if var.name is name:
-                print("Error, cannot declare variable: \""+name+"\" more than once.")
+                exit("[Error] line (#todo): Cannot declare variable: \""+name+"\" more than once.")
                 break
             if var.name is value.text:
                 var2exists = True
         if not var2exists:
-            print("Error, variable in initialization: \""+value.text+"\"  does not exists")
+            exit("[Error] line (#todo): Variable in initialization: \""+value.text+"\"  does not exists")
 
         root = AST(name,"var")
         child1 = AST("=","")
@@ -113,11 +112,11 @@ class ASTGenerator(grammar1Visitor):
             if var.name is name:
                 # check if variable is const-type
                 if var.constness:
-                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
+                    exit("[Error] line (#todo): Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 exists = True
                 break
         if not exists:
-            print("Error, variable: \""+name+"\" doesnt exist.")
+            exit("[Error] line (#todo): Variable: \""+name+"\" doesnt exist.")
         root = AST(name,"")
         child1 = AST("=","")
         child2 = self.visit(ctx.b)
@@ -137,14 +136,14 @@ class ASTGenerator(grammar1Visitor):
             if var.name is name:
                 # check if variable is const-type
                 if var.constness:
-                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
+                    exit("[Error] line (#todo): Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 var1Exists = True
             if var.name is value:
                 var2Exists = True
         if not var1Exists:
-            print("Error, variable: \""+name+"\" doesnt exist.")
+            exit("[Error] line (#todo): Variable: \""+name+"\" doesnt exist.")
         if not var2Exists:
-            print("Error, variable in initialization: \""+value+"\" does not exists")
+            exit("[Error] line (#todo): Variable in initialization: \""+value+"\" does not exists")
         root = AST(name,"var")
         child1 = AST("=","")
         child2 = AST(value,"")
@@ -161,11 +160,11 @@ class ASTGenerator(grammar1Visitor):
             if var.name is name:
                 # check if variable is const-type
                 if var.constness:
-                    print("Error, Cannot assign to variable: \"" + name + "\" with const-qualified type.")
+                    exit("[Error] line (#todo): Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 exists = True
                 break
         if not exists:
-            print("Error, variable: \""+name+"\" doesnt exist.")
+            exit("[Error] line (#todo): Variable: \""+name+"\" doesnt exist.")
         operation = ctx.op.getText()
         root = AST(operation,"")
         child = AST(name,"")
@@ -251,14 +250,15 @@ class ASTGenerator(grammar1Visitor):
         #check if variable exists
         exists = False
         for var in self.variableList:
-            if var.name is variable:
+            if var.name == variable:
                 # error if variable is initialized yet
                 if var.value is None:
-                    print("Error, variable: \"" + var.name + "\" has not been initialized yet.")
+                    exit("[Error] line (#todo): Variable: \"" + var.name + "\" has not been initialized yet.")
                 #replace variable with its value
+                if var.value.nodes is None:
+                    return AST(var.value.value,"")
                 return var.value
-        print("Error, variable: \""+variable+"\" doesnt exist.")
-        return AST("error", "")
+        exit("[Error] line (#todo): Variable: \""+variable+"\" doesnt exist.")
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
