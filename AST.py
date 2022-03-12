@@ -81,6 +81,8 @@ class AST():
                 '/': operator.truediv,
                 '%': operator.mod,
             }
-            self.value = resulttype(ops[self.value](value1,value2))
+            if resulttype == chr:
+                self.value = '\''+resulttype(ops[self.value](value1, value2))+'\''
+            else:
+                self.value = resulttype(ops[self.value](value1,value2))
             self.nodes = None
-
