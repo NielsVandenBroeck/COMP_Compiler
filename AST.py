@@ -78,6 +78,10 @@ class AST():
             elif isinstance(value1, str):
                 self.value = chr(-ord(value1[1]))
                 self.nodes = None
+        elif len(self.nodes) == 1 and self.value == '+':
+            value1 = self.nodes[0].value
+            self.value = value1
+            self.nodes = None
         elif len(self.nodes) == 2:
             value1 = self.nodes[0].value
             value2 = self.nodes[1].value
