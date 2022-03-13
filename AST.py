@@ -50,39 +50,46 @@ class AST():
             return
         for i in self.nodes:
             i.constantFold()
-        if len(self.nodes) != 2:
-            return
-        value1 = self.nodes[0].value
-        value2 = self.nodes[1].value
-        if self.value in dict1 and (isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
-            if (isinstance(value1, str) and (len(value1) != 3 or value1[0] != '\'')) or (isinstance(value2, str) and (len(value2) != 3 or value2[0] != '\'')):
-                return
-            resulttype = chr
-            if isinstance(value1, float) or isinstance(value2, float):
-                resulttype = float
-            elif isinstance(value1, int) or isinstance(value2, int):
-                resulttype = int
-            if isinstance(value1, str):
-                value1 = ord(value1[1])
-            if isinstance(value2, str):
-                value2 = ord(value2[1])
-            ops = {
-                '&&': operator.and_,
-                '||': operator.or_,
-                '<': operator.lt,
-                '>': operator.gt,
-                '>=': operator.ge,
-                '<=': operator.le,
-                '!=': operator.ne,
-                '==': operator.eq,
-                '+': operator.add,
-                '-': operator.sub,
-                '*': operator.mul,
-                '/': operator.truediv,
-                '%': operator.mod,
-            }
-            if resulttype == chr:
-                self.value = '\''+resulttype(ops[self.value](value1, value2))+'\''
-            else:
-                self.value = resulttype(ops[self.value](value1,value2))
-            self.nodes = None
+        if len(self.nodes) == 1 and self.value == '-':
+            value1 = self.nodes[0].value
+            if isinstance(value1, float) or isinstance(value1, int):
+                self.value = -value1
+                self.nodes = None
+            elif isinstance(value1, str):
+                self.value = chr(-ord(value1[1]))
+                self.nodes = None
+        elif len(self.nodes) == 2:
+            value1 = self.nodes[0].value
+            value2 = self.nodes[1].value
+            if self.value in dict1 and (isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
+                if (isinstance(value1, str) and (len(value1) != 3 or value1[0] != '\'')) or (isinstance(value2, str) and (len(value2) != 3 or value2[0] != '\'')):
+                    return
+                resulttype = chr
+                if isinstance(value1, float) or isinstance(value2, float):
+                    resulttype = float
+                elif isinstance(value1, int) or isinstance(value2, int):
+                    resulttype = int
+                if isinstance(value1, str):
+                    value1 = ord(value1[1])
+                if isinstance(value2, str):
+                    value2 = ord(value2[1])
+                ops = {
+                    '&&': operator.and_,
+                    '||': operator.or_,
+                    '<': operator.lt,
+                    '>': operator.gt,
+                    '>=': operator.ge,
+                    '<=': operator.le,
+                    '!=': operator.ne,
+                    '==': operator.eq,
+                    '+': operator.add,
+                    '-': operator.sub,
+                    '*': operator.mul,
+                    '/': operator.truediv,
+                    '%': operator.mod,
+                }
+                if resulttype == chr:
+                    self.value = '\''+resulttype(ops[self.value](value1, value2))+'\''
+                else:
+                    self.value = resulttype(ops[self.value](value1,value2))
+                self.nodes = None
