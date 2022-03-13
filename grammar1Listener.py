@@ -58,6 +58,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#GetPointerValue.
+    def enterGetPointerValue(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#GetPointerValue.
+    def exitGetPointerValue(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#InitalizationExpression.
     def enterInitalizationExpression(self, ctx):
         pass
@@ -100,6 +109,15 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#identifierOP.
     def exitIdentifierOP(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#pointerTypes.
+    def enterPointerTypes(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#pointerTypes.
+    def exitPointerTypes(self, ctx):
         pass
 
 

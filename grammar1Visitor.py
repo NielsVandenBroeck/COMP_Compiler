@@ -35,6 +35,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#GetPointerValue.
+    def visitGetPointerValue(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
     def visitInitalizationExpression(self, ctx):
         return self.visitChildren(ctx)
@@ -57,6 +62,11 @@ class grammar1Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by grammar1Parser#identifierOP.
     def visitIdentifierOP(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#pointerTypes.
+    def visitPointerTypes(self, ctx):
         return self.visitChildren(ctx)
 
 

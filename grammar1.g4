@@ -12,13 +12,17 @@ line: newline
     ;
 
 newline
-    : constness=CONST? t=types name=VARIABLENAME                        #DeclarationExpression
-    | constness=CONST? t=types name=VARIABLENAME IS b=body              #DeclarationAndInitalizationExpression
-    | constness=CONST? t=types  CONST? var1=VARIABLENAME IS '&'var2=VARIABLENAME  #DeclarationAndInitalizationPointerExpression
-    | name=VARIABLENAME IS b=body                                       #InitalizationExpression
-    | var1=VARIABLENAME IS '&'var2=VARIABLENAME                         #InitalizationPointerExpression
-    | body                                                              #Expression
-    | name=VARIABLENAME op=identifierOP                                 #IdentifierOperationExpression
+    : constness=CONST? t=pointerTypes? name=VARIABLENAME                                     #DeclarationExpression
+    | constness=CONST? t=types? name=VARIABLENAME IS b=body                                #DeclarationAndInitalizationExpression
+
+
+    | constness=CONST? t=pointerTypes?  CONST? var1=VARIABLENAME IS ('&')?var2=VARIABLENAME  #DeclarationAndInitalizationPointerExpression
+    | constness=CONST? t=types?  CONST? var1=VARIABLENAME IS '*'var2=VARIABLENAME           #GetPointerValue
+
+    | name=VARIABLENAME IS b=body                                                           #InitalizationExpression
+    | var1=VARIABLENAME IS '&'var2=VARIABLENAME                                             #InitalizationPointerExpression
+    | body                                                                                  #Expression
+    | name=VARIABLENAME op=identifierOP                                                     #IdentifierOperationExpression
     ;
 
 
@@ -27,8 +31,12 @@ identifierOP
     | MINUS MINUS
     ;
 
+pointerTypes
+    : dataType('*')?
+    ;
+
 types
-    : dataType'*'?
+    : dataType
     ;
 
 dataType

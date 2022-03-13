@@ -81,6 +81,7 @@ class ASTGenerator(grammar1Visitor):
         name = ctx.var1.text
         #todo value moet address zijn
         value = ctx.var2
+        print("Pointer to ", ctx.var2)
 
         # check if variable 1 exists -> error
         # check if variable 2 exists, else -> error
@@ -104,6 +105,10 @@ class ASTGenerator(grammar1Visitor):
         root.addNode(child1)
         child1.addNode(child2)
         return root
+
+        # Visit a parse tree produced by grammar1Parser#GetPointerValue.
+        def visitGetPointerValue(self, ctx):
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
     def visitInitalizationExpression(self, ctx):

@@ -1,12 +1,2 @@
-char a = 'a';
-int b = 1;
-float c = 2.1;
-
-a = a+b;
-a = a+c;
-
-b = a+c;
-
-c = a-c;
-
-
+int* b;
+int* a = b;

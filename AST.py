@@ -1,5 +1,5 @@
 import operator
-
+import graphviz
 
 class AST():
     def __init__(self):
@@ -29,7 +29,27 @@ class AST():
     def getDot(self):
         return "digraph G { \n" + self.getDotInternal(0) + "}"
 
+    def getDot1(self):
+        tree = graphviz.Digraph('AST')
+        print(self.getDotInternal1(tree))
+
+
+
+    def getDotInternal1(self, tree, root):
+
+        rootNode = tree.node(self.value)
+        for node in self.nodes:
+            childNode = self.getDotInternal1(tree.node(node.value))
+            tree.edge(rootNode, childNode)
+
+        return rootNode
+
+
+
+
+
     def getDotInternal(self, number = 0): #TODO kan efficienter
+        test = graphviz.Digraph('AST')
         id = ' (' + str(number) + ')'
         idPlusOne = ' (' + str(number + 1) + ')'
         string = ""
