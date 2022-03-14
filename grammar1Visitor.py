@@ -20,28 +20,13 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#DeclarationExpression.
-    def visitDeclarationExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#LValueRvalue.
+    def visitLValueRvalue(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationExpression.
-    def visitDeclarationAndInitalizationExpression(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by grammar1Parser#DeclarationAndInitalizationPointerExpression.
-    def visitDeclarationAndInitalizationPointerExpression(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
-    def visitInitalizationExpression(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
-    def visitInitalizationPointerExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#LValue.
+    def visitLValue(self, ctx):
         return self.visitChildren(ctx)
 
 
@@ -55,18 +40,23 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#lvalue.
+    def visitLvalue(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#rvalue.
+    def visitRvalue(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#identifierOP.
     def visitIdentifierOP(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#pointerTypes.
-    def visitPointerTypes(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by grammar1Parser#types.
-    def visitTypes(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#Type.
+    def visitType(self, ctx):
         return self.visitChildren(ctx)
 
 

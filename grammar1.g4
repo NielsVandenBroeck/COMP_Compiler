@@ -12,29 +12,28 @@ line: newline
     ;
 
 newline
-    : constness=CONST? t=pointerTypes name=VARIABLENAME                                    #DeclarationExpression
-    | constness=CONST? t=types name=VARIABLENAME IS b=body                                 #DeclarationAndInitalizationExpression
-
-    | constness=CONST? t=pointerTypes  CONST? var1=VARIABLENAME IS ('&')?var2=VARIABLENAME #DeclarationAndInitalizationPointerExpression
-
-    | name=VARIABLENAME IS b=body                                                           #InitalizationExpression
-    | var1=VARIABLENAME IS '&'var2=VARIABLENAME                                             #InitalizationPointerExpression
-    | body                                                                                  #Expression
-    | name=VARIABLENAME op=identifierOP                                                     #IdentifierOperationExpression
+    : lvalue IS rvalue                                                                          #LValueRvalue
+    | lvalue                                                                                    #LValue
+    | body                                                                                      #Expression
+    | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
     ;
 
+lvalue
+    : constness=CONST? t=types? name=VARIABLENAME
+    ;
+
+rvalue
+    : b=body
+    | ('&')?var2=VARIABLENAME
+    ;
 
 identifierOP
     : PLUS PLUS
     | MINUS MINUS
     ;
 
-pointerTypes
-    : dataType('*')?
-    ;
-
 types
-    : dataType
+    : dataType('*')?          #Type
     ;
 
 dataType
