@@ -77,27 +77,33 @@ class ASTGenerator(grammar1Visitor):
         constness = False
         if ctx.constness is not None:
             constness = True
+
         type = ctx.t.getText()
         name = ctx.var1.text
-        #todo value moet address zijn
-        value = ctx.var2
-        print("Pointer to ", ctx.var2)
+
+        #Find var and set value to pointer for this var
+        value = None
+        for var in self.variableList:
+            print("bestaande var", var)
+            if var.name == ctx.var2.text:
+                value = var
+                print(value, "!=", var)
+
+        if value == None:
+            exit("[Error] line (#todo): Variable in initialization: \""+value.text+"\"  does not exists")
+
+        print("Pointer to ", value)
 
         # check if variable 1 exists -> error
         # check if variable 2 exists, else -> error
-        var2exists = False
         for var in self.variableList:
             if var.name == name:
                 exit("[Error] line (#todo): Cannot declare variable: \""+name+"\" more than once.")
                 break
-            if var.name == value.text:
-                var2exists = True
-        if not var2exists:
-            exit("[Error] line (#todo): Variable in initialization: \""+value.text+"\"  does not exists")
 
         root = AST(name,"var")
         child1 = AST("=","")
-        child2 = AST(value.text,"")
+        child2 = AST(value,"")
 
         # create variable and push to list
         newVariable = variableTable(type, name, constness, child2)
@@ -106,9 +112,26 @@ class ASTGenerator(grammar1Visitor):
         child1.addNode(child2)
         return root
 
-        # Visit a parse tree produced by grammar1Parser#GetPointerValue.
-        def visitGetPointerValue(self, ctx):
-            return self.visitChildren(ctx)
+    # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
+    def visitPointerValueExpression(self, ctx):
+        value = None
+        print(self.variableList)
+        print("zoeken: " , ctx.value.text)
+        var2exists = False
+        for var in self.variableList:
+            if var.name == ctx.value.text:
+                var2exists = True
+                print("test", var.value.value.value.value)
+                value = var.value.value.value.value
+                #pointers van pointers
+                while(isinstance(value, variableTable)):
+                    print("test bruh")
+                    value = value.value.value
+
+        if not var2exists:
+            exit("[Error] line (#todo): Variable in initialization: \"" + value.text + "\"  does not exists")
+
+        return AST(value,"")
 
     # Visit a parse tree produced by grammar1Parser#InitalizationExpression.
     def visitInitalizationExpression(self, ctx):
@@ -139,27 +162,50 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#InitalizationPointerExpression.
     def visitInitalizationPointerExpression(self, ctx):
+        #TODO const
         name = ctx.var1.text
-        value = ctx.var2.text
+
+        varToSet = None
+        value = None
+        for var in self.variableList:
+            if var.name == ctx.var2.text:
+                value = var
+
+        if value == None:
+            exit("[Error] line (#todo): Variable in initialization: \"" + value.text + "\"  does not exists")
+
+        for var in self.variableList:
+            if var.name == ctx.var1.text:
+                var.value = AST(value, "")
+                print("value waarde", value)
+
+        print("Pointer to xxxx ", value)
+
         # check if initialization variable exists, else -> error
         # check if variable exists, else -> error
+
+        """
         var1Exists = False
         var2Exists = False
         for var in self.variableList:
+            print("item", var.name)
             if var.name == name:
                 # check if variable is const-type
                 if var.constness:
                     exit("[Error] line (#todo): Cannot assign to variable: \"" + name + "\" with const-qualified type.")
                 var1Exists = True
-            if var.name == value:
+            if var.name == ctx.var2.text:
                 var2Exists = True
         if not var1Exists:
             exit("[Error] line (#todo): Variable: \""+name+"\" doesnt exist.")
         if not var2Exists:
-            exit("[Error] line (#todo): Variable in initialization: \""+value+"\" does not exists")
+            exit("[Error] line (#todo): Variable in initialization: \""+value+"\" does not exists")"""
+
+
         root = AST(name,"var")
         child1 = AST("=","")
         child2 = AST(value,"var")
+
         root.addNode(child1)
         child1.addNode(child2)
         return root

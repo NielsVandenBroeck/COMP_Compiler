@@ -58,15 +58,6 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#GetPointerValue.
-    def enterGetPointerValue(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#GetPointerValue.
-    def exitGetPointerValue(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by grammar1Parser#InitalizationExpression.
     def enterInitalizationExpression(self, ctx):
         pass
@@ -217,6 +208,15 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#FloatExpression.
     def exitFloatExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#PointerValueExpression.
+    def enterPointerValueExpression(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#PointerValueExpression.
+    def exitPointerValueExpression(self, ctx):
         pass
 
 

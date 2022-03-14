@@ -1,2 +1,8 @@
-int* b;
-int* a = b;
+int a = 4;
+a=7;
+int* b = &a;
+int* c = &b;
+const int d = *c + 8;
+int k = 100;
+c = &k;
+int g = *c + 8;

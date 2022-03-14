@@ -12,12 +12,10 @@ line: newline
     ;
 
 newline
-    : constness=CONST? t=pointerTypes? name=VARIABLENAME                                     #DeclarationExpression
-    | constness=CONST? t=types? name=VARIABLENAME IS b=body                                #DeclarationAndInitalizationExpression
+    : constness=CONST? t=pointerTypes name=VARIABLENAME                                    #DeclarationExpression
+    | constness=CONST? t=types name=VARIABLENAME IS b=body                                 #DeclarationAndInitalizationExpression
 
-
-    | constness=CONST? t=pointerTypes?  CONST? var1=VARIABLENAME IS ('&')?var2=VARIABLENAME  #DeclarationAndInitalizationPointerExpression
-    | constness=CONST? t=types?  CONST? var1=VARIABLENAME IS '*'var2=VARIABLENAME           #GetPointerValue
+    | constness=CONST? t=pointerTypes  CONST? var1=VARIABLENAME IS ('&')?var2=VARIABLENAME #DeclarationAndInitalizationPointerExpression
 
     | name=VARIABLENAME IS b=body                                                           #InitalizationExpression
     | var1=VARIABLENAME IS '&'var2=VARIABLENAME                                             #InitalizationPointerExpression
@@ -81,6 +79,7 @@ data
     : value=CHARINPUT                                                   #CharExpression
     | value=INTINPUT                                                    #IntExpression
     | value=FLOATINPUT                                                  #FloatExpression
+    | '*'value=VARIABLENAME                                             #PointerValueExpression
     | VARIABLENAME                                                      #VariableExpression
     ;
 
