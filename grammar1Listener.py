@@ -85,6 +85,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#variableAdress.
+    def enterVariableAdress(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#variableAdress.
+    def exitVariableAdress(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#identifierOP.
     def enterIdentifierOP(self, ctx):
         pass

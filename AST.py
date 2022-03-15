@@ -3,8 +3,7 @@ import graphviz
 
 class AST():
     def __init__(self, value, childNodes = None):
-        self.nodes = None
-        self.root = None
+        self.root = value
         self.nodes = childNodes
 
     # internal function
@@ -16,6 +15,20 @@ class AST():
     def addNode(self, node):
         self.setNodesIfNeeded()
         self.nodes.append(node)
+
+    def addNodeToMostLeftChild(self, node):
+        if self.nodes is None:
+            self.addNode(node)
+            return
+        self.nodes[0].addNodeToMostLeftChild(node)
+
+    def isPriority(self):
+        return self.root == "()"
+
+    def removePriority(self):
+        if(self.isPriority()):
+            return self.nodes[0]
+        return self
 
     #returns de node with index "item"
     def getNode(self, item):
@@ -32,7 +45,7 @@ class AST():
         if self.nodes is None:
             return ""
 
-        string += '"' + str(self) + id + '"' + '[label="' + self.root + '"]' + "\n"
+        string += '"' + str(self) + id + '"' + '[label="' + str(self.root) + '"]' + "\n"
         for node in self.nodes:
             string += '"' + str(node) + idPlusOne + '"' + '[label="' + str(node.root) + '"]' + "\n"
             string += '"' + str(self) + id + '"' + "->" + '"' + str(node) + idPlusOne + '"' +"\n"

@@ -12,7 +12,7 @@ line: newline
     ;
 
 newline
-    : lvalue IS rvalue                                                                          #LValueRvalue
+    : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
@@ -23,9 +23,12 @@ lvalue
     ;
 
 rvalue
-    : b=body
-    | ('&')?var2=VARIABLENAME
+    : body
+    | variableAdress
     ;
+
+variableAdress
+    : ('&')?name=VARIABLENAME;
 
 identifierOP
     : PLUS PLUS
