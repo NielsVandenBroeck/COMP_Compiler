@@ -1,8 +1,3 @@
-    int a = 7;
-    int b = a/6.4;
-    b = a+b-4;
-    float c = 10;
-    char d = c*10;
-     char* pointer1 = &d;
-     char* pointer2 = pointer1;
-    *pointer1 = 4;
+int x = 5*(3/10 + 9/10);
+float y = x*2/( 2+1 * 2/3 +x) +8 * (8/4);
+float result = x + y; //asdiajfldkdjlfkjslkfjs
