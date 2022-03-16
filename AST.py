@@ -115,6 +115,27 @@ class AST():
                     self.root = resulttype(ops[self.root](value1, value2))
                 self.nodes = None
 
+    def correctDataType(self,type):
+        self.constantFold()
+        if isinstance(self.root,str):
+            self.root = self.root[1]
+        print(self.root)
+        if type is float:
+            if isinstance(self.root, float) or isinstance(self.root, int):
+                self.root = float(self.root)
+            else:
+                self.root = float(ord(self.root))
+        elif type is int:
+            if isinstance(self.root, float) or isinstance(self.root, int):
+                self.root = int(self.root)
+            else:
+                self.root = int(ord(self.root))
+        elif type is chr:
+            if isinstance(self.root,str):
+                self.root = '\''+self.root+'\''
+            else:
+                self.root = '\'' + chr(int((self.root))) + '\''
+
 
 class ASTVariable(AST):
     def __init__(self, value, childNodes=None):

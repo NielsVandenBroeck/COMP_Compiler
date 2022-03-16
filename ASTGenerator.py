@@ -136,26 +136,3 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
         return AST("&", [AST(ctx.name.text)])
-
-"""
-    def correctDataType(self,ast,type):
-        #ast.constantFold()
-        if isinstance(ast.root,str):
-            ast.root = ast.root[1]
-        print(ast.root)
-        if type == "float":
-            if isinstance(ast.root, float) or isinstance(ast.root, int):
-                ast.root = float(ast.root)
-            else:
-                ast.root = float(ord(ast.root))
-        elif type == "int":
-            if isinstance(ast.root, float) or isinstance(ast.root, int):
-                ast.root = int(ast.root)
-            else:
-                ast.root = int(ord(ast.root))
-        elif type == "char":
-            if isinstance(ast.root,str):
-                ast.root = '\''+ast.root+'\''
-            else:
-                ast.root = '\'' + chr(int((ast.root))) + '\''
-        print(ast.root)"""
