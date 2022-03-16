@@ -11,7 +11,7 @@ class SymbolObject:
 
 class SymbolTable():
     def __init__(self, root):
-        self.variableList = {}
+        self.SymbolList = {}
         self.loopAST(root)
 
     def loopAST(self, root):
@@ -32,13 +32,15 @@ class SymbolTable():
 
     def variableDeclaration(self, node, constness=False):
         datatype = node.root
+        print(datatype)
+        i = datatype(5.6)
+        print(i)
         variable = node.nodes[0].root
         #check if variablename exists -> error
-        for existingVar in self.variableList:
+        for existingVar in self.SymbolList:
             if existingVar.name == variable:
                 exit("[Error] line (#todo): Cannot declare variable: \"" + existingVar.name + "\" more than once.")
-                break;
-
+        #newVar = SymbolObject()
 
         #constant fold
         value = node.nodes[0].nodes[0].root

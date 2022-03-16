@@ -1,6 +1,7 @@
 from AST import *
 from grammar1Visitor import *
 from SymbolTable import SymbolTable
+from pydoc import locate
 
 class ASTGenerator(grammar1Visitor):
     def __init__(self):
@@ -23,7 +24,7 @@ class ASTGenerator(grammar1Visitor):
     def visitLvalue(self, ctx):
         lValue = ASTVariable(ctx.name.text)
         if ctx.t != None:
-            lValue = ASTDataType(ctx.t.getText(), [lValue])
+            lValue = ASTDataType(locate(ctx.t.getText()), [lValue])
         if ctx.constness != None:
             return ASTConst("const", [lValue])
         return lValue
