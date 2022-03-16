@@ -12,7 +12,7 @@ class ASTGenerator(grammar1Visitor):
         program = AST("program")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line).removePriority())
-        SymbolTable(program)
+        #SymbolTable(program)
         return program
 
     def visitProgramLine(self, ctx):
@@ -22,18 +22,22 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
+
+
         lValue = ASTVariable(ctx.name.text)
         if ctx.t != None:
             lValue = ASTDataType(locate(ctx.t.getText()), [lValue])
-        if ctx.constness != None:
-            return ASTConst("const", [lValue])
+        if ctx.constnessB != None:
+            lValue = ASTConst("const", [lValue])
+        if ctx.constnessA != None:
+            lValue = ASTConst("const", [lValue])
         return lValue
 
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.
     def visitLValueRvalue(self, ctx):
         node = self.visitLvalue(ctx.lv).removePriority()
-        #node.addNodeToMostLeftChild(AST("="))
-        node.addNodeToMostLeftChild(self.visitRvalue(ctx.rv).removePriority())
+        dataTypeNode = node.getFirstDataType(node);
+        dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
         return node
 
     # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.

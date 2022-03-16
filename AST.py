@@ -1,4 +1,6 @@
 import operator
+from typing import Any
+
 import graphviz
 
 class AST():
@@ -15,6 +17,14 @@ class AST():
     def addNode(self, node):
         self.setNodesIfNeeded()
         self.nodes.append(node)
+
+    def getFirstDataType(self, node):
+        print(type(node.root))
+        if self.nodes is None:
+            exit("no datatype found")
+        if not isinstance(node.root, str):
+            return node
+        return self.getFirstDataType(node.nodes[0])
 
     def addNodeToMostLeftChild(self, node):
         if self.nodes is None:
@@ -65,6 +75,8 @@ class ASTDataType(AST):
 class ASTConst(AST):
     def __init__(self, value, childNodes=None):
         super().__init__(value, childNodes)
+
+
 
 
 

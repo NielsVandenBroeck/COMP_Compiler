@@ -484,9 +484,10 @@ class grammar1Parser ( Parser ):
         def __init__(self, parser, parent=None, invokingState=-1):
             super(grammar1Parser.LvalueContext, self).__init__(parent, invokingState)
             self.parser = parser
-            self.constness = None # Token
+            self.constnessB = None # Token
             self.t = None # TypesContext
             self.pointer = None # Token
+            self.constnessA = None # Token
             self.name = None # Token
 
         def VARIABLENAME(self):
@@ -537,7 +538,7 @@ class grammar1Parser ( Parser ):
             la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
             if la_ == 1:
                 self.state = 57
-                localctx.constness = self.match(grammar1Parser.CONST)
+                localctx.constnessB = self.match(grammar1Parser.CONST)
 
 
             self.state = 61
@@ -561,7 +562,7 @@ class grammar1Parser ( Parser ):
             _la = self._input.LA(1)
             if _la==grammar1Parser.CONST:
                 self.state = 66
-                localctx.constness = self.match(grammar1Parser.CONST)
+                localctx.constnessA = self.match(grammar1Parser.CONST)
 
 
             self.state = 69

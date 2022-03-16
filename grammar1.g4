@@ -19,7 +19,7 @@ newline
     ;
 
 lvalue
-    : constness=CONST? t=types? pointer='*'? constness=CONST? name=VARIABLENAME
+    : constnessB=CONST? t=types? pointer='*'? constnessA=CONST? name=VARIABLENAME
     ;
 
 rvalue
