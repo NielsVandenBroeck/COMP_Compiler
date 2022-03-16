@@ -22,7 +22,7 @@ class ASTGenerator(grammar1Visitor):
     def visitLvalue(self, ctx):
         lValue = AST(ctx.name.text)
         if ctx.t != None:
-            lValue = AST(ctx.t.getText(),  lValue)
+            lValue = AST(ctx.t.getText(), [lValue])
         if ctx.constness != None:
             return AST("const", [lValue])
         return lValue

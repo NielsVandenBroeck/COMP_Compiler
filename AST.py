@@ -20,6 +20,7 @@ class AST():
         if self.nodes is None:
             self.addNode(node)
             return
+        print(node)
         self.nodes[0].addNodeToMostLeftChild(node)
 
     def isPriority(self):
