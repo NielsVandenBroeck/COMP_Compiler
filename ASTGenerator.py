@@ -11,7 +11,8 @@ class ASTGenerator(grammar1Visitor):
         program = AST("program")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line).removePriority())
-        SymbolTable(program)
+        simbolTable = SymbolTable(program)
+        print("test (a)", simbolTable.SymbolList["a"].getObject().value)
         return program
 
     def visitProgramLine(self, ctx):
@@ -33,6 +34,7 @@ class ASTGenerator(grammar1Visitor):
             if ctx.t == None:
                 lValue = ASTPointer(ASTPointer, [lValue])
                 return lValue
+
             lValue = ASTDataType(ctx.t.getText(), [lValue])
             if ctx.constnessB != None:
                 lValue = ASTConst("const", [lValue])
@@ -152,3 +154,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
         return ASTAdress(ASTAdress, [AST(ctx.name.text)])
+
+    # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
+    def visitPointerValueExpression(self, ctx):
+        return ASTPointer(ASTPointer, [AST(ctx.value.text)])

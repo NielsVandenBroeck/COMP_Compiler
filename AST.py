@@ -5,9 +5,12 @@ from pydoc import locate
 import graphviz
 
 class AST():
-    def __init__(self, value, childNodes = None):
-        self.root = value
+    def __init__(self, root, childNodes = None):
+        self.root = root
         self.nodes = childNodes
+
+    def getValue(self):
+        return self.root
 
     # internal function
     def setNodesIfNeeded(self):
@@ -119,6 +122,7 @@ class AST():
         self.constantFold()
         if isinstance(self.root,str):
             self.root = self.root[1]
+
         if type is float or type is int:
             if isinstance(self.root, float) or isinstance(self.root, int):
                 self.root = type(self.root)
@@ -134,6 +138,14 @@ class AST():
 class ASTVariable(AST):
     def __init__(self, value, childNodes=None):
         super().__init__(value, childNodes)
+
+    def getVariableName(self):
+        return self.root
+
+    def getVariableValue(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1]
+        return self.nodes[0]
 
 class ASTDataType(AST):
     def __init__(self, value, childNodes=None):
@@ -156,6 +168,8 @@ class ASTPointer(AST):
         return self.nodes[0]
 
     def getToObject(self):
+        if len(self.nodes) < 1:
+            return None;
         return self.nodes[1]
 
 class ASTAdress(AST):
@@ -164,3 +178,4 @@ class ASTAdress(AST):
 
     def getVariableName(self):
         return self.nodes[0].root
+

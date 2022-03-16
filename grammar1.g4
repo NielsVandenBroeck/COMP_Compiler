@@ -5,7 +5,7 @@ start
     ;
 
 programLine
-    : l=line SEMICOLON Comment
+    : l=line SEMICOLON Comment?
     ;
 
 line: newline
