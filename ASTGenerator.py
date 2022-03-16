@@ -21,6 +21,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
         lValue = AST(ctx.name.text)
+
         if ctx.t != None:
             lValue = AST(ctx.t.getText(), [lValue])
         if ctx.constness != None:
