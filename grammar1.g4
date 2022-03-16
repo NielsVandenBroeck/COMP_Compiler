@@ -5,7 +5,7 @@ start
     ;
 
 programLine
-    : l=line SEMICOLON
+    : l=line SEMICOLON Comment
     ;
 
 line: newline
@@ -199,6 +199,10 @@ CONST
 
 IS
     : '='
+    ;
+
+Comment
+    :
     ;
 
 WS

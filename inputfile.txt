@@ -1,1 +1,8 @@
-int* test = 0;
+    int a = 7;
+    int b = a/6.4;
+    b = a+b-4;
+    float c = 10;
+    char d = c*10;
+     char* pointer1 = &d;
+     char* pointer2 = pointer1;
+    *pointer1 = 4;
