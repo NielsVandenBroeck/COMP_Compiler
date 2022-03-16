@@ -28,7 +28,6 @@ class AST():
         if self.nodes is None:
             self.addNode(node)
             return
-        print(node)
         self.nodes[0].addNodeToMostLeftChild(node)
 
     def isPriority(self):
@@ -120,7 +119,6 @@ class AST():
         self.constantFold()
         if isinstance(self.root,str):
             self.root = self.root[1]
-        print(self.root)
         if type is float or type is int:
             if isinstance(self.root, float) or isinstance(self.root, int):
                 self.root = type(self.root)
@@ -143,6 +141,9 @@ class ASTDataType(AST):
             value = "chr"
         super().__init__(locate(value), childNodes)
 
+    def getVariableName(self):
+        return self.nodes[0].root
+
 class ASTConst(AST):
     def __init__(self, value, childNodes=None):
         super().__init__(value, childNodes)
@@ -150,3 +151,16 @@ class ASTConst(AST):
 class ASTPointer(AST):
     def __init__(self, value, childNodes=None):
         super().__init__(value, childNodes)
+
+    def getSetObject(self):
+        return self.nodes[0]
+
+    def getToObject(self):
+        return self.nodes[1]
+
+class ASTAdress(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+    def getVariableName(self):
+        return self.nodes[0].root

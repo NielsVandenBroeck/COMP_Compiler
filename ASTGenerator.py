@@ -30,7 +30,6 @@ class ASTGenerator(grammar1Visitor):
             return lValue
 
         if ctx.pointer != None:
-            print("pointer")
             if ctx.t == None:
                 lValue = ASTPointer(ASTPointer, [lValue])
                 return lValue
@@ -152,4 +151,4 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
-        return AST("&", [AST(ctx.name.text)])
+        return ASTAdress(ASTAdress, [AST(ctx.name.text)])
