@@ -1,5 +1,6 @@
 import operator
 from typing import Any
+from pydoc import locate
 
 import graphviz
 
@@ -143,7 +144,9 @@ class ASTVariable(AST):
 
 class ASTDataType(AST):
     def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
+        if value == "char":
+            value = "chr"
+        super().__init__(locate(value), childNodes)
 
 class ASTConst(AST):
     def __init__(self, value, childNodes=None):
