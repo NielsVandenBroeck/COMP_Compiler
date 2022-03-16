@@ -39,7 +39,7 @@ class SymbolTable():
             result = 0
         else:
             value = node.nodes[1]
-            value.constantFold()
+            value.correctDataType(node.root)
             result = value.root
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness, result)
 
@@ -47,8 +47,11 @@ class SymbolTable():
         Exists = False
         for existingVar in self.SymbolList:
             if existingVar == node.root:
+                if self.SymbolList[existingVar].constness:
+                    exit("[Error] line (#todo): variable: \"" + node.root + "\" is of const-type and cannot be changed.")
                 Exists = True
                 break
         if not Exists:
             exit("[Error] line (#todo): variable: \"" + node.root + "\" has not been declared.")
+        node.nodes[0].correctDataType(self.SymbolList[node.root].type)
         self.SymbolList[node.root].value = node.nodes[0].root
