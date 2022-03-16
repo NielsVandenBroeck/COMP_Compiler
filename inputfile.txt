@@ -1,6 +1,8 @@
-int c = 3;
-int* const b = &c;
-const int i = 5;
-
-c = 5;
-*b = 9;
+    int a = 7;
+    int b = a/6.4;
+    b = a+b-4;
+    float c = 10;
+    char d = c*10;
+    int* pointer1 = &a;
+    int* pointer2 = pointer1;
+    *pointer1 = 4;
