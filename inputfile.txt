@@ -1,2 +1,4 @@
+int c = 3;
 int i;
+int* i = &c;
 i = 5;

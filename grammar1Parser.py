@@ -32,26 +32,26 @@ def serializedATN():
         buf.write(u"\2\2\63\64\5\f\7\2\64:\3\2\2\2\65:\5\n\6\2\66:\5\26\f")
         buf.write(u"\2\678\7\7\2\28:\5\20\t\29\61\3\2\2\29\65\3\2\2\29\66")
         buf.write(u"\3\2\2\29\67\3\2\2\2:\t\3\2\2\2;=\7\33\2\2<;\3\2\2\2")
-        buf.write(u"<=\3\2\2\2=?\3\2\2\2>@\5\22\n\2?>\3\2\2\2?@\3\2\2\2@")
-        buf.write(u"B\3\2\2\2AC\7\n\2\2BA\3\2\2\2BC\3\2\2\2CE\3\2\2\2DF\7")
-        buf.write(u"\33\2\2ED\3\2\2\2EF\3\2\2\2FG\3\2\2\2GH\7\7\2\2H\13\3")
-        buf.write(u"\2\2\2IL\5\26\f\2JL\5\16\b\2KI\3\2\2\2KJ\3\2\2\2L\r\3")
-        buf.write(u"\2\2\2MO\7\3\2\2NM\3\2\2\2NO\3\2\2\2OP\3\2\2\2PQ\7\7")
-        buf.write(u"\2\2Q\17\3\2\2\2RS\7\b\2\2SW\7\b\2\2TU\7\t\2\2UW\7\t")
-        buf.write(u"\2\2VR\3\2\2\2VT\3\2\2\2W\21\3\2\2\2XZ\5\24\13\2Y[\7")
-        buf.write(u"\n\2\2ZY\3\2\2\2Z[\3\2\2\2[\23\3\2\2\2\\]\t\2\2\2]\25")
-        buf.write(u"\3\2\2\2^c\5 \21\2_c\5\"\22\2`c\5\36\20\2ac\5\34\17\2")
-        buf.write(u"b^\3\2\2\2b_\3\2\2\2b`\3\2\2\2ba\3\2\2\2c\27\3\2\2\2")
-        buf.write(u"dh\5 \21\2eh\5\"\22\2fh\5\34\17\2gd\3\2\2\2ge\3\2\2\2")
-        buf.write(u"gf\3\2\2\2h\31\3\2\2\2im\5 \21\2jm\5\"\22\2km\5\36\20")
-        buf.write(u"\2li\3\2\2\2lj\3\2\2\2lk\3\2\2\2m\33\3\2\2\2no\t\3\2")
-        buf.write(u"\2op\5\32\16\2p\35\3\2\2\2qr\5\30\r\2rs\5$\23\2st\5\26")
-        buf.write(u"\f\2t\37\3\2\2\2uv\7\26\2\2vw\5\26\f\2wx\7\27\2\2x!\3")
-        buf.write(u"\2\2\2y\u0080\7\32\2\2z\u0080\7\30\2\2{\u0080\7\31\2")
-        buf.write(u"\2|}\7\n\2\2}\u0080\7\7\2\2~\u0080\7\7\2\2\177y\3\2\2")
-        buf.write(u"\2\177z\3\2\2\2\177{\3\2\2\2\177|\3\2\2\2\177~\3\2\2")
-        buf.write(u"\2\u0080#\3\2\2\2\u0081\u0082\t\4\2\2\u0082%\3\2\2\2")
-        buf.write(u"\20)9<?BEKNVZbgl\177")
+        buf.write(u"<=\3\2\2\2=?\3\2\2\2>@\5\24\13\2?>\3\2\2\2?@\3\2\2\2")
+        buf.write(u"@B\3\2\2\2AC\7\n\2\2BA\3\2\2\2BC\3\2\2\2CE\3\2\2\2DF")
+        buf.write(u"\7\33\2\2ED\3\2\2\2EF\3\2\2\2FG\3\2\2\2GH\7\7\2\2H\13")
+        buf.write(u"\3\2\2\2IL\5\26\f\2JL\5\16\b\2KI\3\2\2\2KJ\3\2\2\2L\r")
+        buf.write(u"\3\2\2\2MO\7\3\2\2NM\3\2\2\2NO\3\2\2\2OP\3\2\2\2PQ\7")
+        buf.write(u"\7\2\2Q\17\3\2\2\2RS\7\b\2\2SW\7\b\2\2TU\7\t\2\2UW\7")
+        buf.write(u"\t\2\2VR\3\2\2\2VT\3\2\2\2W\21\3\2\2\2XZ\5\24\13\2Y[")
+        buf.write(u"\7\n\2\2ZY\3\2\2\2Z[\3\2\2\2[\23\3\2\2\2\\]\t\2\2\2]")
+        buf.write(u"\25\3\2\2\2^c\5 \21\2_c\5\"\22\2`c\5\36\20\2ac\5\34\17")
+        buf.write(u"\2b^\3\2\2\2b_\3\2\2\2b`\3\2\2\2ba\3\2\2\2c\27\3\2\2")
+        buf.write(u"\2dh\5 \21\2eh\5\"\22\2fh\5\34\17\2gd\3\2\2\2ge\3\2\2")
+        buf.write(u"\2gf\3\2\2\2h\31\3\2\2\2im\5 \21\2jm\5\"\22\2km\5\36")
+        buf.write(u"\20\2li\3\2\2\2lj\3\2\2\2lk\3\2\2\2m\33\3\2\2\2no\t\3")
+        buf.write(u"\2\2op\5\32\16\2p\35\3\2\2\2qr\5\30\r\2rs\5$\23\2st\5")
+        buf.write(u"\26\f\2t\37\3\2\2\2uv\7\26\2\2vw\5\26\f\2wx\7\27\2\2")
+        buf.write(u"x!\3\2\2\2y\u0080\7\32\2\2z\u0080\7\30\2\2{\u0080\7\31")
+        buf.write(u"\2\2|}\7\n\2\2}\u0080\7\7\2\2~\u0080\7\7\2\2\177y\3\2")
+        buf.write(u"\2\2\177z\3\2\2\2\177{\3\2\2\2\177|\3\2\2\2\177~\3\2")
+        buf.write(u"\2\2\u0080#\3\2\2\2\u0081\u0082\t\4\2\2\u0082%\3\2\2")
+        buf.write(u"\2\20)9<?BEKNVZbgl\177")
         return buf.getvalue()
 
 
@@ -485,7 +485,7 @@ class grammar1Parser ( Parser ):
             super(grammar1Parser.LvalueContext, self).__init__(parent, invokingState)
             self.parser = parser
             self.constnessB = None # Token
-            self.t = None # TypesContext
+            self.t = None # DataTypeContext
             self.pointer = None # Token
             self.constnessA = None # Token
             self.name = None # Token
@@ -499,8 +499,8 @@ class grammar1Parser ( Parser ):
             else:
                 return self.getToken(grammar1Parser.CONST, i)
 
-        def types(self):
-            return self.getTypedRuleContext(grammar1Parser.TypesContext,0)
+        def dataType(self):
+            return self.getTypedRuleContext(grammar1Parser.DataTypeContext,0)
 
 
         def TIMES(self):
@@ -546,7 +546,7 @@ class grammar1Parser ( Parser ):
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR))) != 0):
                 self.state = 60
-                localctx.t = self.types()
+                localctx.t = self.dataType()
 
 
             self.state = 64
@@ -816,6 +816,7 @@ class grammar1Parser ( Parser ):
 
         localctx = grammar1Parser.TypesContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_types)
+        self._la = 0 # Token type
         try:
             localctx = grammar1Parser.TypeContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
@@ -823,8 +824,8 @@ class grammar1Parser ( Parser ):
             self.dataType()
             self.state = 88
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,9,self._ctx)
-            if la_ == 1:
+            _la = self._input.LA(1)
+            if _la==grammar1Parser.TIMES:
                 self.state = 87
                 self.match(grammar1Parser.TIMES)
 
