@@ -21,6 +21,8 @@ class SymbolTable():
     def visitChild(self, node):
         #declaration
         if type(node) is ASTConst:
+            if type(node.nodes[0]) is ASTPointer:
+                self.pointerDeclaration(node.nodes[0],True)
             self.variableDeclaration(node.nodes[0],True)
         elif type(node) is ASTDataType:
             self.variableDeclaration(node)
@@ -31,6 +33,10 @@ class SymbolTable():
 
         if type(node) is ASTPointer:
             print("pointer")
+
+    def pointerDeclaration(self, node, constness=False):
+
+
 
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root

@@ -121,16 +121,11 @@ class AST():
         if isinstance(self.root,str):
             self.root = self.root[1]
         print(self.root)
-        if type is float:
+        if type is float or type is int:
             if isinstance(self.root, float) or isinstance(self.root, int):
-                self.root = float(self.root)
+                self.root = type(self.root)
             else:
-                self.root = float(ord(self.root))
-        elif type is int:
-            if isinstance(self.root, float) or isinstance(self.root, int):
-                self.root = int(self.root)
-            else:
-                self.root = int(ord(self.root))
+                self.root = type(ord(self.root))
         elif type is chr:
             if isinstance(self.root,str):
                 self.root = '\''+self.root+'\''
