@@ -54,6 +54,10 @@ class AST():
 
         return string
 
+class ASTVariable(AST):
+    def __init__(self, value, childNodes=None):
+        AST.__init__(value, childNodes)
+
 """
     def constantFold(self):
         dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
