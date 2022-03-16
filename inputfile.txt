@@ -1,4 +1,6 @@
 int c = 3;
-int i;
-int* i = &c;
-i = 5;
+int* const b = &c;
+const int i = 5;
+
+c = 5;
+*b = 9;
