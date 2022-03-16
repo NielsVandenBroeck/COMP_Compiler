@@ -29,6 +29,9 @@ class SymbolTable():
         if type(node) is ASTVariable:
             self.variableAssignment(node)
 
+        if type(node) is ASTPointer:
+            print("pointer")
+
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
         #check if variablename exists -> error

@@ -10,6 +10,8 @@ from ASTGenerator import ASTGenerator
 
 def main():
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
+    char = 'A'
+    print(type(char))
     input_stream = FileStream("inputfile.txt")
     lexer = grammar1Lexer(input_stream)
     stream = CommonTokenStream(lexer)
