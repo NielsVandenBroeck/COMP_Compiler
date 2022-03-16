@@ -20,7 +20,9 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
-        lValue = AST(ctx.t.getText(),  [AST(ctx.name.text)])
+        lValue = AST(ctx.name.text)
+        if ctx.t != None:
+            lValue = AST(ctx.t.getText(),  lValue)
         if ctx.constness != None:
             return AST("const", [lValue])
         return lValue
@@ -28,7 +30,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.
     def visitLValueRvalue(self, ctx):
         node = self.visitLvalue(ctx.lv).removePriority()
-        node.addNodeToMostLeftChild(AST("="))
+        #node.addNodeToMostLeftChild(AST("="))
         node.addNodeToMostLeftChild(self.visitRvalue(ctx.rv).removePriority())
         return node
 

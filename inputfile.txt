@@ -1,5 +1,1 @@
-const int i = (5 + 5)*5;
-int i = 1 == 1;
-float k = 7;
-k++;
-int* i = &i;
+i = (5+9)*3;
