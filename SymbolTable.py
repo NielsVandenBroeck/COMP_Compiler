@@ -2,7 +2,7 @@ from AST import *
 
 
 class SymbolObject:
-    def __init__(self, type, name, constness, value=None):
+    def __init__(self, type, name, constness, value=0):
         self.type = type
         self.name = name
         self.constness = constness
@@ -25,22 +25,30 @@ class SymbolTable():
         elif type(node) is ASTDataType:
             self.variableDeclaration(node)
 
-        #initialization
+        #asignment
         if type(node) is ASTVariable:
-            #check if variablename already exists -> error
-            print(node.root)
+            self.variableAssignment(node)
 
     def variableDeclaration(self, node, constness=False):
-        datatype = node.root
-        print(datatype)
-        i = datatype(5.6)
-        print(i)
         variable = node.nodes[0].root
         #check if variablename exists -> error
         for existingVar in self.SymbolList:
-            if existingVar.name == variable:
-                exit("[Error] line (#todo): Cannot declare variable: \"" + existingVar.name + "\" more than once.")
-        #newVar = SymbolObject()
+            if existingVar == variable:
+                exit("[Error] line (#todo): Cannot declare variable: \"" + existingVar + "\" more than once.")
+        if len(node.nodes) == 1:
+            result = 0
+        else:
+            value = node.nodes[1]
+            value.constantFold()
+            result = value.root
+        self.SymbolList[variable] = SymbolObject(node.root,variable,constness, result)
 
-        #constant fold
-        value = node.nodes[0].nodes[0].root
+    def variableAssignment(self, node):
+        Exists = False
+        for existingVar in self.SymbolList:
+            if existingVar == node.root:
+                Exists = True
+                break
+        if not Exists:
+            exit("[Error] line (#todo): variable: \"" + node.root + "\" has not been declared.")
+        self.SymbolList[node.root].value = node.nodes[0].root

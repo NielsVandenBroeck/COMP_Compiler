@@ -21,8 +21,6 @@ class AST():
     def getFirstNonConst(self, node):
         if isinstance(node, ASTConst):
             return self.getFirstNonConst(node.nodes[0])
-        if self.nodes is None:
-            exit("no datatype found")
         return node
 
     def addNodeToMostLeftChild(self, node):
@@ -63,35 +61,15 @@ class AST():
 
         return string
 
-class ASTVariable(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
-
-class ASTDataType(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
-
-class ASTConst(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
-
-class ASTPointer(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
-
-
-
-
-
-"""
     def constantFold(self):
-        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
+        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4,
+                 '%': 4}
         if self.nodes is None:
             return
         for i in self.nodes:
             i.constantFold()
         if len(self.nodes) == 1 and self.root == '-':
-            value1 = self.nodes[0].value
+            value1 = self.nodes[0].root
             if isinstance(value1, float) or isinstance(value1, int):
                 self.root = -value1
                 self.nodes = None
@@ -99,10 +77,13 @@ class ASTPointer(AST):
                 self.root = chr(-ord(value1[1]))
                 self.nodes = None
         elif len(self.nodes) == 2:
-            value1 = self.nodes[0].value
-            value2 = self.nodes[1].value
-            if self.root in dict1 and (isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
-                if (isinstance(value1, str) and (len(value1) != 3 or value1[0] != '\'')) or (isinstance(value2, str) and (len(value2) != 3 or value2[0] != '\'')):
+            value1 = self.nodes[0].root
+            value2 = self.nodes[1].root
+            if self.root in dict1 and (
+                    isinstance(value1, float) or isinstance(value1, int) or isinstance(value1, str)) and (
+                    isinstance(value2, float) or isinstance(value2, int) or isinstance(value2, str)):
+                if (isinstance(value1, str) and (len(value1) != 3 or value1[0] != '\'')) or (
+                        isinstance(value2, str) and (len(value2) != 3 or value2[0] != '\'')):
                     return
                 resulttype = chr
                 if isinstance(value1, float) or isinstance(value2, float):
@@ -129,8 +110,24 @@ class ASTPointer(AST):
                     '%': operator.mod,
                 }
                 if resulttype == chr:
-                    self.root = '\''+resulttype(ops[self.root](value1, value2))+'\''
+                    self.root = '\'' + resulttype(ops[self.root](value1, value2)) + '\''
                 else:
-                    self.root = resulttype(ops[self.root](value1,value2))
+                    self.root = resulttype(ops[self.root](value1, value2))
                 self.nodes = None
-"""
+
+
+class ASTVariable(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+class ASTDataType(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+class ASTConst(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+class ASTPointer(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
