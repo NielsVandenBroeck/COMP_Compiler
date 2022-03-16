@@ -22,11 +22,11 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
-
-
         lValue = ASTVariable(ctx.name.text)
-        if ctx.t != None:
-            lValue = ASTDataType(locate(ctx.t.getText()), [lValue])
+        if ctx.t == None:
+            return lValue
+
+        lValue = ASTDataType(locate(ctx.t.getText()), [lValue])
         if ctx.constnessB != None:
             lValue = ASTConst("const", [lValue])
         if ctx.constnessA != None:
@@ -36,7 +36,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.
     def visitLValueRvalue(self, ctx):
         node = self.visitLvalue(ctx.lv).removePriority()
-        dataTypeNode = node.getFirstDataType(node);
+        dataTypeNode = node.getFirstNonConst(node);
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
         return node
 

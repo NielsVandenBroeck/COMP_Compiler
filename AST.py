@@ -18,13 +18,12 @@ class AST():
         self.setNodesIfNeeded()
         self.nodes.append(node)
 
-    def getFirstDataType(self, node):
-        print(type(node.root))
+    def getFirstNonConst(self, node):
+        if isinstance(node, ASTConst):
+            return self.getFirstNonConst(node.nodes[0])
         if self.nodes is None:
             exit("no datatype found")
-        if not isinstance(node.root, str):
-            return node
-        return self.getFirstDataType(node.nodes[0])
+        return node
 
     def addNodeToMostLeftChild(self, node):
         if self.nodes is None:
@@ -73,6 +72,10 @@ class ASTDataType(AST):
         super().__init__(value, childNodes)
 
 class ASTConst(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+class ASTPointer(AST):
     def __init__(self, value, childNodes=None):
         super().__init__(value, childNodes)
 
