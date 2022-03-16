@@ -1,6 +1,6 @@
-from AST import AST
+from AST import *
 from grammar1Visitor import *
-import operator
+from SymbolTable import SymbolTable
 
 class ASTGenerator(grammar1Visitor):
     def __init__(self):
@@ -11,6 +11,7 @@ class ASTGenerator(grammar1Visitor):
         program = AST("program")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line).removePriority())
+        SymbolTable(program)
         return program
 
     def visitProgramLine(self, ctx):
@@ -20,11 +21,11 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
-        lValue = AST(ctx.name.text)
+        lValue = ASTVariable(ctx.name.text)
         if ctx.t != None:
-            lValue = AST(ctx.t.getText(), [lValue])
+            lValue = ASTDataType(ctx.t.getText(), [lValue])
         if ctx.constness != None:
-            return AST("const", [lValue])
+            return ASTConst("const", [lValue])
         return lValue
 
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.

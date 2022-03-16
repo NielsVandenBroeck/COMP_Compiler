@@ -56,7 +56,17 @@ class AST():
 
 class ASTVariable(AST):
     def __init__(self, value, childNodes=None):
-        AST.__init__(value, childNodes)
+        super().__init__(value, childNodes)
+
+class ASTDataType(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+class ASTConst(AST):
+    def __init__(self, value, childNodes=None):
+        super().__init__(value, childNodes)
+
+
 
 """
     def constantFold(self):
