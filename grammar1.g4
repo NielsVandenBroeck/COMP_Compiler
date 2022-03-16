@@ -5,7 +5,9 @@ start
     ;
 
 programLine
-    : l=line SEMICOLON Comment?
+    : l=line SEMICOLON
+    | SingleComment
+    | MultiLineComment
     ;
 
 line: newline
@@ -16,6 +18,7 @@ newline
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
+    | Print'('body')'                                                                           #Printf
     ;
 
 lvalue
@@ -100,6 +103,11 @@ operation
     | AND
     | OR
     ;
+
+Print
+    : 'printf'
+    ;
+
 
 INT
     : 'int'
@@ -201,8 +209,12 @@ IS
     : '='
     ;
 
-Comment
-    :
+SingleComment
+    : '//'(~('\n'))*
+    ;
+
+MultiLineComment
+    : '/*'(.)*'*/'
     ;
 
 WS

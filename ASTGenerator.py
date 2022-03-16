@@ -11,8 +11,7 @@ class ASTGenerator(grammar1Visitor):
         program = AST("program")
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line).removePriority())
-        simbolTable = SymbolTable(program)
-        print("test (a)", simbolTable.SymbolList["a"].getObject().value)
+        SymbolTable(program)
         return program
 
     def visitProgramLine(self, ctx):
