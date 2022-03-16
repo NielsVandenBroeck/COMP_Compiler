@@ -39,6 +39,7 @@ class SymbolTable():
             result = 0
         else:
             value = node.nodes[1]
+            self.replaceVariables(value)
             value.correctDataType(node.root)
             result = value.root
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness, result)
@@ -53,5 +54,24 @@ class SymbolTable():
                 break
         if not Exists:
             exit("[Error] line (#todo): variable: \"" + node.root + "\" has not been declared.")
+        self.replaceVariables(node.nodes[0])
         node.nodes[0].correctDataType(self.SymbolList[node.root].type)
         self.SymbolList[node.root].value = node.nodes[0].root
+
+    def replaceVariables(self, node):
+        if type(node) is ASTVariable:
+            #search for variable in table
+            exists = False
+            for existingVar in self.SymbolList:
+                if existingVar == node.root:
+                    node.root = self.SymbolList[existingVar].value
+                    exists = True
+                    break
+            if not exists:
+                exit("[Error] line (#todo): variable: \"" + node.root + "\" has not been declared.")
+        else:
+            if node.nodes is None:
+                return
+            for child in node.nodes:
+                self.replaceVariables(child)
+

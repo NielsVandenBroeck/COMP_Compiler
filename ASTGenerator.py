@@ -139,7 +139,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
         variable = ctx.getText()
-        return AST(variable)
+        return ASTVariable(variable)
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
