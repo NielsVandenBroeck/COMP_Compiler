@@ -1,7 +1,7 @@
 # README #
 Compiler From Stein Vandenbroeke and Niels Van den Broeck
 
-### Features ###
+### Mandatory Features ###
  - Parsing mathematical expressions
  - Parsing a subset of C language
    - Variable declarations and initializations
@@ -14,6 +14,13 @@ Compiler From Stein Vandenbroeke and Niels Van den Broeck
    - Printf()
  - Translating to an Abstract syntax tree
  - Error analysis
+
+### Optional Features ###
+- Comparison operators >=, <=, and !=
+- Binary operator %
+- Identifier Operations ++ and --
+- Conversions (float isRicherThan int isRicherThan char)
+
 
 ### How to install ###
 To run the program python3 is needed.
