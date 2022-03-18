@@ -6,7 +6,7 @@ from antlr4.tree.Trees import Trees
 
 from grammar1Visitor import grammar1Visitor
 from ASTGenerator import ASTGenerator
-
+from LLVMGenerator import LLVMGenerator
 
 def main():
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
@@ -18,7 +18,8 @@ def main():
 
     visistor = ASTGenerator()
     ast = visistor.visit(tree)
-    #ast.constantFold()
+    ast.constantFold()
+    llvm = LLVMGenerator("OutputFiles/code.ll", ast)
     print(ast.getDot())
 
 def printTree(tree):
