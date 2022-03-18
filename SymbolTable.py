@@ -20,8 +20,10 @@ class SymbolObject:
         return self.value
 
 class SymbolObjectPointer:
-    def __init__(self, name, constness, pointsTo=0):
+    def __init__(self, name, constness, objectConst, pointsTo=0):
+        print(constness)
         self.constness = constness
+        self.objectConst = objectConst
         self.object = pointsTo
         self.name = name
 
@@ -31,7 +33,8 @@ class SymbolObjectPointer:
         return self.object
 
     # set value of real adress (not pointer)
-    def setPointer(self,node):
+    def setPointer(self,object, node):
+        print("set pointer")
         if not self.constness:
             self.object = object
         else:
@@ -61,15 +64,16 @@ class SymbolTable():
         if type(node) is ASTConst:
             if type(node.nodes[0]) is ASTPointer:
                 self.pointerDeclaration(node.nodes[0],True)
-            else:
+            elif type(node.nodes[0]) is ASTVariable:
                 self.variableDeclaration(node.nodes[0],True)
+            else:
+                exit("FOUT kan object kan niet const zijn")
         elif self.IsVariableDeclarationSameTypes(node):
             self.variableDeclaration(node)
 
         # asignment
         if self.IsVariableAssignmentSameTypes(node):
             self.variableAssignment(node)
-
         #pointer declaration bv: int* b ( = a)
         if self.IsPointerDeclaration(node):
             self.pointerDeclaration(node)
@@ -82,20 +86,26 @@ class SymbolTable():
 
     def pointerDeclaration(self, node, constness=False):
         pointer = node
-        pointerName = node.getSetObject().getVariableName()
 
-        self.ExistsError(pointerName, "already exists",node)
+        objectConstness = False
+        if type(node.getSetObject()) is ASTConst:
+            objectConstness = True
+            pointerName = node.getSetObject().nodes[0].getVariableName()
+        else:
+            pointerName = node.getSetObject().getVariableName()
+
+        self.ExistsError(pointerName, "already exists", node)
         object = node.getToObject()
         pointerObject = None
         if isinstance(object, ASTAdress):
-            self.notExistsError(object.getVariableName(), "variable not found")
+            self.notExistsError(object.getVariableName(), "varible not found", node)
             toObject = self.SymbolList[object.getVariableName()]
-            pointerObject = SymbolObjectPointer(pointerName, constness, toObject)
+            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness, toObject)
         elif isinstance(object, ASTVariable):
-            self.notExistsError(object.getVariableName(), "pointer not found")
+            self.notExistsError(object.getVariableName(), "pointer not found", node)
             pointerObject = self.SymbolList[object.getVariableName()]
         elif object == None:
-            pointerObject = SymbolObjectPointer(pointerName, constness, 0)
+            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness, 0)
         else:
             exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
 
@@ -112,7 +122,7 @@ class SymbolTable():
         self.replaceVariables(newValue)
         pointsToObject = node.getSetObject().getVariableName()
         newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
-        self.SymbolList[pointsToObject].setValue(newValue, node)
+        self.SymbolList[pointsToObject].setPointer(newValue, node)
 
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
@@ -139,12 +149,12 @@ class SymbolTable():
 
         #als het 2 pointers zijn bv: a = b
         if(type(node.nodes[0]) is ASTVariable and type(self.SymbolList[node.root]) == SymbolObjectPointer and type(self.SymbolList[node.nodes[0].getVariableName()]) == SymbolObjectPointer):
-            self.SymbolList[node.root] = self.SymbolList[node.nodes[0].getVariableName()]
+            self.SymbolList[node.root].setPointer(self.SymbolList[node.nodes[0].getVariableName()], node)
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
             adress = node.nodes[0]
-            self.notExistsError(adress.getVariableName(), "variable not found")
-            self.SymbolList[node.root] = self.SymbolList[adress.getVariableName()]
+            self.notExistsError(adress.getVariableName(), "varible not found", node)
+            self.SymbolList[node.root].setPointer(self.SymbolList[adress.getVariableName()], node)
         else:
             self.replaceVariables(node.nodes[0])
             node.nodes[0].correctDataType(self.SymbolList[node.root].type)

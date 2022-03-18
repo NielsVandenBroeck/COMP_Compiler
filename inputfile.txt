@@ -1,4 +1,4 @@
-q = 4; //asdasdadas
-int q = 8;
-/* d d */
-
+int a = 0;
+const int* b = &a;
+int* c = &a;
+*b = 5;
