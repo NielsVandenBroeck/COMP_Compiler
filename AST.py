@@ -168,7 +168,7 @@ class ASTPointer(AST):
         return self.nodes[0]
 
     def getToObject(self):
-        if len(self.nodes) < 1:
+        if len(self.nodes) <= 1:
             return None;
         return self.nodes[1]
 
