@@ -18,7 +18,7 @@ newline
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
-    | Print'('body')'                                                                           #Printf
+    | Print'('b=body')'                                                                         #Printf
     ;
 
 lvalue

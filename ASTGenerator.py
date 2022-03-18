@@ -72,18 +72,18 @@ class ASTGenerator(grammar1Visitor):
         root = AST(operation, ctx.start.line, ctx.start.column, [AST(name, ctx.start.line, ctx.start.column)])
         return root
 
+    # Visit a parse tree produced by grammar1Parser#Printf.
+    def visitPrintf(self, ctx):
+        root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
+        root.addNode(self.visitChildren(ctx.b))
+        return root
+
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
     def visitUnaryExpression(self, ctx):
         sign = ctx.sign.text
         value = self.visit(ctx.value).removePriority()
         rootnode = AST(sign, ctx.start.line, ctx.start.column)
         rootnode.addNode(value)
-
-        # Constant Folding
-        if isinstance(value.value, float):
-            if sign == '-':
-                rootnode = AST(float(-value.value), ctx.start.line, ctx.start.column)
-            else : rootnode = AST(float(value.value), ctx.start.line, ctx.start.column)
         return rootnode
 
     # Visit a parse tree produced by grammar1Parser#OperationExpression.

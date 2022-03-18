@@ -38,7 +38,7 @@ class SymbolObjectPointer:
         if not self.constness:
             self.object = object
         else:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + self.name + "\' is of const-type and cannot be changed.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' is of const-type and cannot be changed.")
 
     #set value of real adress (not pointer)
     def setValue(self, value, node):
@@ -85,6 +85,9 @@ class SymbolTable():
         #set a pointer to another pointer bv: a = b
         elif self.IsPointerAssignment(node):
             self.pointerAssignment(node)
+        #printf vb: printf(4+a-9)
+        elif self.IsPrintFunction(node):
+            self.PrintFunction(node)
 
     def pointerDeclaration(self, node, constness=False):
         pointer = node
@@ -130,7 +133,7 @@ class SymbolTable():
         variable = node.nodes[0].root
         #check if variablename exists -> error
         if variable in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " Cannot declare variable: \'" + self.name + "\' more than once.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " Cannot declare variable: \'" + node.root + "\' more than once.")
 
         if len(node.nodes) == 1:
             result = 0
@@ -162,6 +165,10 @@ class SymbolTable():
             node.nodes[0].correctDataType(self.SymbolList[node.root].type)
             self.SymbolList[node.root].setValue(node.nodes[0].root, node)
 
+    def PrintFunction(self, node):
+        self.replaceVariables(node.nodes[0])
+
+
     def replaceVariables(self, node):
         if type(node) is ASTPointer:
             if node.nodes[0].root in self.SymbolList:
@@ -169,7 +176,7 @@ class SymbolTable():
                 node.nodes = None
                 return node.root
             else:
-                exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + self.name + "\' has not been declared.")
+                exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + node.root + "\' has not been declared.")
 
         elif type(node) is ASTVariable:
             #search for variable in table
@@ -178,7 +185,7 @@ class SymbolTable():
                 return node.root
             else:
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
-                    node.position) + " variable: \'" + self.name + "\' has not been declared.")
+                    node.position) + " variable: \'" + node.root + "\' has not been declared.")
 
         else:
             if node.nodes is None:
@@ -188,11 +195,11 @@ class SymbolTable():
 
     def notExistsError(self, varName, message, node):
         if varName not in self.SymbolList:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + self.name + "\' cannot be declared:" + message)
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' cannot be declared:" + message)
 
     def ExistsError(self, varName, message, node):
         if varName in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + self.name + "\' cannot be declared:" + message)
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + node.root + "\' cannot be declared:" + message)
 
     @staticmethod
     def IsVariableDeclarationSameTypes(node):
@@ -213,3 +220,6 @@ class SymbolTable():
     @staticmethod
     def IsPointerAssignment(node):
         return type(node) is ASTPointer
+    @staticmethod
+    def IsPrintFunction(node):
+        return type(node) is ASTPrintf

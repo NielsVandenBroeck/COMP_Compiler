@@ -351,17 +351,18 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.PrintfContext, self).__init__(parser)
+            self.b = None # BodyContext
             self.copyFrom(ctx)
 
         def Print(self):
             return self.getToken(grammar1Parser.Print, 0)
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(grammar1Parser.RPAREN, 0)
         def body(self):
             return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
 
-        def RPAREN(self):
-            return self.getToken(grammar1Parser.RPAREN, 0)
 
         def enterRule(self, listener):
             if hasattr(listener, "enterPrintf"):
@@ -540,7 +541,7 @@ class grammar1Parser ( Parser ):
                 self.state = 60
                 self.match(grammar1Parser.LPAREN)
                 self.state = 61
-                self.body()
+                localctx.b = self.body()
                 self.state = 62
                 self.match(grammar1Parser.RPAREN)
                 pass
