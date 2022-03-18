@@ -15,7 +15,7 @@ class ASTGenerator(grammar1Visitor):
                 object.removePriority()
                 program.addNode(object)
         symbolTable = SymbolTable(program)
-        print(symbolTable.SymbolList["a"].value)
+        #print(symbolTable.SymbolList["a"].value)
         return program
 
     def visitProgramLine(self, ctx):
@@ -69,7 +69,8 @@ class ASTGenerator(grammar1Visitor):
     def visitIdentifierOperationExpression(self, ctx):
         name = ctx.name.text
         operation = ctx.op.getText()
-        root = AST(operation, ctx.start.line, ctx.start.column, [AST(name, ctx.start.line, ctx.start.column)])
+        operation = operation[0]
+        root = ASTVariable(name, ctx.start.line, ctx.start.column, [AST(operation, ctx.start.line, ctx.start.column, [ASTVariable(name, ctx.start.line, ctx.start.column), AST(1,  ctx.start.line, ctx.start.column)])])
         return root
 
     # Visit a parse tree produced by grammar1Parser#Printf.

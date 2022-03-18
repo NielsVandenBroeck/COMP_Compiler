@@ -311,9 +311,6 @@ class grammar1Parser ( Parser ):
             else:
                 return visitor.visitChildren(self)
 
-
-
-
     def line(self):
 
         localctx = grammar1Parser.LineContext(self, self._ctx, self.state)
