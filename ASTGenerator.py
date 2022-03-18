@@ -15,6 +15,8 @@ class ASTGenerator(grammar1Visitor):
         return program
 
     def visitProgramLine(self, ctx):
+        print(dir(ctx))
+        print(ctx.getToken().line())
         line = AST("line")
         line.addNode(self.visitChildren(ctx.l))
         return line

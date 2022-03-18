@@ -65,20 +65,16 @@ class SymbolTable():
 
         # asignment
         if self.IsVariableAssignmentSameTypes(node):
-            print("same vars")
             self.variableAssignment(node)
 
         #pointer declaration bv: int* b ( = a)
         if self.IsPointerDeclaration(node):
-            print("pointer dec")
             self.pointerDeclaration(node)
         #pointer varible assignment (sets te variable where to pointer is pointing at) bv: *b = a of *b = 10;
         elif self.IsPointerVariableAssignment(node):
-            print("pointer varible assignment")
             self.pointerAssignment(node)
         #set a pointer to another pointer bv: a = b
         elif self.IsPointerAssignment(node): #todo weg
-            print("set pointers")
             self.pointerAssignment(node)
 
     def pointerDeclaration(self, node, constness=False):
@@ -126,7 +122,6 @@ class SymbolTable():
         if len(node.nodes) == 1:
             result = 0
         else:
-            print(node.nodes[0])
             if isinstance(node.nodes[0], ASTAdress):
                 value = self.SymbolList[node.nodes[1].getVariableName()]
                 result = value
@@ -150,7 +145,6 @@ class SymbolTable():
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
             adress = node.nodes[0]
-            print(adress)
             self.notExistsError(adress.getVariableName(), "varible not found")
             self.SymbolList[node.root] = self.SymbolList[adress.getVariableName()]
         else:

@@ -4,4 +4,4 @@ int* b = &a;
 int* c = &a;
 b = &d;
 int k = *b;
-*c = 10 + a;
+*c = 10 + d;
