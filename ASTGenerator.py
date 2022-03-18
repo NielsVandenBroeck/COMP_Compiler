@@ -153,7 +153,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
-        return ASTAdress(ASTAdress, None, None, [ASTVariable(ctx.name.text)])
+        return ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)])
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
