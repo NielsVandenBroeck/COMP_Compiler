@@ -5,7 +5,7 @@ from pydoc import locate
 import graphviz
 
 class AST():
-    def __init__(self, root, childNodes = None):
+    def __init__(self, root, line, position, childNodes = None):
         self.root = root
         self.nodes = childNodes
 
@@ -136,8 +136,8 @@ class AST():
 
 
 class ASTVariable(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
 
     def getVariableName(self):
         return self.root
@@ -148,10 +148,10 @@ class ASTVariable(AST):
         return self.nodes[0]
 
 class ASTDataType(AST):
-    def __init__(self, value, childNodes=None):
+    def __init__(self, value, line, position, childNodes=None):
         if value == "char":
             value = "chr"
-        super().__init__(locate(value), childNodes)
+        super().__init__(locate(value), line, position, childNodes)
 
     def getVariableName(self):
         return self.nodes[0].root
@@ -161,8 +161,8 @@ class ASTConst(AST):
         super().__init__(value, childNodes)
 
 class ASTPointer(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
 
     def getSetObject(self):
         return self.nodes[0]
@@ -173,8 +173,8 @@ class ASTPointer(AST):
         return self.nodes[1]
 
 class ASTAdress(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
 
     def getVariableName(self):
         return self.nodes[0].root

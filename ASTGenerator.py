@@ -8,22 +8,20 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#start.
     def visitStart(self, ctx):
-        program = AST("program")
+        program = AST("program", ctx.start.line, ctx.start.column)
         for line in ctx.getChildren():
             program.addNode(self.visitProgramLine(line).removePriority())
         symbolTable = SymbolTable(program)
         return program
 
     def visitProgramLine(self, ctx):
-        print(dir(ctx))
-        print(ctx.getToken().line())
-        line = AST("line")
+        line = AST("line", ctx.start.line, ctx.start.column)
         line.addNode(self.visitChildren(ctx.l))
         return line
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
-        lValue = ASTVariable(ctx.name.text)
+        lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
 
         if ctx.pointer and ctx.t == None:
             lValue = ASTAdress(ASTAdress, [lValue])
@@ -37,15 +35,15 @@ class ASTGenerator(grammar1Visitor):
                 lValue = ASTPointer(ASTPointer, [lValue])
                 return lValue
 
-            lValue = ASTDataType(ctx.t.getText(), [lValue])
+            lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
                 lValue = ASTConst("const", [lValue])
-            lValue =  ASTPointer(ASTPointer, [lValue])
+            lValue =  ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA != None:
                 lValue = ASTConst("const", [lValue])
 
         else:
-            lValue = ASTDataType(ctx.t.getText(), [lValue])
+            lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
                 lValue = ASTConst("const", [lValue])
             if ctx.constnessA != None:
@@ -126,7 +124,7 @@ class ASTGenerator(grammar1Visitor):
                 number = 0
             else: number = 1
         else: number = int(ctx.getText())
-        return AST(number)
+        return AST(number, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#FloatExpression.
     def visitFloatExpression(self, ctx):
@@ -155,7 +153,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
-        return ASTAdress(ASTAdress, [ASTVariable(ctx.name.text)])
+        return ASTAdress(ASTAdress, None, None, [ASTVariable(ctx.name.text)])
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
