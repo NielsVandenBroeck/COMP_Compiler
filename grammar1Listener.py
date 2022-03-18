@@ -67,6 +67,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#Printf.
+    def enterPrintf(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#Printf.
+    def exitPrintf(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass

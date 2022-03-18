@@ -10,14 +10,20 @@ class ASTGenerator(grammar1Visitor):
     def visitStart(self, ctx):
         program = AST("program", ctx.start.line, ctx.start.column)
         for line in ctx.getChildren():
-            program.addNode(self.visitProgramLine(line).removePriority())
+            object = self.visitProgramLine(line)
+            if object is not None:
+                object.removePriority()
+                program.addNode(object)
         symbolTable = SymbolTable(program)
         return program
 
     def visitProgramLine(self, ctx):
+        if ctx.l is None:
+            return
         line = AST("line", ctx.start.line, ctx.start.column)
         line.addNode(self.visitChildren(ctx.l))
         return line
+
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):

@@ -214,7 +214,7 @@ SingleComment
     ;
 
 MultiLineComment
-    : '/*'(.)*'*/'
+    : '/*'.*?'*/'
     ;
 
 WS
