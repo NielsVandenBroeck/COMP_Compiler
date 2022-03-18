@@ -37,24 +37,24 @@ class ASTGenerator(grammar1Visitor):
 
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
-                lValue = ASTConst("const", [lValue])
+                lValue = ASTConst("const",ctx.start.line, ctx.start.column, [lValue])
             lValue =  ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA != None:
-                lValue = ASTConst("const", [lValue])
+                lValue = ASTConst("const",ctx.start.line, ctx.start.column, [lValue])
 
         else:
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
-                lValue = ASTConst("const", [lValue])
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA != None:
-                lValue = ASTConst("const", [lValue])
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
 
         return lValue
 
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.
     def visitLValueRvalue(self, ctx):
         node = self.visitLvalue(ctx.lv).removePriority()
-        dataTypeNode = node.getFirstNonConst(node);
+        dataTypeNode = node.getFirstNonConst(node)
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
         return node
 
@@ -62,21 +62,21 @@ class ASTGenerator(grammar1Visitor):
     def visitIdentifierOperationExpression(self, ctx):
         name = ctx.name.text
         operation = ctx.op.getText()
-        root = AST(operation, [AST(name)])
+        root = AST(operation, ctx.start.line, ctx.start.column, [AST(name, ctx.start.line, ctx.start.column)])
         return root
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
     def visitUnaryExpression(self, ctx):
         sign = ctx.sign.text
         value = self.visit(ctx.value).removePriority()
-        rootnode = AST(sign)
+        rootnode = AST(sign, ctx.start.line, ctx.start.column)
         rootnode.addNode(value)
 
         # Constant Folding
         if isinstance(value.value, float):
             if sign == '-':
-                rootnode = AST(float(-value.value))
-            else : rootnode = AST(float(value.value))
+                rootnode = AST(float(-value.value), ctx.start.line, ctx.start.column)
+            else : rootnode = AST(float(value.value), ctx.start.line, ctx.start.column)
         return rootnode
 
     # Visit a parse tree produced by grammar1Parser#OperationExpression.
@@ -95,11 +95,11 @@ class ASTGenerator(grammar1Visitor):
 
         #len(node2.nodes) > 1 is voor unary getallen te onderscheiden van gewone
         if node2.root in dict1 and dict1[node2.root] < dict1[rootnode.root] and len(node2.nodes) > 1 and not node2Priority:
-            tempNode2 = AST(rootnode.root)
+            tempNode2 = AST(rootnode.root, ctx.start.line, ctx.start.column)
             tempNode2.addNode(rootnode.getNode(0))
             tempNode2.addNode(node2.getNode(0))
 
-            tempRootNode = AST(node2.root)
+            tempRootNode = AST(node2.root, ctx.start.line, ctx.start.column)
             tempRootNode.addNode(tempNode2)
             tempRootNode.addNode(node2.getNode(1))
             rootnode = tempRootNode
@@ -114,7 +114,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#ParenExpression.
     def visitParenExpression(self, ctx):
         rootnode = self.visit(ctx.value)
-        return AST("()", [rootnode])
+        return AST("()",ctx.start.line, ctx.start.column, [rootnode])
 
     # Visit a parse tree produced by grammar1Parser#IntExpression.
     def visitIntExpression(self, ctx):
@@ -134,12 +134,12 @@ class ASTGenerator(grammar1Visitor):
                 number = 0.0
             else: number = 1.0
         else: number = float(ctx.getText())
-        return AST(number)
+        return AST(number, ctx.start.line, ctx.start.column,)
 
     # Visit a parse tree produced by grammar1Parser#CharExpression.
     def visitCharExpression(self, ctx):
         char = ctx.getText()
-        return AST(char)
+        return AST(char, ctx.start.line, ctx.start.column,)
 
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):

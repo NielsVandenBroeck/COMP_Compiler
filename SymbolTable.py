@@ -10,11 +10,11 @@ class SymbolObject:
     def getObject(self):
         return self
 
-    def setValue(self, value):
+    def setValue(self, value, node):
         if not self.constness:
             self.value = value
         else:
-            exit("[Error] line (#todo): variable: \"" + self.name + "\" is of const-type and cannot be changed.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + self.name + "\' is of const-type and cannot be changed.")
 
     def getValue(self):
         return self.value
@@ -31,15 +31,15 @@ class SymbolObjectPointer:
         return self.object
 
     # set value of real adress (not pointer)
-    def setPointer(self):
+    def setPointer(self,node):
         if not self.constness:
             self.object = object
         else:
-            exit("[Error] line (#todo): variable (pointer): \"" + self.name + "\" is of const-type and cannot be changed.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + self.name + "\' is of const-type and cannot be changed.")
 
     #set value of real adress (not pointer)
-    def setValue(self, value):
-        self.object.setValue(value)
+    def setValue(self, value, node):
+        self.object.setValue(value, node)
 
     def getValue(self):
         return self.object.getValue()
@@ -74,7 +74,7 @@ class SymbolTable():
         elif self.IsPointerVariableAssignment(node):
             self.pointerAssignment(node)
         #set a pointer to another pointer bv: a = b
-        elif self.IsPointerAssignment(node): #todo weg
+        elif self.IsPointerAssignment(node):
             self.pointerAssignment(node)
 
     def pointerDeclaration(self, node, constness=False):
@@ -101,17 +101,14 @@ class SymbolTable():
     def pointerAssignment(self, node):
         var = node.getSetObject()
         varName = var.getVariableName()
-        if varName in self.SymbolList:
-            if self.SymbolList[varName].constness:
-                exit("[Error] line (#todo): variable: \"" + varName + "\" is of const-type and cannot be changed.")
-        else:
+        if not varName in self.SymbolList:
             exit("[Error] line (#todo): variable: \"" + varName + "\" has not been declared.")
 
         newValue = node.getToObject()
         self.replaceVariables(newValue)
         pointsToObject = node.getSetObject().getVariableName()
         newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
-        self.SymbolList[pointsToObject].setValue(newValue)
+        self.SymbolList[pointsToObject].setValue(newValue, node)
 
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
@@ -133,10 +130,7 @@ class SymbolTable():
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness, result)
 
     def variableAssignment(self, node):
-        if node.root in self.SymbolList:
-            if self.SymbolList[node.root].constness:
-                exit("[Error] line (#todo): variable: \"" + node.root + "\" is of const-type and cannot be changed.")
-        else:
+        if not node.root in self.SymbolList:
             exit("[Error] line (#todo): variable: \"" + node.root + "\" has not been declared.")
 
         #als het 2 pointers zijn bv: a = b
@@ -150,7 +144,7 @@ class SymbolTable():
         else:
             self.replaceVariables(node.nodes[0])
             node.nodes[0].correctDataType(self.SymbolList[node.root].type)
-            self.SymbolList[node.root].setValue(node.nodes[0].root)
+            self.SymbolList[node.root].setValue(node.nodes[0].root, node)
 
     def replaceVariables(self, node):
         if type(node) is ASTPointer:
@@ -173,11 +167,11 @@ class SymbolTable():
             for child in node.nodes:
                 self.replaceVariables(child)
 
-    def notExistsError(self, varName, message):
+    def notExistsError(self, varName, message, node):
         if varName not in self.SymbolList:
             exit("[Error] line (#todo): Cannot declare variable: \"" + object.getVariableName() + "\"" + message)
 
-    def ExistsError(self, varName, message):
+    def ExistsError(self, varName, message, node):
         if varName in self.SymbolList:
             exit("[Error] line (#todo): Cannot declare variable: \"" + object.getVariableName() + "\"" + message)
 

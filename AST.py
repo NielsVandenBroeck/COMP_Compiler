@@ -8,6 +8,8 @@ class AST():
     def __init__(self, root, line, position, childNodes = None):
         self.root = root
         self.nodes = childNodes
+        self.line = line
+        self.position = position
 
     def getValue(self):
         return self.root
@@ -157,8 +159,8 @@ class ASTDataType(AST):
         return self.nodes[0].root
 
 class ASTConst(AST):
-    def __init__(self, value, childNodes=None):
-        super().__init__(value, childNodes)
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
 
 class ASTPointer(AST):
     def __init__(self, value, line, position, childNodes=None):

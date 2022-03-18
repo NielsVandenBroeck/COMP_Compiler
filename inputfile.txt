@@ -1,7 +1,1 @@
-int a = 0;
-int d = 5;
-int* b = &a;
-int* c = &a;
-b = &d;
-int k = *b;
-*c = 10 + d;
+int* q = 4;
