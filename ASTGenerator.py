@@ -24,15 +24,15 @@ class ASTGenerator(grammar1Visitor):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
 
         if ctx.pointer and ctx.t == None:
-            lValue = ASTAdress(ASTAdress, [lValue])
-            return ASTPointer(ASTPointer, [lValue])
+            lValue = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [lValue])
+            return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
 
         if ctx.t == None:
             return lValue
 
         if ctx.pointer != None:
             if ctx.t == None:
-                lValue = ASTPointer(ASTPointer, [lValue])
+                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
                 return lValue
 
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
@@ -144,12 +144,12 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
         variable = ctx.getText()
-        return ASTVariable(variable)
+        return ASTVariable(variable, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
         operation = ctx.getText()
-        return AST(operation)
+        return AST(operation, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
@@ -157,4 +157,4 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
-        return ASTPointer(ASTPointer, [ASTVariable(ctx.value.text)])
+        return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)])
