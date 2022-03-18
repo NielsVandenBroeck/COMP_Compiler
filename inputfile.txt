@@ -1,4 +1,5 @@
 int a = 0;
 const int* b = &a;
 int* c = &a;
-*b = 5;
+*b = 10;
+a = a;

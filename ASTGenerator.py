@@ -15,6 +15,7 @@ class ASTGenerator(grammar1Visitor):
                 object.removePriority()
                 program.addNode(object)
         symbolTable = SymbolTable(program)
+        print(symbolTable.SymbolList["a"].value)
         return program
 
     def visitProgramLine(self, ctx):

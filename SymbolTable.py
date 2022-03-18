@@ -42,6 +42,8 @@ class SymbolObjectPointer:
 
     #set value of real adress (not pointer)
     def setValue(self, value, node):
+        if self.objectConst:
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + self.name + "\' is of const-type and is not assignable.")
         self.object.setValue(value, node)
 
     def getValue(self):
@@ -122,7 +124,7 @@ class SymbolTable():
         self.replaceVariables(newValue)
         pointsToObject = node.getSetObject().getVariableName()
         newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
-        self.SymbolList[pointsToObject].setPointer(newValue, node)
+        self.SymbolList[pointsToObject].setValue(newValue.root, node)
 
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
