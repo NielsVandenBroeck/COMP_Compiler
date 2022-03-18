@@ -6,4 +6,3 @@ class LLVMGenerator:
     def write(self, msg):
         with open(self.file_name, 'w') as myFile:
             myFile.write(msg)
-
