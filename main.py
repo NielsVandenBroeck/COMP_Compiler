@@ -8,9 +8,9 @@ from grammar1Visitor import grammar1Visitor
 from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
 
-def main():
+def main(argv):
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
-    input_stream = FileStream("inputfile.txt")
+    input_stream = FileStream(argv[1])
     lexer = grammar1Lexer(input_stream)
     stream = CommonTokenStream(lexer)
     parser = grammar1Parser(stream)
@@ -20,7 +20,9 @@ def main():
     ast = visistor.visit(tree)
     ast.constantFold()
     llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-    print(ast.getDot())
+
+    with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+        myFile.write(ast.getDot())
 
 def printTree(tree):
     if(tree.getText() == '(' or tree.getText() == ')'):
@@ -39,4 +41,4 @@ def printTree(tree):
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
