@@ -24,6 +24,9 @@ def main(argv):
     with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
+    print("Comiling complete")
+    return 0
+
 def printTree(tree):
     if(tree.getText() == '(' or tree.getText() == ')'):
         return True

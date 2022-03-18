@@ -21,7 +21,6 @@ class SymbolObject:
 
 class SymbolObjectPointer:
     def __init__(self, name, constness, objectConst, pointsTo=0):
-        print(constness)
         self.constness = constness
         self.objectConst = objectConst
         self.object = pointsTo
