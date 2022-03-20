@@ -1,3 +1,6 @@
+from LLVMProgram import LLVMProgram, LLVMFunction
+
+
 class LLVMGenerator:
     def __init__(self,file_name, ast):
         self.file_name = file_name

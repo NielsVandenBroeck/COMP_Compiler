@@ -1,5 +1,9 @@
 import sys
+import time
+
 from antlr4 import *
+
+from LLVMProgram import LLVMProgram, LLVMFunction
 from grammar1Lexer import grammar1Lexer
 from grammar1Parser import grammar1Parser
 from antlr4.tree.Trees import Trees
@@ -10,7 +14,9 @@ from LLVMGenerator import LLVMGenerator
 
 def main(argv):
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
-    input_stream = FileStream(argv[1])
+    input_stream = FileStream("inputfile.txt")
+    if(len(argv) > 1):
+        input_stream = FileStream(argv[1])
     lexer = grammar1Lexer(input_stream)
     stream = CommonTokenStream(lexer)
     parser = grammar1Parser(stream)
@@ -25,6 +31,43 @@ def main(argv):
         myFile.write(ast.getDot())
 
     print("Comiling complete")
+    program = LLVMProgram()
+
+
+    mainFunction = LLVMFunction("main")
+    mainFunction.newVarible("a")
+    mainFunction.setVaribleValue("a", 3)
+
+    mainFunction.newVarible("b")
+    mainFunction.setVaribleValue("b", 6)
+
+    mainFunction.setVaribleValue("a", 10)
+    mainFunction.setVaribleValue("a", 13)
+    mainFunction.setVaribleValue("a", 17)
+    mainFunction.setVaribleValue("a", 19)
+
+    mainFunction.newVarible("c")
+    mainFunction.addVarible("c", "a", "b")
+
+    mainFunction.setVaribleValue("a", 5)
+
+    mainFunction.newVarible("d")
+    mainFunction.addVarible("d", "a", "b")
+
+    mainFunction.print("c")
+    mainFunction.newVarible("e", "i8", 1) #i8 = char, i32 is a signed number
+    mainFunction.setVaribleValue("e", ord('\n'))
+    mainFunction.print("e", chr)
+
+    mainFunction.print("d")
+    mainFunction.setReturnValue(0)
+    mainFunction.setReturnValue(0)
+    program.addFunction(mainFunction)
+
+    program.output()
+
+
+
     return 0
 
 def printTree(tree):
