@@ -14,7 +14,7 @@ class ASTGenerator(grammar1Visitor):
             if object is not None:
                 object.removePriority()
                 program.addNode(object)
-        symbolTable = SymbolTable(program)
+        #symbolTable = SymbolTable(program)
         #print(symbolTable.SymbolList["a"].value)
         return program
 
@@ -83,7 +83,7 @@ class ASTGenerator(grammar1Visitor):
     def visitUnaryExpression(self, ctx):
         sign = ctx.sign.text
         value = self.visit(ctx.value).removePriority()
-        rootnode = AST(sign, ctx.start.line, ctx.start.column)
+        rootnode = ASTOperator(sign, ctx.start.line, ctx.start.column)
         rootnode.addNode(value)
         return rootnode
 
@@ -103,11 +103,11 @@ class ASTGenerator(grammar1Visitor):
 
         #len(node2.nodes) > 1 is voor unary getallen te onderscheiden van gewone
         if node2.root in dict1 and dict1[node2.root] < dict1[rootnode.root] and len(node2.nodes) > 1 and not node2Priority:
-            tempNode2 = AST(rootnode.root, ctx.start.line, ctx.start.column)
+            tempNode2 = ASTOperator(rootnode.root, ctx.start.line, ctx.start.column)
             tempNode2.addNode(rootnode.getNode(0))
             tempNode2.addNode(node2.getNode(0))
 
-            tempRootNode = AST(node2.root, ctx.start.line, ctx.start.column)
+            tempRootNode = ASTOperator(node2.root, ctx.start.line, ctx.start.column)
             tempRootNode.addNode(tempNode2)
             tempRootNode.addNode(node2.getNode(1))
             rootnode = tempRootNode
@@ -157,7 +157,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
         operation = ctx.getText()
-        return AST(operation, ctx.start.line, ctx.start.column)
+        return ASTOperator(operation, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):

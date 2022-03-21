@@ -1,5 +1,8 @@
+import binascii
+import struct
 import sys
 import time
+import bitstring
 
 from antlr4 import *
 
@@ -13,6 +16,11 @@ from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
 
 def main(argv):
+    #f = 8.3
+    #exit(8.3.hex())
+
+    #hexString = "40209999A0000000"
+    #exit(8.3.hex())
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
     input_stream = FileStream("inputfile.txt")
     if(len(argv) > 1):
@@ -26,15 +34,20 @@ def main(argv):
     ast = visistor.visit(tree)
     ast.constantFold()
     llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+    llvm.write()
 
     with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
     print("Comiling complete")
+
+    """
     program = LLVMProgram()
 
 
     mainFunction = LLVMFunction("main")
+
+    
     mainFunction.newVarible("a")
     mainFunction.setVaribleValue("a", 3)
 
@@ -60,12 +73,17 @@ def main(argv):
     mainFunction.print("e", chr)
 
     mainFunction.print("d")
-    mainFunction.setReturnValue(0)
+    
+
+    mainFunction.newSmartVarible("a", float)
+    mainFunction.setVaribleValue("a", 8.3)
+    mainFunction.print("a", float)
+
     mainFunction.setReturnValue(0)
     program.addFunction(mainFunction)
 
     program.output()
-
+    """
 
 
     return 0

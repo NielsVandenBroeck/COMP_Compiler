@@ -1,5 +1,2 @@
-int a = 6;
-a++;
+int a = 8 + 9;
 printf(a);
-a + 5;
-int* b =&a;

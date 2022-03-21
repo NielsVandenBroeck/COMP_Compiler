@@ -160,6 +160,16 @@ class ASTDataType(AST):
     def getVariableName(self):
         return self.nodes[0].root
 
+    def getValue(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1].root
+        return None
+
+    def getValueObject(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1]
+        return None
+
 class ASTConst(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -187,3 +197,17 @@ class ASTPrintf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+class ASTOperator(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getOperator(self):
+        return self.root
+
+    def getLeftValue(self):
+        if self.nodes == None:
+            return None
+        return self.nodes[0]
+
+    def getRightValue(self):
+        return self.nodes[1]

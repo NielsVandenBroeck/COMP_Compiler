@@ -1,3 +1,6 @@
+import struct
+
+
 class LLVMProgram:
     adressCounter = 0
     programArray = []
@@ -14,8 +17,10 @@ class LLVMProgram:
         self.programArray = self.programArray + function.programArray
 
     def output(self):
+        fullProgram = ""
         for line in self.programArray:
-            print(line)
+            fullProgram += "\n" + line
+        return fullProgram
 
 class LLVMFunction(LLVMProgram):
     def __init__(self, functionName, returnType = "i32"):
@@ -37,11 +42,11 @@ class LLVMFunction(LLVMProgram):
 
     def newSmartVarible(self, name, type):
         if type == int:
-            self.newVarible(self, name, "i32", 4)
+            self.newVarible(name, "i32", 4)
         elif type == chr:
-            self.newVarible(self, name,  "i8", 1)
+            self.newVarible(name,  "i8", 1)
         elif type == float:
-            self.newVarible(self, name,  "float", 4)
+            self.newVarible(name,  "float", 4)
 
     def setVaribleValue(self, name, value):
         varible = self.VaribleList[name]
@@ -75,10 +80,21 @@ class LLVMFunction(LLVMProgram):
             format = "procentF"
             type = "double"
             uniqueReg = self.createUniqueRegister()
-            self._addLineToFunction(uniqueReg + " = fpext float " + valueVariable0 + " to double")
+            self._addLineToFunction("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
             valueVariable0 = uniqueReg
 
         self._addLineToFunction("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @." + format + ", i64 0, i64 0), " + type + " %" + valueVariable0 + ")")
+
+    def printValue(self, value, printAs = int):
+        type = "i32"
+        format = "procentD"
+        if (printAs == chr):
+            format = "procentC"
+        elif(printAs == float):
+            format = "procentF"
+            type = "double"
+
+        self._addLineToFunction("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @." + format + ", i64 0, i64 0), " + type + " " + str(value) + ")")
 
     def createUniqueRegister(self, addName = ""):
         self.adressCounter = self.adressCounter + 1
@@ -95,6 +111,9 @@ class LLVMVarible:
         return "%" + self.LLVMname + " = alloca " + self.type + ", align " + str(self.align)
 
     def getLLVMIniString(self, value):
+        if(self.type == "float"):
+            value = hex(struct.unpack('<Q', struct.pack('<d', value))[0])
+
         return "store " + self.type + " " + str(value) + ", " + self.type + "* %" + self.LLVMname + ", align " + str(self.align)
 
     def getLLVMLoadString(self, loadAdress):
