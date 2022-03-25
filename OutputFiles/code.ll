@@ -5,9 +5,14 @@
 declare dso_local i32 @printf(i8*, ...) #1
 define i32 @main() #0 {
 %a = alloca i32, align 4
-%a = alloca i32, align 4
-store i32 <AST.ASTOperator object at 0x020AB328>, i32* %a, align 4
-%uniqamain1 = load i32, i32* %a, align 4
-call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.procentD, i64 0, i64 0), i32 %uniqamain1)
+store i32 5, i32* %a, align 4
+%uniqmain1 = alloca i32, align 4
+store i32 1, i32* %uniqmain1, align 4
+%uniqamain2 = load i32, i32* %a, align 4
+%uniquniqmain1main3 = load i32, i32* %uniqmain1, align 4
+%uniqmain4 = add i32 %uniqamain2, %uniquniqmain1main3
+store i32 %uniqmain4, i32* %a, align 4
+%uniqamain5 = load i32, i32* %a, align 4
+call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.procentD, i64 0, i64 0), i32 %uniqamain5)
 ret i32 0
 }

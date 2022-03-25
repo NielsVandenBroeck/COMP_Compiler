@@ -32,12 +32,14 @@ def main(argv):
 
     visistor = ASTGenerator()
     ast = visistor.visit(tree)
+
     ast.constantFold()
-    llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-    llvm.write()
 
     with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
+
+    llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+    llvm.write()
 
     print("Comiling complete")
 

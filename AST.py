@@ -69,6 +69,7 @@ class AST():
     def constantFold(self):
         dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4,
                  '%': 4}
+
         if self.nodes is None:
             return
         for i in self.nodes:
@@ -210,4 +211,6 @@ class ASTOperator(AST):
         return self.nodes[0]
 
     def getRightValue(self):
+        if self.nodes == None:
+            return None
         return self.nodes[1]

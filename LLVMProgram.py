@@ -52,7 +52,9 @@ class LLVMFunction(LLVMProgram):
         varible = self.VaribleList[name]
         self._addLineToFunction(varible.getLLVMIniString(value))
 
-    def addVarible(self, toName, nameItem1, nameItem2):
+    def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
+        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv"}
+
         toVarible = self.VaribleList[toName]
         varible1 = self.VaribleList[nameItem1]
         varible2 = self.VaribleList[nameItem2]
@@ -64,7 +66,7 @@ class LLVMFunction(LLVMProgram):
         self._addLineToFunction(varible2.getLLVMLoadString(valueVariable2))
 
         tempRegName = self.createUniqueRegister()
-        self._addLineToFunction("%" + tempRegName + " = add " + toVarible.type + " %" + valueVariable1 + ", %" + valueVariable2 + "")
+        self._addLineToFunction("%" + tempRegName + " = " + operations[operation] + " " + toVarible.type + " %" + valueVariable1 + ", %" + valueVariable2 + "")
         self.setVaribleValue(toVarible.name, "%" + tempRegName)
 
     def print(self, varName, printAs = int):
