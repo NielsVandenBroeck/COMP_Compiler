@@ -124,17 +124,17 @@ class AST():
                 self.nodes = None
 
     def correctDataType(self,destinationType):
+        self.constantFold()
         originalType = type(self.root)
         originalValue = self.root
         conversion = False
-        self.constantFold()
         if destinationType == originalType:
             return
-        if isinstance(self.root, str):
+        if isinstance(self.root,str):
             self.root = self.root[1]
         if destinationType is float or destinationType is int:
             conversion = True
-            if originalType is float or originalType is int:
+            if originalType is  float or originalType is int:
                 self.root = destinationType(self.root)
             else:
                 self.root = destinationType(ord(self.root))
