@@ -1,31 +1,13 @@
 digraph G { 
-"<AST.AST object at 0x01C0C0E8> (0)"[label="program"]
-"<AST.AST object at 0x01C0C070> (1)"[label="line"]
-"<AST.AST object at 0x01C0C0E8> (0)"->"<AST.AST object at 0x01C0C070> (1)"
-"<AST.AST object at 0x01C0C070> (1)"[label="line"]
-"<AST.ASTDataType object at 0x01C0C4A8> (2)"[label="<class 'int'>"]
-"<AST.AST object at 0x01C0C070> (1)"->"<AST.ASTDataType object at 0x01C0C4A8> (2)"
-"<AST.ASTDataType object at 0x01C0C4A8> (2)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x01C0C2F8> (3)"[label="a"]
-"<AST.ASTDataType object at 0x01C0C4A8> (2)"->"<AST.ASTVariable object at 0x01C0C2F8> (3)"
-"<AST.AST object at 0x01C0C448> (3)"[label="5"]
-"<AST.ASTDataType object at 0x01C0C4A8> (2)"->"<AST.AST object at 0x01C0C448> (3)"
-"<AST.AST object at 0x01C0C208> (1)"[label="line"]
-"<AST.AST object at 0x01C0C0E8> (0)"->"<AST.AST object at 0x01C0C208> (1)"
-"<AST.AST object at 0x01C0C208> (1)"[label="line"]
-"<AST.ASTDataType object at 0x01C0C538> (2)"[label="<class 'int'>"]
-"<AST.AST object at 0x01C0C208> (1)"->"<AST.ASTDataType object at 0x01C0C538> (2)"
-"<AST.ASTDataType object at 0x01C0C538> (2)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x01C0C4D8> (3)"[label="b"]
-"<AST.ASTDataType object at 0x01C0C538> (2)"->"<AST.ASTVariable object at 0x01C0C4D8> (3)"
-"<AST.ASTOperator object at 0x01C0C598> (3)"[label="8"]
-"<AST.ASTDataType object at 0x01C0C538> (2)"->"<AST.ASTOperator object at 0x01C0C598> (3)"
-"<AST.AST object at 0x01C0C4F0> (1)"[label="line"]
-"<AST.AST object at 0x01C0C0E8> (0)"->"<AST.AST object at 0x01C0C4F0> (1)"
-"<AST.AST object at 0x01C0C4F0> (1)"[label="line"]
-"<AST.ASTPrintf object at 0x01C0C3A0> (2)"[label="printf"]
-"<AST.AST object at 0x01C0C4F0> (1)"->"<AST.ASTPrintf object at 0x01C0C3A0> (2)"
-"<AST.ASTPrintf object at 0x01C0C3A0> (2)"[label="printf"]
-"<AST.ASTVariable object at 0x01C0C250> (3)"[label="5"]
-"<AST.ASTPrintf object at 0x01C0C3A0> (2)"->"<AST.ASTVariable object at 0x01C0C250> (3)"
+"<AST.AST object at 0x000001AE34856FD0> (0)"[label="program"]
+"<AST.AST object at 0x000001AE34860D60> (1)"[label="line"]
+"<AST.AST object at 0x000001AE34856FD0> (0)"->"<AST.AST object at 0x000001AE34860D60> (1)"
+"<AST.AST object at 0x000001AE34860D60> (1)"[label="line"]
+"<AST.ASTDataType object at 0x000001AE34860AF0> (2)"[label="<built-in function chr>"]
+"<AST.AST object at 0x000001AE34860D60> (1)"->"<AST.ASTDataType object at 0x000001AE34860AF0> (2)"
+"<AST.ASTDataType object at 0x000001AE34860AF0> (2)"[label="<built-in function chr>"]
+"<AST.ASTVariable object at 0x000001AE34860A60> (3)"[label="a"]
+"<AST.ASTDataType object at 0x000001AE34860AF0> (2)"->"<AST.ASTVariable object at 0x000001AE34860A60> (3)"
+"<AST.AST object at 0x000001AE348607C0> (3)"[label="'r'"]
+"<AST.ASTDataType object at 0x000001AE34860AF0> (2)"->"<AST.AST object at 0x000001AE348607C0> (3)"
 }

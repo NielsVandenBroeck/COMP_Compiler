@@ -123,21 +123,30 @@ class AST():
                     self.root = resulttype(ops[self.root](value1, value2))
                 self.nodes = None
 
-    def correctDataType(self,type):
+    def correctDataType(self,destinationType):
+        originalType = type(self.root)
+        originalValue = self.root
+        conversion = False
         self.constantFold()
-        if isinstance(self.root,str):
+        if destinationType == originalType:
+            return
+        if isinstance(self.root, str):
             self.root = self.root[1]
-
-        if type is float or type is int:
-            if isinstance(self.root, float) or isinstance(self.root, int):
-                self.root = type(self.root)
+        if destinationType is float or destinationType is int:
+            conversion = True
+            if originalType is float or originalType is int:
+                self.root = destinationType(self.root)
             else:
-                self.root = type(ord(self.root))
-        elif type is chr:
-            if isinstance(self.root,str):
+                self.root = destinationType(ord(self.root))
+        elif destinationType is chr:
+            if originalType is str:
                 self.root = '\''+self.root+'\''
             else:
+                conversion = True
                 self.root = '\'' + chr(int((self.root))) + '\''
+        if conversion:
+            print("[Warning] line: " + str(self.line) + ", position: " + str(
+                self.position) + ". Implicit conversion from '"+str(originalType) +"' to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
 
 class ASTVariable(AST):
