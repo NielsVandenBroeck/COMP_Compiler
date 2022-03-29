@@ -53,7 +53,6 @@ class ASTGenerator(grammar1Visitor):
     def visitEmptyScope(self, ctx):
         root = AST("Scope", ctx.start.line, ctx.start.column)
         for line in ctx.getChildren():
-            print(line.getChildCount())
             if line.getChildCount() == 0:
                 continue
             if line.l is not None:
