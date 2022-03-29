@@ -11,17 +11,36 @@ class ASTGenerator(grammar1Visitor):
     def visitStart(self, ctx):
         program = AST("program", ctx.start.line, ctx.start.column)
         for line in ctx.getChildren():
-            if line.l is None:
+            if line.l is not None:
+                object = self.visitChildren(line.l)
+                if object is not None:
+                    object.removePriority()
+                    program.addNode(object)
+            elif line.s is not None:
+                program.addNode(self.visitChildren(line.s))
+            else:
                 return
-            object = self.visitChildren(line.l)
-            if object is not None:
-                object.removePriority()
-                program.addNode(object)
-        SemanticErrorAnalysis(program)
-        symbolTable = SymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
+        ##SemanticErrorAnalysis(program)
+        ##symbolTable = SymbolTable(program)
+        ##symbolTable.checkUnusedVariables(program)
         return program
 
+    # Visit a parse tree produced by grammar1Parser#IfStatement.
+    def visitIfStatement(self, ctx):
+        print("a")
+        return AST("if", ctx.start.line, ctx.start.column)
+
+
+    # Visit a parse tree produced by grammar1Parser#WhileLoop.
+    def visitWhileLoop(self, ctx):
+        print("b")
+        return AST("while", ctx.start.line, ctx.start.column)
+
+
+    # Visit a parse tree produced by grammar1Parser#EmptyScope.
+    def visitEmptyScope(self, ctx):
+        print("c")
+        return AST("{}", ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):

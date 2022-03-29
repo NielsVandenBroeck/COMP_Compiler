@@ -1,6 +1,5 @@
-int a;
-int b = a;
-int d = 3+a+4;
-a = 4;
-int e = a+1;
-int c = a + b + d + e;
+int a = 5;
+if (3==2)
+{
+    int i = 4;
+}

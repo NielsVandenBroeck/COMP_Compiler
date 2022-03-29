@@ -149,6 +149,7 @@ class SymbolTable():
 
     def variableAssignment(self, node):
         if not node.root in self.SymbolList:
+            print(self.SymbolList)
             exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + node.root + "\' has not been declared.")
 
         #als het 2 pointers zijn bv: a = b

@@ -22,6 +22,33 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#IfStatement.
+    def enterIfStatement(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#IfStatement.
+    def exitIfStatement(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#WhileLoop.
+    def enterWhileLoop(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#WhileLoop.
+    def exitWhileLoop(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#EmptyScope.
+    def enterEmptyScope(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#EmptyScope.
+    def exitEmptyScope(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#line.
     def enterLine(self, ctx):
         pass

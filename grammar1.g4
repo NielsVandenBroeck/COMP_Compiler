@@ -8,6 +8,13 @@ programLine
     : l=line SEMICOLON
     | SingleComment
     | MultiLineComment
+    | s=scope
+    ;
+
+scope
+    : 'if' '(' body ')' scope ('else' scope)?                                                   #IfStatement
+    | 'while' '(' body ')' scope                                                                #WhileLoop
+    | '{' (programLine)+ '}'                                                                    #EmptyScope
     ;
 
 line: newline
