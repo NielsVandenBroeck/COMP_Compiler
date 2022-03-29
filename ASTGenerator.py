@@ -20,7 +20,6 @@ class ASTGenerator(grammar1Visitor):
         SemanticErrorAnalysis(program)
         symbolTable = SymbolTable(program)
         symbolTable.checkUnusedVariables(program)
-        ##print(symbolTable.SymbolList["f"].value)
         return program
 
 

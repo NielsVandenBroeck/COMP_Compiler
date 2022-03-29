@@ -21,7 +21,7 @@ class SemanticErrorAnalysis:
         for node in root.nodes:
             if node is not None:
                 if type(node) is ASTVariable and self.variables[node.root] == 1:
-                    print("[Warning] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + node.root + "\' is never used.")
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(node.position) + ". Variable: \'" + node.root + "\' is never used.")
                     root.nodes.remove(node)
                     return True
                 elif self.deleteUnusedVars(node):

@@ -1,7 +1,7 @@
 from AST import *
 
 class SymbolObject:
-    def __init__(self, type, name, constness, value=0):
+    def __init__(self, type, name, constness, value=None):
         self.type = type
         self.name = name
         self.constness = constness
@@ -109,9 +109,9 @@ class SymbolTable():
             self.notExistsError(object.getVariableName(), "pointer not found", node)
             pointerObject = self.SymbolList[object.getVariableName()]
         elif object == None:
-            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness, 0)
+            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness)
         else:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
 
 
         self.SymbolList[pointerName] = pointerObject
@@ -120,7 +120,7 @@ class SymbolTable():
         var = node.getSetObject()
         varName = var.getVariableName()
         if not varName in self.SymbolList:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + varName + "\' has not been declared.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + varName + "\' has not been declared.")
 
         newValue = node.getToObject()
         self.replaceVariables(newValue)
@@ -132,10 +132,10 @@ class SymbolTable():
         variable = node.nodes[0].root
         #check if variablename exists -> error
         if variable in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " Cannot declare variable: \'" + node.nodes[0].root + "\' more than once.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + ". Redefinition of variable: \'" + node.nodes[0].root + "\'.")
 
         if len(node.nodes) == 1:
-            result = 0
+            result = None
         else:
             if isinstance(node.nodes[0], ASTAdress):
                 value = self.SymbolList[node.nodes[1].getVariableName()]
@@ -149,7 +149,7 @@ class SymbolTable():
 
     def variableAssignment(self, node):
         if not node.root in self.SymbolList:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' has not been declared.")
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + node.root + "\' has not been declared.")
 
         #als het 2 pointers zijn bv: a = b
         if(type(node.nodes[0]) is ASTVariable and type(self.SymbolList[node.root]) == SymbolObjectPointer and type(self.SymbolList[node.nodes[0].getVariableName()]) == SymbolObjectPointer):
@@ -157,7 +157,7 @@ class SymbolTable():
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
             adress = node.nodes[0]
-            self.notExistsError(adress.getVariableName(), "varible not found", node)
+            self.notExistsError(adress.getVariableName(), "Varible not found", node)
             self.SymbolList[node.root].setPointer(self.SymbolList[adress.getVariableName()], node)
         else:
             self.replaceVariables(node.nodes[0])
@@ -175,16 +175,19 @@ class SymbolTable():
                 node.nodes = None
                 return node.root
             else:
-                exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + node.root + "\' has not been declared.")
+                exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + ". Variable: \'" + node.root + "\' has not been declared.")
 
         elif type(node) is ASTVariable:
             #search for variable in table
             if node.root in self.SymbolList:
                 node.root = self.SymbolList[node.root].getValue()
+                if node.root is None:
+                    print("[Warning] line: "+ str(node.line) +", position: "+ str(node.position) +". Use of uninitialized variable. Replacing Value to 0.")
+                    node.root = 0
                 return node.root
             else:
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
-                    node.position) + " variable: \'" + node.root + "\' has not been declared.")
+                    node.position) + ". Variable: \'" + node.root + "\' has not been declared.")
 
         else:
             if node.nodes is None:
@@ -202,11 +205,11 @@ class SymbolTable():
 
     def notExistsError(self, varName, message, node):
         if varName not in self.SymbolList:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' cannot be declared:" + message)
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + node.root + "\' cannot be declared:" + message)
 
     def ExistsError(self, varName, message, node):
         if varName in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " variable: \'" + node.root + "\' cannot be declared:" + message)
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + ". Variable: \'" + node.root + "\' cannot be declared:" + message)
 
     @staticmethod
     def IsVariableDeclarationSameTypes(node):
