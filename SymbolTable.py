@@ -125,7 +125,7 @@ class SymbolTable():
         newValue = node.getToObject()
         self.replaceVariables(newValue)
         pointsToObject = node.getSetObject().getVariableName()
-        newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
+        newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type, node) #TODO simplify other function to fold!!!
         self.SymbolList[pointsToObject].setValue(newValue.root, node)
 
     def variableDeclaration(self, node, constness=False):
@@ -143,7 +143,7 @@ class SymbolTable():
             else:
                 value = node.nodes[1]
                 self.replaceVariables(value)
-                value.correctDataType(node.root)
+                value.correctDataType(node.root,node)
                 result = value.root
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness, result)
 
@@ -162,7 +162,7 @@ class SymbolTable():
             self.SymbolList[node.root].setPointer(self.SymbolList[adress.getVariableName()], node)
         else:
             self.replaceVariables(node.nodes[0])
-            node.nodes[0].correctDataType(self.SymbolList[node.root].type)
+            node.nodes[0].correctDataType(self.SymbolList[node.root].type,node)
             self.SymbolList[node.root].setValue(node.nodes[0].root, node)
 
     def PrintFunction(self, node):

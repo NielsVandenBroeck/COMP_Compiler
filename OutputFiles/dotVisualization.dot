@@ -1,12 +1,10 @@
 digraph G { 
-"<AST.AST object at 0x0000026848DC7250> (0)"[label="program"]
-"<AST.ASTDataType object at 0x0000026848DC7760> (1)"[label="<class 'int'>"]
-"<AST.AST object at 0x0000026848DC7250> (0)"->"<AST.ASTDataType object at 0x0000026848DC7760> (1)"
-"<AST.ASTDataType object at 0x0000026848DC7760> (1)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x0000026848DC7400> (2)"[label="a"]
-"<AST.ASTDataType object at 0x0000026848DC7760> (1)"->"<AST.ASTVariable object at 0x0000026848DC7400> (2)"
-"<AST.AST object at 0x0000026848DC72E0> (2)"[label="5"]
-"<AST.ASTDataType object at 0x0000026848DC7760> (1)"->"<AST.AST object at 0x0000026848DC72E0> (2)"
-"<AST.AST object at 0x0000026848DC7C10> (1)"[label="{}"]
-"<AST.AST object at 0x0000026848DC7250> (0)"->"<AST.AST object at 0x0000026848DC7C10> (1)"
+"<AST.AST object at 0x0000029A41AD9F70> (0)"[label="program"]
+"<AST.ASTDataType object at 0x0000029A41AE00D0> (1)"[label="<class 'int'>"]
+"<AST.AST object at 0x0000029A41AD9F70> (0)"->"<AST.ASTDataType object at 0x0000029A41AE00D0> (1)"
+"<AST.ASTDataType object at 0x0000029A41AE00D0> (1)"[label="<class 'int'>"]
+"<AST.ASTVariable object at 0x0000029A41AE08E0> (2)"[label="a"]
+"<AST.ASTDataType object at 0x0000029A41AE00D0> (1)"->"<AST.ASTVariable object at 0x0000029A41AE08E0> (2)"
+"<AST.AST object at 0x0000029A41AE00A0> (2)"[label="5"]
+"<AST.ASTDataType object at 0x0000029A41AE00D0> (1)"->"<AST.AST object at 0x0000029A41AE00A0> (2)"
 }

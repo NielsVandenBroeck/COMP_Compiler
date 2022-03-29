@@ -20,9 +20,9 @@ class ASTGenerator(grammar1Visitor):
                 program.addNode(self.visitChildren(line.s))
             else:
                 return
-        ##SemanticErrorAnalysis(program)
-        ##symbolTable = SymbolTable(program)
-        ##symbolTable.checkUnusedVariables(program)
+        SemanticErrorAnalysis(program)
+        symbolTable = SymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
         return program
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.

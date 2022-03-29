@@ -66,23 +66,30 @@ class AST():
 
         return string
 
-    def constantFold(self):
+    def constantFold(self,parent=None):
         dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4,
                  '%': 4}
 
         if self.nodes is None:
             return
         for i in self.nodes:
-            i.constantFold()
+            i.constantFold(self)
+        if parent is None:
+            return
         #unary + and -
         if len(self.nodes) == 1 and self.root == '-':
             value1 = self.nodes[0].root
             if isinstance(value1, float) or isinstance(value1, int):
-                self.root = -value1
-                self.nodes = None
+                newAst = AST(-value1,self.line, self.position)
+                parent.nodes.remove(self)
+                parent.addNode(newAst)
             elif isinstance(value1, str):
-                self.root = chr(-ord(value1[1]))
-                self.nodes = None
+                newAst = AST(chr(-ord(value1[1])),self.line, self.position)
+                parent.nodes.remove(self)
+                parent.addNode(newAst)
+        elif len(self.nodes) == 1 and self.root == '+':
+            parent.nodes.remove(self)
+            parent.addNode(self.nodes[0])
         #all operations bv: 3+4
         elif len(self.nodes) == 2:
             value1 = self.nodes[0].root
@@ -118,13 +125,14 @@ class AST():
                     '%': operator.mod,
                 }
                 if resulttype == chr:
-                    self.root = '\'' + resulttype(ops[self.root](value1, value2)) + '\''
+                    newAst = AST('\'' + resulttype(ops[self.root](value1, value2)) + '\'', self.line, self.position)
                 else:
-                    self.root = resulttype(ops[self.root](value1, value2))
-                self.nodes = None
+                    newAst = AST(resulttype(ops[self.root](value1, value2)), self.line, self.position)
+                parent.addNode(newAst)
+                parent.nodes.remove(self)
 
-    def correctDataType(self,destinationType):
-        self.constantFold()
+    def correctDataType(self,destinationType, parent):
+        self.constantFold(parent)
         if self.nodes is not None:
             return
         originalType = type(self.root)
@@ -195,7 +203,7 @@ class ASTPointer(AST):
 
     def getToObject(self):
         if len(self.nodes) <= 1:
-            return None;
+            return None
         return self.nodes[1]
 
 class ASTAdress(AST):
