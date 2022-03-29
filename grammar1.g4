@@ -12,8 +12,8 @@ programLine
     ;
 
 scope
-    : 'if' '(' body ')' scope ('else' scope)?                                                   #IfStatement
-    | 'while' '(' body ')' scope                                                                #WhileLoop
+    : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                     #IfStatement
+    | 'while' '(' b=body ')' s=scope                                                                #WhileLoop
     | '{' (programLine)+ '}'                                                                    #EmptyScope
     ;
 

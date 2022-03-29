@@ -17,30 +17,53 @@ class ASTGenerator(grammar1Visitor):
                     object.removePriority()
                     program.addNode(object)
             elif line.s is not None:
-                program.addNode(self.visitChildren(line.s))
-            else:
-                return
-        SemanticErrorAnalysis(program)
-        symbolTable = SymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
+                program.addNode(self.visit(line.s))
+        ##SemanticErrorAnalysis(program)
+        ##symbolTable = SymbolTable(program)
+        ##symbolTable.checkUnusedVariables(program)
         return program
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
-        print("a")
-        return AST("if", ctx.start.line, ctx.start.column)
-
+        root = AST("if-else", ctx.start.line, ctx.start.column)
+        conditionNode = AST("Condition", ctx.start.line, ctx.start.column)
+        conditionBody = self.visit(ctx.b)
+        conditionNode.addNode(conditionBody)
+        root.addNode(conditionNode)
+        ifScope = self.visit(ctx.s1)
+        root.addNode(ifScope)
+        if ctx.s2 is not None:
+            elseScope = self.visit(ctx.s2)
+            root.addNode(elseScope)
+        return root
 
     # Visit a parse tree produced by grammar1Parser#WhileLoop.
     def visitWhileLoop(self, ctx):
-        print("b")
-        return AST("while", ctx.start.line, ctx.start.column)
+        root = AST("while", ctx.start.line, ctx.start.column)
+        conditionNode = AST("Condition", ctx.start.line, ctx.start.column)
+        conditionBody = self.visit(ctx.b)
+        conditionNode.addNode(conditionBody)
+        root.addNode(conditionNode)
+        whileScope = self.visit(ctx.s)
+        root.addNode(whileScope)
+        return root
 
 
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
     def visitEmptyScope(self, ctx):
-        print("c")
-        return AST("{}", ctx.start.line, ctx.start.column)
+        root = AST("Scope", ctx.start.line, ctx.start.column)
+        for line in ctx.getChildren():
+            print(line.getChildCount())
+            if line.getChildCount() == 0:
+                continue
+            if line.l is not None:
+                object = self.visitChildren(line.l)
+                if object is not None:
+                    object.removePriority()
+                    root.addNode(object)
+            elif line.s is not None:
+                root.addNode(self.visitChildren(line))
+        return root
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):

@@ -340,15 +340,18 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.ScopeContext)
             super(grammar1Parser.IfStatementContext, self).__init__(parser)
+            self.b = None # BodyContext
+            self.s1 = None # ScopeContext
+            self.s2 = None # ScopeContext
             self.copyFrom(ctx)
 
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(grammar1Parser.RPAREN, 0)
         def body(self):
             return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
 
-        def RPAREN(self):
-            return self.getToken(grammar1Parser.RPAREN, 0)
         def scope(self, i=None):
             if i is None:
                 return self.getTypedRuleContexts(grammar1Parser.ScopeContext)
@@ -403,15 +406,17 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.ScopeContext)
             super(grammar1Parser.WhileLoopContext, self).__init__(parser)
+            self.b = None # BodyContext
+            self.s = None # ScopeContext
             self.copyFrom(ctx)
 
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(grammar1Parser.RPAREN, 0)
         def body(self):
             return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
 
-        def RPAREN(self):
-            return self.getToken(grammar1Parser.RPAREN, 0)
         def scope(self):
             return self.getTypedRuleContext(grammar1Parser.ScopeContext,0)
 
@@ -449,11 +454,11 @@ class grammar1Parser ( Parser ):
                 self.state = 53
                 self.match(grammar1Parser.LPAREN)
                 self.state = 54
-                self.body()
+                localctx.b = self.body()
                 self.state = 55
                 self.match(grammar1Parser.RPAREN)
                 self.state = 56
-                self.scope()
+                localctx.s1 = self.scope()
                 self.state = 59
                 self._errHandler.sync(self)
                 la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
@@ -461,7 +466,7 @@ class grammar1Parser ( Parser ):
                     self.state = 57
                     self.match(grammar1Parser.T__1)
                     self.state = 58
-                    self.scope()
+                    localctx.s2 = self.scope()
 
 
                 pass
@@ -473,11 +478,11 @@ class grammar1Parser ( Parser ):
                 self.state = 62
                 self.match(grammar1Parser.LPAREN)
                 self.state = 63
-                self.body()
+                localctx.b = self.body()
                 self.state = 64
                 self.match(grammar1Parser.RPAREN)
                 self.state = 65
-                self.scope()
+                localctx.s = self.scope()
                 pass
             elif token in [grammar1Parser.T__3]:
                 localctx = grammar1Parser.EmptyScopeContext(self, localctx)
