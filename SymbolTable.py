@@ -132,7 +132,7 @@ class SymbolTable():
         variable = node.nodes[0].root
         #check if variablename exists -> error
         if variable in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " Cannot declare variable: \'" + node.root + "\' more than once.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + " Cannot declare variable: \'" + node.nodes[0].root + "\' more than once.")
 
         if len(node.nodes) == 1:
             result = 0
