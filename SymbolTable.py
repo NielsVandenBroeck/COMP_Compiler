@@ -58,7 +58,7 @@ class SymbolTable():
             return
         for node in root.nodes:
             if node is not None:
-                self.visitChild(node.nodes[0])
+                self.visitChild(node)
 
     def visitChild(self, node):
         #declaration
@@ -191,6 +191,14 @@ class SymbolTable():
                 return
             for child in node.nodes:
                 self.replaceVariables(child)
+
+    def checkUnusedVariables(self, root):
+        if root.nodes is None:
+            return
+        for node in root.nodes:
+            if node is not None:
+                ##print(node.root)
+                self.checkUnusedVariables(node)
 
     def notExistsError(self, varName, message, node):
         if varName not in self.SymbolList:

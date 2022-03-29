@@ -41,7 +41,7 @@ def main(argv):
     ##llvm = LLVMGenerator("OutputFiles/code.ll", ast)
     ##llvm.write()
 
-    print("Comiling complete")
+    ##print("Comiling complete")
 
     """
     program = LLVMProgram()

@@ -125,6 +125,8 @@ class AST():
 
     def correctDataType(self,destinationType):
         self.constantFold()
+        if self.nodes is not None:
+            return
         originalType = type(self.root)
         originalValue = self.root
         conversion = False

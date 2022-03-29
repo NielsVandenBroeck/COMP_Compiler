@@ -1,1 +1,3 @@
-char a = 114 + 4.6;
+int b = 114;
+int a;
+int f = a+4;
