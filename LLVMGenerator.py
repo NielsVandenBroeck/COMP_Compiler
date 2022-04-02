@@ -1,5 +1,5 @@
-from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer
-from LLVMProgram import LLVMProgram, LLVMFunction
+from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile
+from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile
 
 
 class LLVMGenerator:
@@ -24,8 +24,12 @@ class LLVMGenerator:
         elif type(node) == ASTVariable:
             self._createSetAstVariableLLVM(node)
             return True
+        elif type(node) == ASTWhile:
+            self.currentFunction.setReturnValue(0)
+            self.currentFunction = LLVMWhile(self.currentFunction.functionName)
+            return True
         elif type(node) == ASTPointer:
-            exit("test")
+            exit("pointer")
         return False
 
     def _createAstDataTyeLLVm(self, node):

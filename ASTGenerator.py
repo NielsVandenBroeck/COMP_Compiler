@@ -39,8 +39,8 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#WhileLoop.
     def visitWhileLoop(self, ctx):
-        root = AST("while", ctx.start.line, ctx.start.column)
-        conditionNode = AST("Condition", ctx.start.line, ctx.start.column)
+        root = ASTWhile("while", ctx.start.line, ctx.start.column)
+        conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)
         conditionBody = self.visit(ctx.b)
         conditionNode.addNode(conditionBody)
         root.addNode(conditionNode)
@@ -51,7 +51,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
     def visitEmptyScope(self, ctx):
-        root = AST("Scope", ctx.start.line, ctx.start.column)
+        root = ASTScope("Scope", ctx.start.line, ctx.start.column)
         for line in ctx.getChildren():
             if line.getChildCount() == 0:
                 continue

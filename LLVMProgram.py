@@ -102,6 +102,12 @@ class LLVMFunction(LLVMProgram):
         self.adressCounter = self.adressCounter + 1
         return "uniq" + addName + self.functionName + str(self.adressCounter)
 
+class LLVMWhile(LLVMFunction):
+    def __init__(self, functionName, returnType = "i32"):
+        self.functionName = functionName
+        self.programArray.append("\n\n")
+        self.programArray.append("\n\n")
+
 class LLVMVarible:
     def __init__(self, name, type, align = 4):
         self.name = name

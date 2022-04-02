@@ -233,3 +233,21 @@ class ASTOperator(AST):
         if self.nodes == None:
             return None
         return self.nodes[1]
+
+class ASTWhile(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getCondition(self):
+        return self.nodes[0]
+
+    def getScope(self):
+        return self.nodes[1]
+
+class ASTCondition(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+class ASTScope(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
