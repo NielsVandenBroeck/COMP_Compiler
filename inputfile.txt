@@ -1,9 +1,6 @@
 int k = 5;
 while(k < 10){
-    k = k + 2;
-    if(k == 7){
-        int j = 4;
-        break;
+    for(int j = 0;j<12;j++){
+        k++;
     }
-    continue;
 }

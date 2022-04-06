@@ -87,7 +87,12 @@ class ASTGenerator(grammar1Visitor):
                     object.removePriority()
                     root.addNode(object)
             elif line.s is not None:
-                root.addNode(self.visitChildren(line))
+                temp = self.visitChildren(line)
+                if type(temp) is ASTFor:
+                    root.addNode(temp.nodes[0])
+                    root.addNode(temp.nodes[1])
+                else:
+                    root.addNode(temp)
         return root
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
