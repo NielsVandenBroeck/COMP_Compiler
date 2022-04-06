@@ -40,6 +40,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#ForLoop.
+    def enterForLoop(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#ForLoop.
+    def exitForLoop(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#EmptyScope.
     def enterEmptyScope(self, ctx):
         pass

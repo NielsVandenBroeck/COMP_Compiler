@@ -25,6 +25,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#ForLoop.
+    def visitForLoop(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
     def visitEmptyScope(self, ctx):
         return self.visitChildren(ctx)

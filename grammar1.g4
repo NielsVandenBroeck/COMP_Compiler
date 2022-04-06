@@ -14,6 +14,7 @@ programLine
 scope
     : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                                           #IfStatement
     | 'while' '(' b=body ')' s=scope                                                            #WhileLoop
+    | 'for' '(' decla=line ';' b=body ';' step=line ')' s=scope                                 #ForLoop
     | '{' (programLine)+ '}'                                                                    #EmptyScope
     ;
 
@@ -26,6 +27,7 @@ newline
     | body                                                                                      #Expression
     | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
     | Print'('b=body')'                                                                         #Printf
+    | OneTokenStatement                                                                         #OneTokenStatement
     ;
 
 lvalue
@@ -110,6 +112,12 @@ operation
     | AND
     | OR
     ;
+
+OneTokenStatement
+    : 'break'
+    | 'continue'
+    ;
+
 
 Print
     : 'printf'

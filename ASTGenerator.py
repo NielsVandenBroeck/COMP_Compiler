@@ -17,10 +17,16 @@ class ASTGenerator(grammar1Visitor):
                     object.removePriority()
                     program.addNode(object)
             elif line.s is not None:
-                program.addNode(self.visit(line.s))
+                temp = self.visit(line.s)
+                if type(temp) is ASTFor:
+                    program.addNode(temp.nodes[0])
+                    program.addNode(temp.nodes[1])
+                else:
+                    program.addNode(temp)
+
         #SemanticErrorAnalysis(program)
-        #symbolTable = SymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
+        symbolTable = SymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
         return program
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
@@ -46,6 +52,26 @@ class ASTGenerator(grammar1Visitor):
         root.addNode(conditionNode)
         whileScope = self.visit(ctx.s)
         root.addNode(whileScope)
+        return root
+
+    # Visit a parse tree produced by grammar1Parser#ForLoop.
+    def visitForLoop(self, ctx):
+        root = ASTFor("", ctx.start.line, ctx.start.column)
+        node1 = self.visit(ctx.decla)
+        node2 = ASTWhile("while", ctx.start.line, ctx.start.column)
+
+        conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)
+        conditionBody = self.visit(ctx.b)
+        conditionNode.addNode(conditionBody)
+        node2.addNode(conditionNode)
+        whileScope = self.visit(ctx.s)
+        node2.addNode(whileScope)
+
+        node3 = self.visit(ctx.step)
+        whileScope.addNode(node3)
+
+        root.addNode(node1)
+        root.addNode(node2)
         return root
 
 
