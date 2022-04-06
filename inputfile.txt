@@ -1,5 +1,9 @@
-
 int k = 5;
 while(k < 10){
-    k = k + 5;
+    k = k + 2;
+    if(k == 7){
+        int j = 4;
+        break;
+    }
+    continue;
 }

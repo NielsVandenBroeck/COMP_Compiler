@@ -24,7 +24,7 @@ class ASTGenerator(grammar1Visitor):
                 else:
                     program.addNode(temp)
 
-        #SemanticErrorAnalysis(program)
+        SemanticErrorAnalysis(program)
         symbolTable = SymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         return program
@@ -142,6 +142,11 @@ class ASTGenerator(grammar1Visitor):
         root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
         root.addNode(self.visitChildren(ctx.b))
         return root
+
+    # Visit a parse tree produced by grammar1Parser#OneTokenStatement.
+    def visitOneTokenStatement(self, ctx):
+        node = ASTOneTokenStatement(ctx.getText(),ctx.start.line, ctx.start.column)
+        return node
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
     def visitUnaryExpression(self, ctx):

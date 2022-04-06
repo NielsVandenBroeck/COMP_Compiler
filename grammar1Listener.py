@@ -112,6 +112,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#OneTokenStatement.
+    def enterOneTokenStatement(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#OneTokenStatement.
+    def exitOneTokenStatement(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass

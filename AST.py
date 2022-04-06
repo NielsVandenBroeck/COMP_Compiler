@@ -248,3 +248,7 @@ class ASTCondition(AST):
 class ASTScope(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+class ASTOneTokenStatement(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
