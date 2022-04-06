@@ -24,7 +24,7 @@ class SemanticErrorAnalysis:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(node.position) + ". Variable: \'" + node.root + "\' is never used.")
                     root.nodes.remove(node)
                     return True
-                elif self.deleteUnusedVars(node):
+                elif self.deleteUnusedVars(node) and type(node) is not ASTScope:
                     root.nodes.remove(node)
                     return True
 

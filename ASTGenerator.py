@@ -18,9 +18,9 @@ class ASTGenerator(grammar1Visitor):
                     program.addNode(object)
             elif line.s is not None:
                 program.addNode(self.visit(line.s))
-        ##SemanticErrorAnalysis(program)
-        ##symbolTable = SymbolTable(program)
-        ##symbolTable.checkUnusedVariables(program)
+        #SemanticErrorAnalysis(program)
+        #symbolTable = SymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
         return program
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
