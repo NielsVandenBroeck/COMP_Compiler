@@ -1,8 +1,5 @@
-/*
- * Test File (working code)
- */
-
-//Expressions (Project 1)
-5*(3/10 + 9/10); 			//6
-6*2/( 2+1 * 2/3 +6) +8 * (8/4);		//17.3846153846
-(1+1);					//2
+int x = 10;
+while(x){
+     x = 2 - 1;
+}
+printf(x);

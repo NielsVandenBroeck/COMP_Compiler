@@ -41,10 +41,10 @@ class SymbolTable():
         if type(node) is ASTConst:
             if type(node.nodes[0]) is ASTPointer:
                 self.pointerDeclaration(node.nodes[0],True)
-            elif type(node.nodes[0]) is ASTVariable:
+            elif type(node.nodes[0]) is ASTDataType:
                 self.variableDeclaration(node.nodes[0],True)
             else:
-                exit("FOUT kan object kan niet const zijn")
+                print("huh")
         elif self.IsVariableDeclarationSameTypes(node):
             self.variableDeclaration(node)
         # asignment
@@ -121,7 +121,6 @@ class SymbolTable():
             self.searchVariable(node)
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
-            adress = node.nodes[0]
             self.searchVariable(node)
         else:
             node.nodes[0].correctDataType(self.searchVariable(node).type)
