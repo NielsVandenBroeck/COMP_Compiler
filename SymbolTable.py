@@ -95,8 +95,9 @@ class SymbolTable():
 
     def pointerAssignment(self, node):
         var = node.getSetObject()
-        self.searchVariable(var)
-
+        if(self.searchVariable(var).constness):
+            exit("[Error] line: " + str(var.line) + ", position: " + str(
+                var.position) + " variable: \'" + var.root + "\' is of const-type and is not assignable.")
         newValue = node.getToObject()
         pointsToObject = node.getSetObject().getVariableName()
         newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
@@ -114,7 +115,9 @@ class SymbolTable():
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness)
 
     def variableAssignment(self, node):
-        self.searchVariable(node)
+        if(self.searchVariable(node).constness):
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + " variable: \'" + node.root + "\' is of const-type and cannot be changed.")
 
         #als het 2 pointers zijn bv: a = b
         if(type(node.nodes[0]) is ASTVariable and type(self.searchVariable(node)) == SymbolObjectPointer and type(self.searchVariable(node.nodes[0])) == SymbolObjectPointer):
@@ -162,7 +165,7 @@ class SymbolTable():
 
     @staticmethod
     def IsVariableAssignmentSameTypes(node):
-        return type(node) is ASTVariable
+        return type(node) is ASTVariable and node.nodes is not None
 
     @staticmethod
     def IsPointerDeclaration(node):

@@ -1,5 +1,3 @@
-int x = 10;
-while(x){
-     x = 2 - 1;
-}
-printf(x);
+int a = 1;
+int* const x = &a;
+x = &a;
