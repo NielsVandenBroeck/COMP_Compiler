@@ -1,5 +1,5 @@
 int x = 10;
-while(x){
+while(5){
  x = x - 1;
 }
 printf(x);

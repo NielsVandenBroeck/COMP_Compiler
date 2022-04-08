@@ -1,4 +1,4 @@
-from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile
+from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile
 
 
@@ -21,12 +21,23 @@ class LLVMGenerator:
             self.currentFunction.createUniqueRegister(tempName)
             self._createAstOperatorLLVM(tempName, node)
             return True
+        elif type(node) == ASTCondition:
+            tempName = self.currentFunction.createUniqueRegister()
+            self.currentFunction.createUniqueRegister(tempName)
+            self._createAstOperatorLLVM(tempName, node)
+            return True
         elif type(node) == ASTVariable:
             self._createSetAstVariableLLVM(node)
             return True
         elif type(node) == ASTWhile:
-            self.currentFunction.setReturnValue(0)
-            self.currentFunction = LLVMWhile(self.currentFunction.functionName)
+            tempCurrentFuntion = self.currentFunction
+            self.currentFunction = LLVMWhile(self.currentFunction.createUniqueRegister(), self.currentFunction)
+            self.preOrderTraverse(node.getCondition())
+            self.currentFunction.endOfContition("condition")
+            self.preOrderTraverse(node.getScope())
+            self.currentFunction.endOfLoop()
+            self.currentFunction = tempCurrentFuntion
+
             return True
         elif type(node) == ASTPointer:
             exit("pointer")
@@ -43,7 +54,11 @@ class LLVMGenerator:
             self.currentFunction.printValue(node.nodes[0].root)
 
     def _createAstOperatorLLVM(self, toRegName, node):
-        if node.nodes == None:
+
+        if type(node) == ASTCondition:
+            self.currentFunction.operationOnVarible(toRegName, node.getLeftValue().root, node.getRightValue().root,node.root)
+
+        elif node.nodes == None:
             self.currentFunction.setVaribleValue(toRegName, node.getValue())
 
         elif type(node.getRightValue()) == ASTOperator:

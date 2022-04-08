@@ -14,7 +14,7 @@ class ASTGenerator(grammar1Visitor):
             if line.l is not None:
                 object = self.visitChildren(line.l)
                 if object is not None:
-                    object.removePriority()
+                    object = object.removePriority()
                     program.addNode(object)
             elif line.s is not None:
                 temp = self.visit(line.s)
