@@ -66,10 +66,8 @@ class SymbolTable():
         if type(node) is ASTConst:
             if type(node.nodes[0]) is ASTPointer:
                 self.pointerDeclaration(node.nodes[0],True)
-            elif type(node.nodes[0]) is ASTVariable:
+            elif type(node.nodes[0]) is ASTDataType:
                 self.variableDeclaration(node.nodes[0],True)
-            else:
-                exit("FOUT kan object kan niet const zijn")
         elif self.IsVariableDeclarationSameTypes(node):
             self.variableDeclaration(node)
         # asignment
