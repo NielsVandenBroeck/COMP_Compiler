@@ -57,7 +57,10 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#ForLoop.
     def visitForLoop(self, ctx):
         root = ASTFor("", ctx.start.line, ctx.start.column)
-        node1 = self.visit(ctx.decla)
+        node1 = self.visitLvalue(ctx.lv).removePriority()
+        dataTypeNode = node1.getFirstNonConst(node1)
+        dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
+
         node2 = ASTWhile("while", ctx.start.line, ctx.start.column)
 
         conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)

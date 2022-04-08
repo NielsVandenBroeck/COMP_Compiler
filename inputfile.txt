@@ -1,6 +1,4 @@
 int k = 5;
-while(k < 10){
-    for(int j = 0;j<12;j++){
-        k++;
-    }
+for(k = 6; k < 12; k++){
+     k++;
 }
