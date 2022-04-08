@@ -228,7 +228,7 @@ class SymbolTable():
 
     @staticmethod
     def IsVariableAssignmentSameTypes(node):
-        return type(node) is ASTVariable
+        return type(node) is ASTVariable and node.nodes is not None
 
     @staticmethod
     def IsPointerDeclaration(node):

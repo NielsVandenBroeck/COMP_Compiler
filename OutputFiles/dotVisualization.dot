@@ -1,41 +1,31 @@
 digraph G { 
-"<AST.AST object at 0x000001FD141F0820> (0)"[label="program"]
-"<AST.ASTDataType object at 0x000001FD141F0490> (1)"[label="<class 'int'>"]
-"<AST.AST object at 0x000001FD141F0820> (0)"->"<AST.ASTDataType object at 0x000001FD141F0490> (1)"
-"<AST.ASTDataType object at 0x000001FD141F0490> (1)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x000001FD141F0BB0> (2)"[label="k"]
-"<AST.ASTDataType object at 0x000001FD141F0490> (1)"->"<AST.ASTVariable object at 0x000001FD141F0BB0> (2)"
-"<AST.AST object at 0x000001FD141F08B0> (2)"[label="5"]
-"<AST.ASTDataType object at 0x000001FD141F0490> (1)"->"<AST.AST object at 0x000001FD141F08B0> (2)"
-"<AST.ASTVariable object at 0x000001FD141F09D0> (1)"[label="k"]
-"<AST.AST object at 0x000001FD141F0820> (0)"->"<AST.ASTVariable object at 0x000001FD141F09D0> (1)"
-"<AST.ASTVariable object at 0x000001FD141F09D0> (1)"[label="k"]
-"<AST.AST object at 0x000001FD141F0C40> (2)"[label="6"]
-"<AST.ASTVariable object at 0x000001FD141F09D0> (1)"->"<AST.AST object at 0x000001FD141F0C40> (2)"
-"<AST.ASTWhile object at 0x000001FD141F0E20> (1)"[label="while"]
-"<AST.AST object at 0x000001FD141F0820> (0)"->"<AST.ASTWhile object at 0x000001FD141F0E20> (1)"
-"<AST.ASTWhile object at 0x000001FD141F0E20> (1)"[label="while"]
-"<AST.ASTCondition object at 0x000001FD141F0A00> (2)"[label="Condition"]
-"<AST.ASTWhile object at 0x000001FD141F0E20> (1)"->"<AST.ASTCondition object at 0x000001FD141F0A00> (2)"
-"<AST.ASTCondition object at 0x000001FD141F0A00> (2)"[label="Condition"]
-"<AST.ASTOperator object at 0x000001FD141F0400> (3)"[label="<"]
-"<AST.ASTCondition object at 0x000001FD141F0A00> (2)"->"<AST.ASTOperator object at 0x000001FD141F0400> (3)"
-"<AST.ASTOperator object at 0x000001FD141F0400> (3)"[label="<"]
-"<AST.ASTVariable object at 0x000001FD141F0670> (4)"[label="k"]
-"<AST.ASTOperator object at 0x000001FD141F0400> (3)"->"<AST.ASTVariable object at 0x000001FD141F0670> (4)"
-"<AST.AST object at 0x000001FD141F0A30> (4)"[label="12"]
-"<AST.ASTOperator object at 0x000001FD141F0400> (3)"->"<AST.AST object at 0x000001FD141F0A30> (4)"
-"<AST.ASTScope object at 0x000001FD141F02E0> (2)"[label="Scope"]
-"<AST.ASTWhile object at 0x000001FD141F0E20> (1)"->"<AST.ASTScope object at 0x000001FD141F02E0> (2)"
-"<AST.ASTScope object at 0x000001FD141F02E0> (2)"[label="Scope"]
-"<AST.ASTVariable object at 0x000001FD141F0DF0> (3)"[label="k"]
-"<AST.ASTScope object at 0x000001FD141F02E0> (2)"->"<AST.ASTVariable object at 0x000001FD141F0DF0> (3)"
-"<AST.ASTVariable object at 0x000001FD141F0DF0> (3)"[label="k"]
-"<AST.AST object at 0x000001FD141F0D90> (4)"[label="7"]
-"<AST.ASTVariable object at 0x000001FD141F0DF0> (3)"->"<AST.AST object at 0x000001FD141F0D90> (4)"
-"<AST.ASTVariable object at 0x000001FD141F0D00> (3)"[label="k"]
-"<AST.ASTScope object at 0x000001FD141F02E0> (2)"->"<AST.ASTVariable object at 0x000001FD141F0D00> (3)"
-"<AST.ASTVariable object at 0x000001FD141F0D00> (3)"[label="k"]
-"<AST.AST object at 0x000001FD141F0640> (4)"[label="8"]
-"<AST.ASTVariable object at 0x000001FD141F0D00> (3)"->"<AST.AST object at 0x000001FD141F0640> (4)"
+"<AST.AST object at 0x0000012A14D8A760> (0)"[label="program"]
+"<AST.ASTDataType object at 0x0000012A14D91130> (1)"[label="<class 'int'>"]
+"<AST.AST object at 0x0000012A14D8A760> (0)"->"<AST.ASTDataType object at 0x0000012A14D91130> (1)"
+"<AST.ASTDataType object at 0x0000012A14D91130> (1)"[label="<class 'int'>"]
+"<AST.ASTVariable object at 0x0000012A14D8A550> (2)"[label="x"]
+"<AST.ASTDataType object at 0x0000012A14D91130> (1)"->"<AST.ASTVariable object at 0x0000012A14D8A550> (2)"
+"<AST.AST object at 0x0000012A14D91550> (2)"[label="10"]
+"<AST.ASTDataType object at 0x0000012A14D91130> (1)"->"<AST.AST object at 0x0000012A14D91550> (2)"
+"<AST.ASTWhile object at 0x0000012A14D91160> (1)"[label="while"]
+"<AST.AST object at 0x0000012A14D8A760> (0)"->"<AST.ASTWhile object at 0x0000012A14D91160> (1)"
+"<AST.ASTWhile object at 0x0000012A14D91160> (1)"[label="while"]
+"<AST.ASTCondition object at 0x0000012A14D91880> (2)"[label="Condition"]
+"<AST.ASTWhile object at 0x0000012A14D91160> (1)"->"<AST.ASTCondition object at 0x0000012A14D91880> (2)"
+"<AST.ASTCondition object at 0x0000012A14D91880> (2)"[label="Condition"]
+"<AST.ASTVariable object at 0x0000012A14D91730> (3)"[label="x"]
+"<AST.ASTCondition object at 0x0000012A14D91880> (2)"->"<AST.ASTVariable object at 0x0000012A14D91730> (3)"
+"<AST.ASTScope object at 0x0000012A14D91970> (2)"[label="Scope"]
+"<AST.ASTWhile object at 0x0000012A14D91160> (1)"->"<AST.ASTScope object at 0x0000012A14D91970> (2)"
+"<AST.ASTScope object at 0x0000012A14D91970> (2)"[label="Scope"]
+"<AST.ASTVariable object at 0x0000012A14D918E0> (3)"[label="x"]
+"<AST.ASTScope object at 0x0000012A14D91970> (2)"->"<AST.ASTVariable object at 0x0000012A14D918E0> (3)"
+"<AST.ASTVariable object at 0x0000012A14D918E0> (3)"[label="x"]
+"<AST.AST object at 0x0000012A14D91700> (4)"[label="9"]
+"<AST.ASTVariable object at 0x0000012A14D918E0> (3)"->"<AST.AST object at 0x0000012A14D91700> (4)"
+"<AST.ASTPrintf object at 0x0000012A14D91340> (1)"[label="printf"]
+"<AST.AST object at 0x0000012A14D8A760> (0)"->"<AST.ASTPrintf object at 0x0000012A14D91340> (1)"
+"<AST.ASTPrintf object at 0x0000012A14D91340> (1)"[label="printf"]
+"<AST.ASTVariable object at 0x0000012A14D910A0> (2)"[label="9"]
+"<AST.ASTPrintf object at 0x0000012A14D91340> (1)"->"<AST.ASTVariable object at 0x0000012A14D910A0> (2)"
 }

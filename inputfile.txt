@@ -1,4 +1,5 @@
-int k = 5;
-for(k = 6; k < 12; k++){
-     k++;
+int x = 10;
+while(x){
+ x = x - 1;
 }
+printf(x);
