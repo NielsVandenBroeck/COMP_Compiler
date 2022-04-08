@@ -9,7 +9,6 @@ class SymbolObject:
     def getObject(self):
         return self
 
-
 class SymbolObjectPointer:
     def __init__(self, name, constness, objectConst, pointsTo=0):
         self.constness = constness
@@ -21,7 +20,6 @@ class SymbolObjectPointer:
         if type(self.object) == SymbolObjectPointer:
             return self.object.getObject()
         return self.object
-
 
 class SymbolTable():
     def __init__(self, root, parent=None):
@@ -157,7 +155,6 @@ class SymbolTable():
             return None
         else:
             return self.parent.searchVariable(node)
-
 
     @staticmethod
     def IsVariableDeclarationSameTypes(node):

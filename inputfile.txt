@@ -1,3 +1,11 @@
 int a = 1;
-int* const x = &a;
-x = &a;
+int* x = &a;
+
+const int* const b = &a;    //JUIST
+
+int* const c = &a;          //JUIST
+c = 10;
+
+const int d = &a;          //JUIST
+d = x;                      //JUIST
+*d = 10;                     //FOUT;
