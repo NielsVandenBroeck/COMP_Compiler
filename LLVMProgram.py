@@ -135,7 +135,7 @@ class LLVMWhile(LLVMFunction):
 
     def endOfContition(self, varibleName):
         if self.loop == True:
-            exit("Wrong use of while loop!")
+            exit("Wrong use of while loop 1!")
         self.loop = True
         self._addLineToFunction("%conditionValue" + self.functionName + "= icmp eq i32 %" + varibleName + ", 1")
         self._addLineToFunction("br i1 %conditionValue" + self.functionName + ", label %" + "whileLoop_" + self.functionName + ", label %" + "endwhile_" + self.functionName)
@@ -143,7 +143,7 @@ class LLVMWhile(LLVMFunction):
 
     def endOfLoop(self):
         if self.loop == False:
-            exit("Wrong use of while loop!")
+            exit("Wrong use of while loop 2!")
         self._addLineToFunction("br label %" + "whileCondition_" + self.functionName)  #ga naar de condition of while loop
         self._addLineToFunctionNoTab("\n" + "endwhile_" + self.functionName + ":")  # end while loop
 

@@ -33,7 +33,7 @@ def main(argv):
     visistor = ASTGenerator()
     ast = visistor.visit(tree)
 
-    #ast.constantFold()
+    ast.constantFold()
 
     with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())

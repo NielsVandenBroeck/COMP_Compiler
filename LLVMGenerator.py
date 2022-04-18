@@ -24,7 +24,8 @@ class LLVMGenerator:
         elif type(node) == ASTCondition:
             tempName = self.currentFunction.createUniqueRegister()
             self.currentFunction.createUniqueRegister(tempName)
-            self._createAstOperatorLLVM(tempName, node)
+            self._createAstOperatorLLVM(tempName, node.nodes[0])
+            self
             return True
         elif type(node) == ASTVariable:
             self._createSetAstVariableLLVM(node)
@@ -33,7 +34,7 @@ class LLVMGenerator:
             tempCurrentFuntion = self.currentFunction
             self.currentFunction = LLVMWhile(self.currentFunction.createUniqueRegister(), self.currentFunction)
             self.preOrderTraverse(node.getCondition())
-            self.currentFunction.endOfContition("condition")
+            self.currentFunction.endOfContition("bruhbruh")
             self.preOrderTraverse(node.getScope())
             self.currentFunction.endOfLoop()
             self.currentFunction = tempCurrentFuntion
@@ -55,10 +56,7 @@ class LLVMGenerator:
 
     def _createAstOperatorLLVM(self, toRegName, node):
 
-        if type(node) == ASTCondition:
-            self.currentFunction.operationOnVarible(toRegName, node.getLeftValue().root, node.getRightValue().root,node.root)
-
-        elif node.nodes == None:
+        if node.nodes == None:
             self.currentFunction.setVaribleValue(toRegName, node.getValue())
 
         elif type(node.getRightValue()) == ASTOperator:
