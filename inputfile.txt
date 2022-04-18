@@ -1,5 +1,11 @@
-int x = 10;
-while(5){
- x = x - 1;
-}
-printf(x);
+int a = 1;
+int* x = &a;
+
+const int* const b = &a;    //JUIST
+
+int* const c = &a;          //JUIST
+c = 10;
+
+const int d = &a;          //JUIST
+d = x;                      //JUIST
+*d = 10;                     //FOUT;
