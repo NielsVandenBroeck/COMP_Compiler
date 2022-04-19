@@ -139,7 +139,6 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
     def visitIdentifierOperationExpression(self, ctx):
-        self.checkReservedWords(ctx.name.text)
         name = ctx.name.text
         operation = ctx.op.getText()
         operation = operation[0]
@@ -239,7 +238,6 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
-        self.checkReservedWords(ctx.name.text)
         return ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)])
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
