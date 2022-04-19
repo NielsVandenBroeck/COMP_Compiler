@@ -13,7 +13,7 @@ programLine
     ;
 
 function
-    : types name=NAME '(' (params)? ')' s=scope
+    : t=types name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params

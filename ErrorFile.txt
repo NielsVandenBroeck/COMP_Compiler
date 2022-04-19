@@ -1,5 +1,10 @@
-int main(int y){
-    int x = 1;
-    x++;
+int main(){
+    int x = 10;
+    if(x == 1){
+        printf(x);
+    }
+    else {
+    x = x+10;
+    }
 }
 
