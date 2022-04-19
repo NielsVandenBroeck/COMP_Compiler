@@ -22,6 +22,24 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#function.
+    def enterFunction(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#function.
+    def exitFunction(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#params.
+    def enterParams(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#params.
+    def exitParams(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#IfStatement.
     def enterIfStatement(self, ctx):
         pass
