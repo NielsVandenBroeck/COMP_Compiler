@@ -48,7 +48,7 @@ class ASTGenerator(grammar1Visitor):
             returnType = ASTVoid("void", ctx.start.line, ctx.start.column)
         root.addNode(returnType)
         functionName = ctx.name.text
-        functionName = ASTVariable(functionName, ctx.start.line, ctx.start.column)
+        functionName = ASTFunctionName(functionName, ctx.start.line, ctx.start.column)
         root.addNode(functionName)
         if ctx.p is not None:
             functionParams = self.visit(ctx.p)
@@ -136,7 +136,7 @@ class ASTGenerator(grammar1Visitor):
                     root.addNode(temp)
         return root
 
-        # Visit a parse tree produced by grammar1Parser#param.
+    # Visit a parse tree produced by grammar1Parser#param.
     def visitParam(self, ctx):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
         if ctx.pointer != None:
@@ -221,7 +221,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#functionCall.
     def visitFunctionCall(self, ctx):
-        root = ASTFunction(ctx.name.text, ctx.start.line, ctx.start.column)
+        root = ASTFunctionName(ctx.name.text, ctx.start.line, ctx.start.column)
         parameters = ASTParameters("Parameters", ctx.start.line, ctx.start.column)
         root.addNode(parameters)
         for param in ctx.getChildren():

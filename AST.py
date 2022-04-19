@@ -176,6 +176,11 @@ class ASTVariable(AST):
             return self.nodes[1]
         return self.nodes[0]
 
+
+class ASTFunctionName(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
 class ASTDataType(AST):
     def __init__(self, value, line, position, childNodes=None):
         if value == "char":
