@@ -253,6 +253,18 @@ class ASTIfElse(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+    def getCondition(self):
+        return self.nodes[0]
+
+    def getIfScope(self):
+        return self.nodes[1]
+
+    def containsElseScope(self):
+        return len(self.nodes) > 2
+
+    def getElseScope(self):
+        return self.nodes[2]
+
 class ASTFor(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

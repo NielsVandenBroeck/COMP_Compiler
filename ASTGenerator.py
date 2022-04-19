@@ -48,7 +48,7 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
         root = ASTIfElse("if-else", ctx.start.line, ctx.start.column)
-        conditionNode = AST("Condition", ctx.start.line, ctx.start.column)
+        conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)
         conditionBody = self.visit(ctx.b)
         conditionNode.addNode(conditionBody)
         root.addNode(conditionNode)

@@ -64,7 +64,7 @@ class LLVMFunction(LLVMProgram):
         self._addLineToFunction(varible.getLLVMIniString(value))
 
     def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
-        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "<": "slt", ">": "sgt", "==": "eq", "!=": "ne", "<=": "sle",  ">=": "sge"  }
+        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge"}
 
         toVarible = self.getVariable(toName)
         varible1 = self.getVariable(nameItem1)
@@ -78,6 +78,11 @@ class LLVMFunction(LLVMProgram):
 
         tempRegName = self.createUniqueRegister()
         self._addLineToFunction("%" + tempRegName + " = " + operations[operation] + " " + toVarible.type + " %" + valueVariable1 + ", %" + valueVariable2 + "")
+        if "icmp" in operations[operation]:
+            tempRegName1 = self.createUniqueRegister()
+            self._addLineToFunction("%" + tempRegName1 + "= zext i1 %" + tempRegName + " to i32")
+            tempRegName = tempRegName1
+        print(toVarible.name, "::", tempRegName)
         self.setVaribleValue(toVarible.name, "%" + tempRegName)
 
     def print(self, varName, printAs = int):
@@ -114,6 +119,12 @@ class LLVMFunction(LLVMProgram):
         print(addName,  self.functionName)
         return "uniq" + str(addName) + self.functionName + str(self.adressCounter)
 
+    def breakLoop(self):
+        self.parantFunction.breakLoop()
+
+    def continueLoop(self):
+        self.parantFunction.continueLoop()
+
 class LLVMWhile(LLVMFunction):
     def __init__(self, uniqueName, parantFunction):
         self.loop = False
@@ -125,7 +136,8 @@ class LLVMWhile(LLVMFunction):
             #hier komt de
 
         #hier
-
+    def setConditionVarable(self, varibleName):
+        self.conditionVarible = varibleName
 
     def _addLineToFunction(self, line):
         self.parantFunction.programArray.insert(len(self.parantFunction.programArray) - 1, "\t" + line)  # create a new line to close the bracket
@@ -133,11 +145,13 @@ class LLVMWhile(LLVMFunction):
     def _addLineToFunctionNoTab(self, line):
         self.parantFunction.programArray.insert(len(self.parantFunction.programArray) - 1, line)  # create a new line to close the bracket
 
-    def endOfContition(self, varibleName):
+    def endOfContition(self):
         if self.loop == True:
             exit("Wrong use of while loop 1!")
         self.loop = True
-        self._addLineToFunction("%conditionValue" + self.functionName + "= icmp eq i32 %" + varibleName + ", 1")
+        registername = self.createUniqueRegister("checkValueReg")
+        self._addLineToFunction("%" + registername + " = load i32, i32* %" + self.conditionVarible + ", align 4")
+        self._addLineToFunction("%conditionValue" + self.functionName + "= icmp eq i32 %" + registername + ", 1")
         self._addLineToFunction("br i1 %conditionValue" + self.functionName + ", label %" + "whileLoop_" + self.functionName + ", label %" + "endwhile_" + self.functionName)
         self._addLineToFunctionNoTab("\n" + "whileLoop_" + self.functionName + ":")  # start while loop
 
@@ -146,6 +160,52 @@ class LLVMWhile(LLVMFunction):
             exit("Wrong use of while loop 2!")
         self._addLineToFunction("br label %" + "whileCondition_" + self.functionName)  #ga naar de condition of while loop
         self._addLineToFunctionNoTab("\n" + "endwhile_" + self.functionName + ":")  # end while loop
+
+    def breakLoop(self):
+        self._addLineToFunction("br label %" + "endwhile_" + self.functionName)  # ga naar de condition of while loop
+
+    def continueLoop(self):
+        self._addLineToFunction("br label %" + "whileCondition_" + self.functionName)  # ga naar de condition of while loop
+
+class LLVMIfElse(LLVMFunction):
+    def __init__(self, uniqueName, parantFunction):
+        self.condition = True
+        self.parantFunction = parantFunction
+        self.functionName = uniqueName
+
+        #hier
+    def setConditionVarable(self, varibleName):
+        self.conditionVarible = varibleName
+
+    def _addLineToFunction(self, line):
+        self.parantFunction.programArray.insert(len(self.parantFunction.programArray) - 1, "\t" + line)  # create a new line to close the bracket
+
+    def _addLineToFunctionNoTab(self, line):
+        self.parantFunction.programArray.insert(len(self.parantFunction.programArray) - 1, line)  # create a new line to close the bracket
+
+    def endOfIfContition(self):
+        if self.condition != True:
+            exit("Wrong use of if statment!")
+        self.condition = False
+        registername = self.createUniqueRegister("checkValueReg")
+        self._addLineToFunction("%" + registername + " = load i32, i32* %" + self.conditionVarible + ", align 4")
+        self._addLineToFunction("%conditionValue" + self.functionName + "= icmp eq i32 %" + registername + ", 1")
+        self._addLineToFunction("br i1 %conditionValue" + self.functionName + ", label %" + "ifStatement_" + self.functionName + ", label %" + "elseStatement_" + self.functionName)
+        self._addLineToFunctionNoTab("\n" + "ifStatement_" + self.functionName + ":")  # start while loop
+
+    def endOfIfStatement(self):
+        if self.condition != False:
+            exit("Wrong use of if statement 2!")
+        self._addLineToFunction("br label %" + "endIfElseStatement_" + self.functionName)  #ga naar de condition of while loop
+
+    def startElse(self):
+        self._addLineToFunctionNoTab("\n" + "elseStatement_" + self.functionName + ":")  # start while loop
+
+    def endOfElseStatement(self):
+        if self.condition != False:
+            exit("Wrong use of if statement 2!")
+        self._addLineToFunction("br label %" + "endIfElseStatement_" + self.functionName)  #ga naar de condition of while loop
+        self._addLineToFunctionNoTab("\n" + "endIfElseStatement_" + self.functionName + ":")  # end while loop
 
 
 class LLVMVarible:
