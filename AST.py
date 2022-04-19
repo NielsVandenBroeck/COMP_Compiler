@@ -249,6 +249,10 @@ class ASTWhile(AST):
     def getScope(self):
         return self.nodes[1]
 
+class ASTIfElse(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
 class ASTFor(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

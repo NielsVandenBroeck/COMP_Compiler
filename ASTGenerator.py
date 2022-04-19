@@ -36,13 +36,18 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#function.
     def visitFunction(self, ctx):
-        return self.visitChildren(ctx)
+        root = AST("function", ctx.start.line, ctx.start.column)
+        type = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+        root.addNode(type)
+
+
+        return root
 
 
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
-        root = AST("if-else", ctx.start.line, ctx.start.column)
+        root = ASTIfElse("if-else", ctx.start.line, ctx.start.column)
         conditionNode = AST("Condition", ctx.start.line, ctx.start.column)
         conditionBody = self.visit(ctx.b)
         conditionNode.addNode(conditionBody)
@@ -124,21 +129,18 @@ class ASTGenerator(grammar1Visitor):
             if ctx.t == None:
                 lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
                 return lValue
-
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
                 lValue = ASTConst("const",ctx.start.line, ctx.start.column, [lValue])
             lValue =  ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA != None:
                 lValue = ASTConst("const",ctx.start.line, ctx.start.column, [lValue])
-
         else:
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB != None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA != None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
-
         return lValue
 
     # Visit a parse tree produced by grammar1Parser#LValueRvalue.
