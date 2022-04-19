@@ -23,11 +23,22 @@ class ASTGenerator(grammar1Visitor):
                     program.addNode(temp.nodes[1])
                 else:
                     program.addNode(temp)
+            elif line.f is not None:
+                object = self.visit(line.f)
+                if object is not None:
+                    object = object.removePriority()
+                    program.addNode(object)
 
-        #SemanticErrorAnalysis(program)
+        SemanticErrorAnalysis(program)
         symbolTable = SymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         return program
+
+    # Visit a parse tree produced by grammar1Parser#function.
+    def visitFunction(self, ctx):
+        return self.visitChildren(ctx)
+
+
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
@@ -243,3 +254,4 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
         return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)])
+

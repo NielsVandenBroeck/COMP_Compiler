@@ -161,7 +161,7 @@ class AST():
                 self.root = '\'' + chr(int((self.root))) + '\''
         if conversion:
             print("[Warning] line: " + str(self.line) + ", position: " + str(
-                self.position) + ". Implicit conversion from '"+str(originalType) +"' to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
+                self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
 
 class ASTVariable(AST):

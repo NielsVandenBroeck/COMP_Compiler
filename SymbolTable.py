@@ -10,7 +10,8 @@ class SymbolObject:
         return self
 
 class SymbolObjectPointer:
-    def __init__(self, name, constness, objectConst, pointsTo=0):
+    def __init__(self, type, name, constness, objectConst, pointsTo=None):
+        self.type = type
         self.constness = constness
         self.objectConst = objectConst
         self.object = pointsTo
@@ -20,6 +21,14 @@ class SymbolObjectPointer:
         if type(self.object) == SymbolObjectPointer:
             return self.object.getObject()
         return self.object
+
+    # set value of real adress (not pointer)
+    def setPointer(self,object, node):
+        print("set pointer")
+        if not self.constness:
+            self.object = object
+        else:
+            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' is of const-type and cannot be changed.")
 
 class SymbolTable():
     def __init__(self, root, parent=None):
@@ -67,6 +76,7 @@ class SymbolTable():
 
     def pointerDeclaration(self, node, constness=False):
         objectConstness = False
+        pointerType = node.nodes[0].root
         if type(node.getSetObject()) is ASTConst:
             objectConstness = True
             pointerName = node.getSetObject().nodes[0].getVariableName()
@@ -81,11 +91,12 @@ class SymbolTable():
         pointerObject = None
         if isinstance(object, ASTAdress):
             self.searchVariable(object)
-            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness)
+            toObject = self.searchVariable(object)
+            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness,toObject)
         elif isinstance(object, ASTVariable):
             pointerObject = self.searchVariable(object)
         elif object == None:
-            pointerObject = SymbolObjectPointer(pointerName, constness, objectConstness)
+            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness)
         else:
             exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
 
@@ -93,12 +104,21 @@ class SymbolTable():
 
     def pointerAssignment(self, node):
         var = node.getSetObject()
-        if(self.searchVariable(var).constness):
-            exit("[Error] line: " + str(var.line) + ", position: " + str(
-                var.position) + " variable: \'" + var.root + "\' is of const-type and is not assignable.")
+        self.searchVariable(var)
+
         newValue = node.getToObject()
-        pointsToObject = node.getSetObject().getVariableName()
-        newValue.correctDataType(self.SymbolList[pointsToObject].getObject().type) #TODO simplify other function to fold!!!
+
+        pointsToObject = var.getVariableName()
+        if self.searchVariable(newValue).type != self.SymbolList[pointsToObject].type:
+            print("[Warning] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Implicit conversion from '" + str(self.SymbolList[pointsToObject].getObject().type) + "' to " + str(
+                self.searchVariable(var).type) + ". ")
+
+        var = node.getSetObject()
+        self.searchVariable(var)
+
+
+
 
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
@@ -109,7 +129,14 @@ class SymbolTable():
         if isinstance(node.nodes[0], ASTAdress):
             self.searchVariable(node.nodes[1])
         else:
-            node.nodes[1].correctDataType(node.root)
+            if type(node.nodes[1]) is ASTVariable:
+                if not self.searchVariable(node.nodes[1]).type is node.root:
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        self.searchVariable(node.nodes[1]).type) + " to " + str(
+                        node.root) + ". ")
+            else:
+                node.nodes[1].correctDataType(node.root)
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness)
 
     def variableAssignment(self, node):
@@ -119,10 +146,11 @@ class SymbolTable():
 
         #als het 2 pointers zijn bv: a = b
         if(type(node.nodes[0]) is ASTVariable and type(self.searchVariable(node)) == SymbolObjectPointer and type(self.searchVariable(node.nodes[0])) == SymbolObjectPointer):
-            self.searchVariable(node)
+            self.searchVariable(node).setPointer(self.searchVariable(node.nodes[0]), node)
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
-            self.searchVariable(node)
+            adress = node.nodes[0]
+            self.searchVariable(node).setPointer(self.searchVariable(adress), node)
         else:
             node.nodes[0].correctDataType(self.searchVariable(node).type)
             self.searchVariable(node)
@@ -144,7 +172,7 @@ class SymbolTable():
                 self.checkUnusedVariables(node)
 
     def searchVariable(self, node):
-        if type(node) is not ASTVariable:
+        if type(node) is not ASTVariable and type(node) is not ASTAdress:
             return None
         varName = node.getVariableName()
         if varName in self.SymbolList:
@@ -183,3 +211,7 @@ class SymbolTable():
     @staticmethod
     def IsScope(node):
         return type(node) is ASTScope
+
+    @staticmethod
+    def IsWhile(node):
+        return type(node) is ASTWhile

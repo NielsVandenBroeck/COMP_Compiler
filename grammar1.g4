@@ -9,13 +9,22 @@ programLine
     | SingleComment
     | MultiLineComment
     | s=scope
+    | f=function
+    ;
+
+function
+    : types name=NAME '(' (params)? ')' s=scope
+    ;
+
+params
+    : lvalue (',' lvalue)*
     ;
 
 scope
     : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                                           #IfStatement
     | 'while' '(' b=body ')' s=scope                                                            #WhileLoop
-    | 'for' '(' lv=lvalue IS rv=rvalue ';' b=body ';' step=line ')' s=scope                                 #ForLoop
-    | '{' (programLine)+ '}'                                                                    #EmptyScope
+    | 'for' '(' lv=lvalue IS rv=rvalue ';' b=body ';' step=line ')' s=scope                     #ForLoop
+    | '{' (programLine)* '}'                                                                    #EmptyScope
     ;
 
 line: newline
@@ -25,13 +34,13 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | name=VARIABLENAME op=identifierOP                                                         #IdentifierOperationExpression
+    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
     | Print'('b=body')'                                                                         #Printf
     | OneTokenStatement                                                                         #OneTokenStatement
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=VARIABLENAME
+    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME
     ;
 
 rvalue
@@ -40,7 +49,7 @@ rvalue
     ;
 
 variableAdress
-    : ('&')?name=VARIABLENAME;
+    : ('&')?name=NAME;
 
 identifierOP
     : PLUS PLUS
@@ -93,8 +102,8 @@ data
     : value=CHARINPUT                                                   #CharExpression
     | value=INTINPUT                                                    #IntExpression
     | value=FLOATINPUT                                                  #FloatExpression
-    | '*'value=VARIABLENAME                                             #PointerValueExpression
-    | VARIABLENAME                                                      #VariableExpression
+    | '*'value=NAME                                                     #PointerValueExpression
+    | NAME                                                              #VariableExpression
     ;
 
 operation
@@ -136,8 +145,8 @@ CHAR
     : 'char'
     ;
 
-VARIABLENAME
-    : (('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*)
+NAME
+    : ('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*
     ;
 
 PLUS
