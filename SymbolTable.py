@@ -211,3 +211,7 @@ class SymbolTable():
     @staticmethod
     def IsScope(node):
         return type(node) is ASTScope
+
+    @staticmethod
+    def IsWhile(node):
+        return type(node) is ASTWhile

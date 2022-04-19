@@ -69,3 +69,12 @@ printf(j);
 printf(l+1);
 
 //Loops and Conditionals (Project 4)
+int integer = 4;
+while(integer < 9){
+    printf(integer);
+    integer++;
+    if(integer == 7){
+        break;
+    }
+}
+printf(4);

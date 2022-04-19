@@ -1,0 +1,9 @@
+int integer = 4;
+while(integer < 9){
+    printf(integer);
+    integer++;
+    if(integer == 7){
+        integer = integer + 2;
+    }
+}
+break;

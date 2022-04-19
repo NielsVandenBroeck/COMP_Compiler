@@ -22,7 +22,7 @@ def main(argv):
     #hexString = "40209999A0000000"
     #exit(8.3.hex())
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
-    input_stream = FileStream("inputfile.txt")
+    input_stream = FileStream("ErrorFile.txt")
     if(len(argv) > 1):
         input_stream = FileStream(argv[1])
     lexer = grammar1Lexer(input_stream)
@@ -35,10 +35,10 @@ def main(argv):
 
     ast.constantFold()
 
-    """""
-        with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+    with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
+    """
     llvm = LLVMGenerator("OutputFiles/code.ll", ast)
     llvm.write()
     """

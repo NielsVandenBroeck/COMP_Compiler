@@ -24,7 +24,7 @@ class ASTGenerator(grammar1Visitor):
                 else:
                     program.addNode(temp)
 
-        #SemanticErrorAnalysis(program)
+        SemanticErrorAnalysis(program)
         symbolTable = SymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         return program

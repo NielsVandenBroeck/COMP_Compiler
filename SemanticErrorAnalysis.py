@@ -23,7 +23,7 @@ class SemanticErrorAnalysis:
             if node is not None:
                 if type(node) is ASTOneTokenStatement and not inLoop:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". " + node.root+" statement not in scope of a loop")
+                        node.position) + ". " + node.root+" statement not in a loop.")
                 elif type(node) is ASTWhile:
                     self.checkOneTokenStatements(node, True)
                 else:
