@@ -13,11 +13,15 @@ programLine
     ;
 
 function
-    : t=types name=NAME '(' (p=params)? ')' s=scope
+    : ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params
-    : lvalue (',' lvalue)*
+    : param (',' param)*
+    ;
+
+param
+    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME
     ;
 
 scope
@@ -37,6 +41,7 @@ newline
     | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
     | Print'('b=body')'                                                                         #Printf
     | OneTokenStatement                                                                         #OneTokenStatement
+    | 'return' b=body?                                                                            #ReturnKeyword
     ;
 
 lvalue
@@ -56,22 +61,22 @@ identifierOP
     | MINUS MINUS
     ;
 
-types
-    : dataType('*')?          #Type
-    ;
-
 dataType
     : INT
     | FLOAT
     | CHAR
     ;
 
-
 body
     : paren
     | data
     | bodyOperationBody
     | unary
+    | functionCall
+    ;
+
+functionCall
+    : name=NAME '(' body? (',' body)* ')'
     ;
 
 leftOperationBody

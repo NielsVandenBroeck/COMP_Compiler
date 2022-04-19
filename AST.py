@@ -195,6 +195,10 @@ class ASTDataType(AST):
             return self.nodes[1]
         return None
 
+class ASTVoid(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
 class ASTConst(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -253,6 +257,14 @@ class ASTIfElse(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+class ASTFunction(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+class ASTParameters(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
     def getCondition(self):
         return self.nodes[0]
 
@@ -278,5 +290,9 @@ class ASTScope(AST):
         super().__init__(value, line, position, childNodes)
 
 class ASTOneTokenStatement(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+class ASTReturn(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

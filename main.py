@@ -39,8 +39,8 @@ def main(argv):
         myFile.write(ast.getDot())
 
 
-    llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-    llvm.write()
+    #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+    #llvm.write()
 
 
 

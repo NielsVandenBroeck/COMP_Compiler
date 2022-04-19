@@ -25,6 +25,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#param.
+    def visitParam(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
         return self.visitChildren(ctx)
@@ -80,6 +85,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#ReturnKeyword.
+    def visitReturnKeyword(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
         return self.visitChildren(ctx)
@@ -100,11 +110,6 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#Type.
-    def visitType(self, ctx):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by grammar1Parser#dataType.
     def visitDataType(self, ctx):
         return self.visitChildren(ctx)
@@ -112,6 +117,11 @@ class grammar1Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by grammar1Parser#body.
     def visitBody(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#functionCall.
+    def visitFunctionCall(self, ctx):
         return self.visitChildren(ctx)
 
 

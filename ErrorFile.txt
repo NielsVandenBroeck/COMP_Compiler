@@ -1,10 +1,4 @@
-int main(){
-    int x = 10;
-    if(x == 1){
-        printf(x);
-    }
-    else {
-    x = x+10;
-    }
+void main(){
+    int result = 4;
+    return 5;
 }
-

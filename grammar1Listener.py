@@ -40,6 +40,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#param.
+    def enterParam(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#param.
+    def exitParam(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#IfStatement.
     def enterIfStatement(self, ctx):
         pass
@@ -139,6 +148,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#ReturnKeyword.
+    def enterReturnKeyword(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#ReturnKeyword.
+    def exitReturnKeyword(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass
@@ -175,15 +193,6 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#Type.
-    def enterType(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#Type.
-    def exitType(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by grammar1Parser#dataType.
     def enterDataType(self, ctx):
         pass
@@ -199,6 +208,15 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#body.
     def exitBody(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#functionCall.
+    def enterFunctionCall(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#functionCall.
+    def exitFunctionCall(self, ctx):
         pass
 
 

@@ -29,21 +29,43 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        SemanticErrorAnalysis(program)
-        symbolTable = SymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
+        #SemanticErrorAnalysis(program)
+        #symbolTable = SymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.
     def visitFunction(self, ctx):
-        root = AST("function", ctx.start.line, ctx.start.column)
-        type = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
-        root.addNode(type)
+        root = ASTFunction("Function", ctx.start.line, ctx.start.column)
 
+        if ctx.t is not None:
+            if ctx.pointer is not None:
+                returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+                returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
+            else:
+                returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+        else:
+            returnType = ASTVoid("void", ctx.start.line, ctx.start.column)
+        root.addNode(returnType)
+        functionName = ctx.name.text
+        functionName = ASTVariable(functionName, ctx.start.line, ctx.start.column)
+        root.addNode(functionName)
+        if ctx.p is not None:
+            functionParams = self.visit(ctx.p)
+            root.addNode(functionParams)
 
+        functionScope = self.visit(ctx.s)
+        root.addNode(functionScope)
         return root
 
-
+    # Visit a parse tree produced by grammar1Parser#params.
+    def visitParams(self, ctx):
+        root = ASTParameters("Parameters", ctx.start.line, ctx.start.column)
+        for param in ctx.getChildren():
+            if param.getChildCount() == 0:
+                continue
+            root.addNode(self.visit(param))
+        return root
 
     # Visit a parse tree produced by grammar1Parser#IfStatement.
     def visitIfStatement(self, ctx):
@@ -114,6 +136,27 @@ class ASTGenerator(grammar1Visitor):
                     root.addNode(temp)
         return root
 
+        # Visit a parse tree produced by grammar1Parser#param.
+    def visitParam(self, ctx):
+        lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
+        if ctx.pointer != None:
+            if ctx.t == None:
+                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+                return lValue
+            lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
+            if ctx.constnessB != None:
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
+            lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+            if ctx.constnessA != None:
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
+        else:
+            lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
+            if ctx.constnessB != None:
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
+            if ctx.constnessA != None:
+                lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
+        return lValue
+
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
@@ -168,6 +211,24 @@ class ASTGenerator(grammar1Visitor):
     def visitOneTokenStatement(self, ctx):
         node = ASTOneTokenStatement(ctx.getText(),ctx.start.line, ctx.start.column)
         return node
+
+    # Visit a parse tree produced by grammar1Parser#ReturnKeyword.
+    def visitReturnKeyword(self, ctx):
+        node = ASTReturn('return',ctx.start.line, ctx.start.column)
+        if ctx.b is not None:
+            node.addNode(self.visit(ctx.b))
+        return node
+
+    # Visit a parse tree produced by grammar1Parser#functionCall.
+    def visitFunctionCall(self, ctx):
+        root = ASTFunction(ctx.name.text, ctx.start.line, ctx.start.column)
+        parameters = ASTParameters("Parameters", ctx.start.line, ctx.start.column)
+        root.addNode(parameters)
+        for param in ctx.getChildren():
+            if param.getChildCount() == 0:
+                continue
+            parameters.addNode(self.visit(param))
+        return root
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.
     def visitUnaryExpression(self, ctx):
