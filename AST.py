@@ -74,8 +74,11 @@ class AST():
             return
         for i in self.nodes:
             i.constantFold()
-        # unary + and -
+        # unary -
         if len(self.nodes) == 1 and self.root == '-':
+            # cannot convert variable that can still change. for example in loops or functions
+            if type(self.nodes[0]) is ASTVariable:
+                return
             value1 = self.nodes[0].root
             if isinstance(value1, float) or isinstance(value1, int):
                 self.root = -value1
@@ -83,8 +86,17 @@ class AST():
             elif isinstance(value1, str):
                 self.root = chr(-ord(value1[1]))
                 self.nodes = None
+            self.__class__ = AST
+        # unary +
+        elif len(self.nodes) == 1 and self.root == '+':
+            self.root = self.nodes[0].root
+            self.nodes = None
+            self.__class__ = AST
         # all operations bv: 3+4
         elif len(self.nodes) == 2:
+            # cannot convert variable that can still change. for example in loops or functions
+            if type(self.nodes[0]) is ASTVariable or type(self.nodes[1]) is ASTVariable:
+                return
             value1 = self.nodes[0].root
             value2 = self.nodes[1].root
             if self.root in dict1 and (
@@ -149,7 +161,7 @@ class AST():
                 self.root = '\'' + chr(int((self.root))) + '\''
         if conversion:
             print("[Warning] line: " + str(self.line) + ", position: " + str(
-                self.position) + ". Implicit conversion from '"+str(originalType) +"' to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
+                self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
 
 class ASTVariable(AST):
