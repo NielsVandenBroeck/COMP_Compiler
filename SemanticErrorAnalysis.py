@@ -17,31 +17,39 @@ class SemanticErrorAnalysis:
                     self.variables[node.root] = self.variables.get(node.root,0) + 1
                 self.loopAST(node)
 
-    def checkOneTokenStatements(self, root):
+    def checkOneTokenStatements(self, root, inLoop=False):
         if root.nodes is None:
             return
-        for node in root.nodes:
+        for i in range(len(root.nodes)):
+            node = root.nodes[i]
             if node is not None:
-                if type(node) is ASTOneTokenStatement:
+                if type(node) is ASTOneTokenStatement and inLoop:
+                    del root.nodes[i+1:len(root.nodes)]
+                    break
+                elif type(node) is ASTOneTokenStatement and not inLoop:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". " + node.root+" statement not in a loop.")
                 elif type(node) is ASTWhile:
-                    continue
+                    self.checkOneTokenStatements(node, True)
                 else:
-                    self.checkOneTokenStatements(node)
+                    self.checkOneTokenStatements(node, inLoop)
 
-    def checkReturnKeyword(self, root):
+    def checkReturnKeyword(self, root, inFunction=False):
         if root.nodes is None:
             return
-        for node in root.nodes:
+        for i in range(len(root.nodes)):
+            node = root.nodes[i]
             if node is not None:
-                if type(node) is ASTReturn:
+                if type(node) is ASTReturn and inFunction:
+                    del root.nodes[i+1:len(root.nodes)]
+                    break
+                elif type(node) is ASTReturn and not inFunction:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". " + node.root+" return keyword not in a function.")
+                        node.position) + ". return keyword not in a function.")
                 elif type(node) is ASTFunction:
-                    continue
+                    self.checkReturnKeyword(node, True)
                 else:
-                    self.checkReturnKeyword(node)
+                    self.checkReturnKeyword(node, inFunction)
 
     def deleteUnusedVars(self, root):
         if root.nodes is None:

@@ -175,10 +175,16 @@ class SymbolTable():
         elif type(node.nodes[0]) is ASTAdress:
             adress = node.nodes[0]
             self.searchVariable(node).setPointer(self.searchVariable(adress), node)
+        elif type(node.nodes[0]) is ASTVariable:
+            if not self.searchVariable(node.nodes[0]).type is self.returnType:
+                print("[Warning] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Implicit conversion from " + str(
+                    self.searchVariable(node.nodes[0]).type) + " to " + str(
+                    self.returnType) + ". ")
         else:
             self.checkBody(node.nodes[0])
             node.nodes[0].correctDataType(self.searchVariable(node).type)
-            self.searchVariable(node)
+
 
     def checkBody(self, root):
         if type(root) is ASTVariable:
@@ -232,6 +238,9 @@ class SymbolTable():
         return True
 
     def checkReturnType(self, node):
+        if type(self) is not FunctionSymbolTable:
+            self.parent.checkReturnType(node)
+            return
         if self.returnType == "void":
             if node.nodes is not None:
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
@@ -246,6 +255,9 @@ class SymbolTable():
                         node.position) + ". Implicit conversion from " + str(
                         self.searchVariable(node.nodes[0]).type) + " to " + str(
                         self.returnType) + ". ")
+            else:
+                self.checkBody(node.nodes[0])
+                node.nodes[0].correctDataType(self.returnType)
 
     def checkUnusedVariables(self, root):
         if root.nodes is None:

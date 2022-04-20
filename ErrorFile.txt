@@ -1,3 +1,5 @@
-int *x;
-int *y;
-*x = *y;
+float Mul()
+{
+      int i = 5;
+      return i;
+}

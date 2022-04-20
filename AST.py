@@ -137,6 +137,8 @@ class AST():
                 self.__class__ = AST
 
     def correctDataType(self,destinationType):
+        if type(self) is ASTFunctionName:
+            return
         self.constantFold()
         if self.nodes is not None:
             return
