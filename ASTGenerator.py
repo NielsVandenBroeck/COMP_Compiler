@@ -29,9 +29,10 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        #SemanticErrorAnalysis(program)
-        #symbolTable = SymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
+        SemanticErrorAnalysis(program)
+        symbolTable = SymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.
@@ -134,6 +135,8 @@ class ASTGenerator(grammar1Visitor):
                     root.addNode(temp.nodes[1])
                 else:
                     root.addNode(temp)
+            elif line.f is not None:
+                exit("error") #todo
         return root
 
     # Visit a parse tree produced by grammar1Parser#param.
@@ -223,11 +226,15 @@ class ASTGenerator(grammar1Visitor):
     def visitFunctionCall(self, ctx):
         root = ASTFunctionName(ctx.name.text, ctx.start.line, ctx.start.column)
         parameters = ASTParameters("Parameters", ctx.start.line, ctx.start.column)
-        root.addNode(parameters)
+        gotparam = False
         for param in ctx.getChildren():
             if param.getChildCount() == 0:
                 continue
-            parameters.addNode(self.visit(param))
+            else:
+                gotparam = True
+                parameters.addNode(self.visit(param))
+        if gotparam:
+            root.addNode(parameters)
         return root
 
     # Visit a parse tree produced by grammar1Parser#unaryExpression.

@@ -34,9 +34,11 @@ class SymbolTable():
     def __init__(self, root, parent=None):
         self.SymbolList = {}
         self.parent = parent
-        self.loopAST(root)
+        self.root = root
 
-    def loopAST(self, root):
+    def loopAST(self, root=None):
+        if root == None:
+            root = self.root
         if root.nodes is None:
             return
         for node in root.nodes:
@@ -54,7 +56,7 @@ class SymbolTable():
                 print("huh")
         elif self.IsVariableDeclarationSameTypes(node):
             self.variableDeclaration(node)
-        # asignment
+        #asignment
         elif self.IsVariableAssignmentSameTypes(node):
             self.variableAssignment(node)
         #pointer declaration bv: int* b ( = a)
@@ -69,10 +71,33 @@ class SymbolTable():
         #check for unassigned variables in bodies
         elif self.IsBody(node):
             self.checkBody(node)
+        elif self.IsReturn(node):
+            self.checkReturnType(node)
+        #scopes
         elif self.IsScope(node):
-            SymbolTable(node, self)
+            s = SymbolTable(node, self)
+            s.loopAST()
+        #functions
+        elif self.IsFunction(node):
+            self.addFunctionScope(node)
         else:
             self.loopAST(node)
+
+    def addFunctionScope(self,root):
+        if root.nodes is None:
+            exit("Unexpected Error.")
+        params = None
+        for node in root.nodes:
+            if type(node) is ASTDataType or type(node) is ASTVoid:
+                returnType = node.root
+            elif type(node) is ASTFunctionName:
+                functionName = node.root
+            elif type(node) is ASTParameters:
+                params = node
+            elif type(node) is ASTScope:
+                scope = node
+        s = FunctionSymbolTable(scope,functionName, returnType, self, params)
+        s.loopAST()
 
     def pointerDeclaration(self, node, constness=False):
         objectConstness = False
@@ -118,8 +143,6 @@ class SymbolTable():
         self.searchVariable(var)
 
 
-
-
     def variableDeclaration(self, node, constness=False):
         variable = node.nodes[0].root
         #check if variablename exists -> error
@@ -128,7 +151,7 @@ class SymbolTable():
 
         if isinstance(node.nodes[0], ASTAdress):
             self.searchVariable(node.nodes[1])
-        else:
+        elif len(node.nodes) == 2:
             if type(node.nodes[1]) is ASTVariable:
                 if not self.searchVariable(node.nodes[1]).type is node.root:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(
@@ -136,6 +159,7 @@ class SymbolTable():
                         self.searchVariable(node.nodes[1]).type) + " to " + str(
                         node.root) + ". ")
             else:
+                self.checkBody(node.nodes[1])
                 node.nodes[1].correctDataType(node.root)
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness)
 
@@ -152,17 +176,76 @@ class SymbolTable():
             adress = node.nodes[0]
             self.searchVariable(node).setPointer(self.searchVariable(adress), node)
         else:
+            self.checkBody(node.nodes[0])
             node.nodes[0].correctDataType(self.searchVariable(node).type)
             self.searchVariable(node)
 
     def checkBody(self, root):
         if type(root) is ASTVariable:
             self.searchVariable(root)
+        elif type(root) is ASTFunctionName:
+            self.checkFunctionCall(root)
+            return
         if root.nodes is None:
             return
         for node in root.nodes:
             if node is not None:
                 self.checkBody(node)
+
+    def checkFunctionCall(self, root):
+        if self.parent is not None:
+            self.parent.checkFunctionCall(root)
+        elif self.parent is None:
+            if self.root.nodes is None:
+                return
+            for node in self.root.nodes:
+                if node is not None:
+                    if type(node) is ASTFunction:
+                        compared = self.compareFunction(node,root)
+                        if compared is True:
+                            return
+                        elif type(compared) == str:
+                            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                                root.position) + compared)
+            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                root.position) + ". Implicit declaration of function '"+root.root+"' is invalid.")
+
+
+    def compareFunction(self, function, functionCall):
+        params = None
+        for node in function.nodes:
+            if type(node) is ASTFunctionName:
+                functionName = node.root
+            elif type(node) is ASTParameters:
+                params = node
+        functionParamCount = 0
+        functionCallCount = 0
+        if params is not None:
+            functionParamCount = len(params.nodes)
+        if functionCall.nodes is not None:
+            functionCallCount = len(functionCall.nodes[0].nodes)
+        if functionName != functionCall.root:
+            return False
+        elif functionParamCount != functionCallCount:
+            errorText = ". Too few/many arguments to function call, expected "+ str(functionParamCount) +" have "+ str(functionCallCount) +"."
+            return errorText
+        return True
+
+    def checkReturnType(self, node):
+        if self.returnType == "void":
+            if node.nodes is not None:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Void function '"+self.functionName+"' should not return a value.")
+        else:
+            if node.nodes is None:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Void function '"+self.functionName+"' should return a value.")
+            elif type(node.nodes[0]) is ASTVariable:
+                if not self.searchVariable(node.nodes[0]).type is self.returnType:
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        self.searchVariable(node.nodes[0]).type) + " to " + str(
+                        self.returnType) + ". ")
 
     def checkUnusedVariables(self, root):
         if root.nodes is None:
@@ -206,12 +289,45 @@ class SymbolTable():
 
     @staticmethod
     def IsBody(node):
-        return type(node) is ASTOperator
+        return type(node) is ASTOperator or type(node) is ASTFunctionName or type(node) is ASTPrintf
+
+    @staticmethod
+    def IsReturn(node):
+        return type(node) is ASTReturn
 
     @staticmethod
     def IsScope(node):
         return type(node) is ASTScope
 
     @staticmethod
+    def IsFunction(node):
+        return type(node) is ASTFunction
+
+    @staticmethod
     def IsWhile(node):
         return type(node) is ASTWhile
+
+
+class FunctionSymbolTable(SymbolTable):
+    def __init__(self, root, name, returnType, parent, parameters):
+        self.functionName = name
+        self.returnType = returnType
+        super().__init__(root, parent)
+        self.addParameters(parameters)
+
+    def addParameters(self, root):
+        if root is None:
+            return
+        if root.nodes is None:
+            return
+        for node in root.nodes:
+            if node is not None:
+                if type(node) is ASTConst:
+                    if type(node.nodes[0]) is ASTPointer:
+                        self.pointerDeclaration(node.nodes[0], True)
+                    elif type(node.nodes[0]) is ASTDataType:
+                        self.variableDeclaration(node.nodes[0], True)
+                    else:
+                        print("huh")
+                elif self.IsVariableDeclarationSameTypes(node):
+                    self.variableDeclaration(node)

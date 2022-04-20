@@ -1,4 +1,11 @@
-void main(){
-    int result = 4;
-    return main();
+int multiply(int x, int y, int z){
+    return x*y;
 }
+
+int main(){
+    int result = multiply(7,5,9);
+    printf(result);
+    return 6.7;
+}
+
+
