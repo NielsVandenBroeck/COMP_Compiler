@@ -68,7 +68,7 @@ def serializedATN():
         buf.write(u"\2\2\u008e\u009a\5\30\r\2\u008f\u0090\7\16\2\2\u0090")
         buf.write(u"\u0091\7!\2\2\u0091\u0092\5\34\17\2\u0092\u0093\7\"\2")
         buf.write(u"\2\u0093\u009a\3\2\2\2\u0094\u009a\7\r\2\2\u0095\u0097")
-        buf.write(u"\7\13\2\2\u0096\u0098\5\34\17\2\u0097\u0096\3\2\2\2\u0097")
+        buf.write(u"\7\13\2\2\u0096\u0098\5\24\13\2\u0097\u0096\3\2\2\2\u0097")
         buf.write(u"\u0098\3\2\2\2\u0098\u009a\3\2\2\2\u0099\u0087\3\2\2")
         buf.write(u"\2\u0099\u008b\3\2\2\2\u0099\u008c\3\2\2\2\u0099\u008d")
         buf.write(u"\3\2\2\2\u0099\u008f\3\2\2\2\u0099\u0094\3\2\2\2\u0099")
@@ -986,11 +986,11 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.ReturnKeywordContext, self).__init__(parser)
-            self.b = None # BodyContext
+            self.b = None # RvalueContext
             self.copyFrom(ctx)
 
-        def body(self):
-            return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
+        def rvalue(self):
+            return self.getTypedRuleContext(grammar1Parser.RvalueContext,0)
 
 
         def enterRule(self, listener):
@@ -1247,9 +1247,9 @@ class grammar1Parser ( Parser ):
                 self.state = 149
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT))) != 0):
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__9) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT))) != 0):
                     self.state = 148
-                    localctx.b = self.body()
+                    localctx.b = self.rvalue()
 
 
                 pass

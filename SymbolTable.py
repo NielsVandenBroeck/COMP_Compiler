@@ -88,7 +88,7 @@ class SymbolTable():
             exit("Unexpected Error.")
         params = None
         for node in root.nodes:
-            if type(node) is ASTDataType or type(node) is ASTVoid:
+            if type(node) is ASTDataType or type(node) is ASTVoid or type(node) is ASTPointer:
                 returnType = node.root
             elif type(node) is ASTFunctionName:
                 functionName = node.root
