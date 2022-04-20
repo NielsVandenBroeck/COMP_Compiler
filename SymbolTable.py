@@ -331,3 +331,5 @@ class FunctionSymbolTable(SymbolTable):
                         print("huh")
                 elif self.IsVariableDeclarationSameTypes(node):
                     self.variableDeclaration(node)
+                elif self.IsPointerDeclaration(node):
+                    self.pointerDeclaration(node)
