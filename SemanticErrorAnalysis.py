@@ -57,6 +57,7 @@ class SemanticErrorAnalysis:
                     return True
                 elif self.deleteUnusedVars(node) and type(node) is not ASTScope:
                     deleteNodes.append(node)
+                    return True
         goodNodes = []
         for node in root.nodes:
             if node not in deleteNodes:
