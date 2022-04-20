@@ -55,9 +55,12 @@ class SemanticErrorAnalysis:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(node.position) + ". Variable: \'" + node.root + "\' is never used.")
                     deleteNodes.append(node)
                     return True
-                elif self.deleteUnusedVars(node) and type(node) is not ASTScope:
-                    deleteNodes.append(node)
-                    return True
+                elif self.deleteUnusedVars(node):
+                    if type(root) is ASTScope or type(root) is AST:
+                        deleteNodes.append(node)
+                    else:
+                        return True
+
         goodNodes = []
         for node in root.nodes:
             if node not in deleteNodes:
