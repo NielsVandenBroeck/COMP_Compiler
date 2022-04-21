@@ -1,6 +1,6 @@
 from AST import *
 from grammar1Visitor import *
-from SymbolTable import SymbolTable
+from SymbolTable import *
 from SemanticErrorAnalysis import SemanticErrorAnalysis
 
 class ASTGenerator(grammar1Visitor):
@@ -30,7 +30,7 @@ class ASTGenerator(grammar1Visitor):
                     program.addNode(object)
 
         SemanticErrorAnalysis(program)
-        symbolTable = SymbolTable(program)
+        symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()
         return program

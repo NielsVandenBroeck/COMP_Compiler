@@ -97,6 +97,7 @@ class SymbolTable():
             elif type(node) is ASTScope:
                 scope = node
         s = FunctionSymbolTable(scope,functionName, returnType, self, params)
+        self.functions.append(s)
         s.loopAST()
 
     def pointerDeclaration(self, node, constness=False):
@@ -199,41 +200,31 @@ class SymbolTable():
                 self.checkBody(node)
 
     def checkFunctionCall(self, root):
-        if self.parent is not None:
+        if type(self) is not UpperSymbolTable:
             self.parent.checkFunctionCall(root)
-        elif self.parent is None:
-            if self.root.nodes is None:
+        else:
+            if self.functions is None:
                 return
-            for node in self.root.nodes:
-                if node is not None:
-                    if type(node) is ASTFunction:
-                        compared = self.compareFunction(node,root)
-                        if compared is True:
-                            return
-                        elif type(compared) == str:
-                            exit("[Error] line: " + str(root.line) + ", position: " + str(
-                                root.position) + compared)
+            for function in self.functions:
+                if function is not None:
+                    compared = self.compareFunction(function,root)
+                    if compared is True:
+                        return
+                    elif type(compared) == str:
+                        exit("[Error] line: " + str(root.line) + ", position: " + str(
+                            root.position) + compared)
             exit("[Error] line: " + str(root.line) + ", position: " + str(
                 root.position) + ". Implicit declaration of function '"+root.root+"' is invalid.")
 
 
     def compareFunction(self, function, functionCall):
-        params = None
-        for node in function.nodes:
-            if type(node) is ASTFunctionName:
-                functionName = node.root
-            elif type(node) is ASTParameters:
-                params = node
-        functionParamCount = 0
         functionCallCount = 0
-        if params is not None:
-            functionParamCount = len(params.nodes)
         if functionCall.nodes is not None:
             functionCallCount = len(functionCall.nodes[0].nodes)
-        if functionName != functionCall.root:
+        if function.functionName != functionCall.root:
             return False
-        elif functionParamCount != functionCallCount:
-            errorText = ". Too few/many arguments to function call, expected "+ str(functionParamCount) +" have "+ str(functionCallCount) +"."
+        elif function.paramCount != functionCallCount:
+            errorText = ". Too few/many arguments to function call, expected "+ str(function.paramCount) +" have "+ str(functionCallCount) +"."
             return errorText
         return True
 
@@ -320,11 +311,17 @@ class SymbolTable():
         return type(node) is ASTWhile
 
 
+class UpperSymbolTable(SymbolTable):
+    def __init__(self, root):
+        self.functions = []
+        super().__init__(root)
+
 class FunctionSymbolTable(SymbolTable):
     def __init__(self, root, name, returnType, parent, parameters):
         self.functionName = name
         self.returnType = returnType
         super().__init__(root, parent)
+        self.paramCount = 0
         self.addParameters(parameters)
 
     def addParameters(self, root):
@@ -332,6 +329,7 @@ class FunctionSymbolTable(SymbolTable):
             return
         if root.nodes is None:
             return
+        self.paramCount = len(root.nodes)
         for node in root.nodes:
             if node is not None:
                 if type(node) is ASTConst:

@@ -41,7 +41,7 @@ newline
     | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
     | Print'('b=body')'                                                                         #Printf
     | OneTokenStatement                                                                         #OneTokenStatement
-    | 'return' b=rvalue?                                                                          #ReturnKeyword
+    | 'return' b=rvalue?                                                                        #ReturnKeyword
     ;
 
 lvalue
