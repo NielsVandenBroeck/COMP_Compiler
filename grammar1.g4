@@ -84,6 +84,7 @@ leftOperationBody
     :paren
     |data
     |unary
+    | functionCall
     ;
 
 unaryBody
