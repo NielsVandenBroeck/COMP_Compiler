@@ -1,11 +1,4 @@
-
-
 int main(){
-    int funt( float z);
-    funt(8);
-    return 0;
-}
-
-int funt(const float* z){
-    return 10;
+    int x;
+    int y = x;
 }
