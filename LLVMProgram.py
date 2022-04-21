@@ -134,7 +134,7 @@ class LLVMFunction(LLVMProgram):
             parameterString += callTypeList[i] + " " + str(value) + ", "
         parameterString = parameterString[:-2]
 
-        if toVarible == None:
+        if toVarible == None or returnType =="void":
             self._addLine("call " + returnType + " @" + functionName + "(" + parameterString + ")")
         else:
             tempReg = self.createUniqueRegister()
@@ -145,14 +145,20 @@ class LLVMFunction(LLVMProgram):
         self.returnItemSet = True
         returntype = self.getFunctionType(self.functionName)
 
+        returnItem= ""
         if type(value) == ASTVariable:
             returnVar = self.getVariable(value.root)
             self._addLine(returnVar.getLLVMLoadString("returnItem"))
-            self._addLine("ret " + returntype + " %returnItem")
+            returnItem =  "%returnItem"
         elif type(value) == AST:
-            self._addLine("ret " + returntype + " " + str(value.root))
+            returnItem = str(value.root)
         else:
-            self._addLine("ret " + returntype + " " + str(value))
+            returnItem = str(value)
+
+        if returnItem == "void":
+            self._addLine("ret void")
+        else:
+            self._addLine("ret " + returntype + " " + returnItem)
 
     def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
         operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge"}
