@@ -6,37 +6,61 @@ start
 
 programLine
     : l=line SEMICOLON
+    | SingleComment
+    | MultiLineComment
+    | s=scope
+    | f=function
+    ;
+
+function
+    : ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')' s=scope
+    ;
+
+params
+    : param (',' param)*
+    ;
+
+param
+    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME
+    ;
+
+scope
+    : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                                           #IfStatement
+    | 'while' '(' b=body ')' s=scope                                                            #WhileLoop
+    | 'for' '(' lv=lvalue IS rv=rvalue ';' b=body ';' step=line ')' s=scope                     #ForLoop
+    | '{' (programLine)* '}'                                                                    #EmptyScope
     ;
 
 line: newline
     ;
 
 newline
-    : constness=CONST? t=pointerTypes? name=VARIABLENAME                                     #DeclarationExpression
-    | constness=CONST? t=types? name=VARIABLENAME IS b=body                                #DeclarationAndInitalizationExpression
-
-
-    | constness=CONST? t=pointerTypes?  CONST? var1=VARIABLENAME IS ('&')?var2=VARIABLENAME  #DeclarationAndInitalizationPointerExpression
-    | constness=CONST? t=types?  CONST? var1=VARIABLENAME IS '*'var2=VARIABLENAME           #GetPointerValue
-
-    | name=VARIABLENAME IS b=body                                                           #InitalizationExpression
-    | var1=VARIABLENAME IS '&'var2=VARIABLENAME                                             #InitalizationPointerExpression
-    | body                                                                                  #Expression
-    | name=VARIABLENAME op=identifierOP                                                     #IdentifierOperationExpression
+    : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
+    | lvalue                                                                                    #LValue
+    | body                                                                                      #Expression
+    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
+    | Print'('PrintFormat*(',' body)*')'                                                        #Printf
+    | Scan'('ScanFormat(','body)*')'                                                            #Scanf
+    | OneTokenStatement                                                                         #OneTokenStatement
+    | 'return' b=rvalue?                                                                        #ReturnKeyword
+    | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
+lvalue
+    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME
+    ;
+
+rvalue
+    : body
+    | variableAdress
+    ;
+
+variableAdress
+    : ('&')?name=NAME;
 
 identifierOP
     : PLUS PLUS
     | MINUS MINUS
-    ;
-
-pointerTypes
-    : dataType('*')?
-    ;
-
-types
-    : dataType
     ;
 
 dataType
@@ -45,18 +69,23 @@ dataType
     | CHAR
     ;
 
-
 body
     : paren
     | data
     | bodyOperationBody
     | unary
+    | functionCall
+    ;
+
+functionCall
+    : name=NAME '(' body? (',' body)* ')'
     ;
 
 leftOperationBody
     :paren
     |data
     |unary
+    | functionCall
     ;
 
 unaryBody
@@ -81,7 +110,8 @@ data
     : value=CHARINPUT                                                   #CharExpression
     | value=INTINPUT                                                    #IntExpression
     | value=FLOATINPUT                                                  #FloatExpression
-    | VARIABLENAME                                                      #VariableExpression
+    | '*'value=NAME                                                     #PointerValueExpression
+    | NAME                                                              #VariableExpression
     ;
 
 operation
@@ -100,6 +130,31 @@ operation
     | OR
     ;
 
+OneTokenStatement
+    : 'break'
+    | 'continue'
+    ;
+
+
+Print
+    : 'printf'
+    ;
+
+PrintFormat
+    : '"'(~('\'' | '%' | '"') | ScanFormat)*'"'
+    ;
+
+Scan
+    : 'scanf'
+    ;
+
+ScanFormat
+    : '%d'
+    | '%i'
+    | '%s'
+    | '%c'
+    ;
+
 INT
     : 'int'
     ;
@@ -112,8 +167,8 @@ CHAR
     : 'char'
     ;
 
-VARIABLENAME
-    : (('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*)
+NAME
+    : ('a'..'z' | 'A'..'Z' | '_')('a'..'z' | 'A'..'Z' | [0-9] | '_')*
     ;
 
 PLUS
@@ -200,7 +255,14 @@ IS
     : '='
     ;
 
+SingleComment
+    : '//'(~('\n'))*
+    ;
+
+MultiLineComment
+    : '/*'.*?'*/'
+    ;
+
 WS
     : [ \n\t\r]+ -> skip
     ;
-
