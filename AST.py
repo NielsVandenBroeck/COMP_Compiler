@@ -165,6 +165,33 @@ class AST():
             print("[Warning] line: " + str(self.line) + ", position: " + str(
                 self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
+class ASTValue(AST):
+    def __init__(self, value, line = 0, position = 0, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getType(self):
+        exit("bruh")
+
+class ASTInt(ASTValue):
+    def __init__(self, value, line = 0, position = 0, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getType(self):
+        return int
+
+class ASTChar(ASTValue):
+    def __init__(self, value, line = 0, position = 0, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getType(self):
+        return chr
+
+class ASTFloat(ASTValue):
+    def __init__(self, value, line = 0, position = 0, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getType(self):
+        return float
 
 class ASTVariable(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
@@ -177,7 +204,6 @@ class ASTVariable(AST):
         if len(self.nodes) > 1:
             return self.nodes[1]
         return self.nodes[0]
-
 
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):

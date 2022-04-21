@@ -14,6 +14,7 @@ from antlr4.tree.Trees import Trees
 from grammar1Visitor import grammar1Visitor
 from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
+import subprocess
 
 def main(argv):
     #f = 8.3
@@ -47,6 +48,8 @@ def main(argv):
 
 
     print("Comiling complete")
+
+    print("Running programm")
 
     """
     program = LLVMProgram()

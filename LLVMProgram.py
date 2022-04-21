@@ -63,7 +63,7 @@ class LLVMProgram:
         exit("varible bestaat niet: " + name)
 
     def typeToLLVMType(self, type):
-        typeDict = {"int": "i32", "char": "i8", ASTVoid: "void", int: "i32"}
+        typeDict = {"int": "i32", "char": "i8", ASTVoid: "void", int: "i32", float: "float"}
         if type in typeDict:
             return typeDict[type]
         return type
@@ -150,7 +150,7 @@ class LLVMFunction(LLVMProgram):
             returnVar = self.getVariable(value.root)
             self._addLine(returnVar.getLLVMLoadString("returnItem"))
             returnItem =  "%returnItem"
-        elif type(value) == AST:
+        elif isinstance(value, AST):
             returnItem = str(value.root)
         else:
             returnItem = str(value)
@@ -181,7 +181,7 @@ class LLVMFunction(LLVMProgram):
             tempRegName = tempRegName1
         self.setVaribleValue(toVarible.name, "%" + tempRegName)
 
-    def print(self, varName, printAs = int):
+    def print(self, varName, printAs = None):
         varible0 = self.getVariable(varName)
         valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
         self._addLine(varible0.getLLVMLoadString(valueVariable0))
@@ -324,6 +324,8 @@ class LLVMVarible:
     def getLLVMIniString(self, value):
         if(self.type == "float"):
             value = hex(struct.unpack('<Q', struct.pack('<d', value))[0])
+        elif self.type == "i8" and len(value) == 3 and value[0] == "'" and value[2] == "'":
+            value = ord(value[1])
 
         return "store " + self.type + " " + str(value) + ", " + self.type + "* %" + self.LLVMname + ", align " + str(self.align)
 

@@ -219,7 +219,7 @@ class ASTGenerator(grammar1Visitor):
         name = ctx.name.text
         operation = ctx.op.getText()
         operation = operation[0]
-        root = ASTVariable(name, ctx.start.line, ctx.start.column, [ASTOperator(operation, ctx.start.line, ctx.start.column, [ASTVariable(name, ctx.start.line, ctx.start.column), AST(1,  ctx.start.line, ctx.start.column)])])
+        root = ASTVariable(name, ctx.start.line, ctx.start.column, [ASTOperator(operation, ctx.start.line, ctx.start.column, [ASTVariable(name, ctx.start.line, ctx.start.column), ASTInt(1,  ctx.start.line, ctx.start.column)])])
         return root
 
     # Visit a parse tree produced by grammar1Parser#Printf.
@@ -308,7 +308,7 @@ class ASTGenerator(grammar1Visitor):
                 number = 0
             else: number = 1
         else: number = int(ctx.getText())
-        return AST(number, ctx.start.line, ctx.start.column)
+        return ASTInt(number, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#FloatExpression.
     def visitFloatExpression(self, ctx):
@@ -318,12 +318,12 @@ class ASTGenerator(grammar1Visitor):
                 number = 0.0
             else: number = 1.0
         else: number = float(ctx.getText())
-        return AST(number, ctx.start.line, ctx.start.column,)
+        return ASTFloat(number, ctx.start.line, ctx.start.column,)
 
     # Visit a parse tree produced by grammar1Parser#CharExpression.
     def visitCharExpression(self, ctx):
         char = ctx.getText()
-        return AST(char, ctx.start.line, ctx.start.column,)
+        return ASTChar(char, ctx.start.line, ctx.start.column,)
 
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):

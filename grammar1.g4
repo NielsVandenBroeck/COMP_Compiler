@@ -39,7 +39,7 @@ newline
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
-    | Print'('PrintFormat*(',' body)*')'                                                         #Printf
+    | Print'('PrintFormat*(',' body)*')'                                                        #Printf
     | Scan'('ScanFormat(','body)*')'                                                            #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
@@ -141,8 +141,7 @@ Print
     ;
 
 PrintFormat
-    : ~('\'' | '%')*
-    | ScanFormat
+    : '"'(~('\'' | '%' | '"') | ScanFormat)*'"'
     ;
 
 Scan

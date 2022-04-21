@@ -1,5 +1,5 @@
 from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition, ASTIfElse, \
-    ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters
+    ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
 
 
@@ -25,9 +25,10 @@ class LLVMGenerator:
         elif type(node) == ASTCondition:
             tempName = self.currentFunction.createUniqueRegister("whileLoopCondition")
             whileLoopCondition = node.nodes[0]
-            if type(whileLoopCondition) == AST:
-                self.currentFunction.newVarible(tempName, "i32", 4)
-                self.currentFunction.setVaribleValue(tempName,node.nodes[0].getValue())
+            if type(whileLoopCondition) == ASTValue:
+                print(node)
+                self.currentFunction.newSmartVarible(tempName, whileLoopCondition.getType())
+                self.currentFunction.setVaribleValue(tempName,whileLoopCondition.getValue())
                 self.currentFunction.setConditionVarable(tempName)
             else:
                 self.currentFunction.newVarible(tempName, "i32", 4)
@@ -81,7 +82,7 @@ class LLVMGenerator:
         return False
 
     def _createAstDataTyeLLVm(self, node):
-        self.currentFunction.newVarible(node.getVariableName())
+        self.currentFunction.newSmartVarible(node.getVariableName(), node.getType())
         self._createSetAstVariableLLVM(node)
 
     def _createASTReturnItem(self, node):
@@ -127,9 +128,9 @@ class LLVMGenerator:
             self._createAstOperatorLLVM(tempName, node.getRightValue())
             node.nodes[1] = ASTVariable(tempName, 0,0)
 
-        if type(node.getRightValue()) == AST:
+        if isinstance(node.getRightValue(), ASTValue):
             tempName = self.currentFunction.createUniqueRegister()
-            self.currentFunction.newVarible(tempName)
+            self.currentFunction.newSmartVarible(tempName, node.getRightValue().getType())
             self.currentFunction.setVaribleValue(tempName, node.getRightValue().getValue())
             node.nodes[1] = ASTVariable(tempName, 0, 0)
         elif type(node.getRightValue()) == ASTFunctionName:
@@ -138,7 +139,7 @@ class LLVMGenerator:
             self._createAstOperatorLLVM(tempName, node.getRightValue())
             node.nodes[1] = ASTVariable(tempName, 0, 0)
 
-        if type(node.getLeftValue()) == AST:
+        if isinstance(node.getRightValue(), ASTValue):
             tempName = self.currentFunction.createUniqueRegister()
             self.currentFunction.newVarible(tempName)
             self.currentFunction.setVaribleValue(tempName, node.getLeftValue().getValue())
