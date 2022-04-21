@@ -1,5 +1,18 @@
 float Mul()
 {
       int i = 5;
+      idk();
       return i;
+}
+
+float  idk(){
+
+}
+
+int  idk(int i){
+
+}
+
+int main(){
+
 }
