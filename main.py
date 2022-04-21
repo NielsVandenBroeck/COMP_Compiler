@@ -39,9 +39,11 @@ def main(argv):
         myFile.write(ast.getDot())
 
 
-    #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-    #llvm.write()
+    llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+    llvm.write()
 
+    with open("OutputFiles/dotVisualization1.dot", 'w') as myFile:
+        myFile.write(ast.getDot())
 
 
     print("Comiling complete")

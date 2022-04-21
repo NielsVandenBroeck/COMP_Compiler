@@ -14,7 +14,11 @@ class SymbolObjectPointer:
         self.type = type
         self.constness = constness
         self.objectConst = objectConst
-        self.object = pointsTo
+        if pointsTo == None:
+            pointsTo = SymbolObject("nullptr", "nullptr", True)
+        else:
+            self.object = pointsTo
+
         self.name = name
 
     def getObject(self):
@@ -33,6 +37,7 @@ class SymbolObjectPointer:
 class SymbolTable():
     def __init__(self, root, parent=None):
         self.SymbolList = {}
+        self.SymbolList[None] = SymbolObject("nullptr", "nullptr", True)
         self.parent = parent
         self.root = root
 
@@ -162,7 +167,7 @@ class SymbolTable():
         if isinstance(object, ASTAdress):
             self.searchVariable(object)
             toObject = self.searchVariable(object)
-            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness,toObject)
+            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness, toObject)
         elif isinstance(object, ASTVariable):
             pointerObject = self.searchVariable(object)
         elif object == None:
@@ -179,7 +184,7 @@ class SymbolTable():
         newValue = node.getToObject()
 
         pointsToObject = var.getVariableName()
-        if self.searchVariable(newValue).type != self.SymbolList[pointsToObject].type:
+        if self.searchVariable(newValue) != None and self.searchVariable(newValue).type != self.SymbolList[pointsToObject].type:
             print("[Warning] line: " + str(node.line) + ", position: " + str(
                 node.position) + ". Implicit conversion from '" + str(self.SymbolList[pointsToObject].getObject().type) + "' to " + str(
                 self.searchVariable(var).type) + ". ")

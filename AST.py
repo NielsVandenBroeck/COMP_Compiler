@@ -167,7 +167,7 @@ class AST():
 
 
 class ASTVariable(AST):
-    def __init__(self, value, line, position, childNodes=None):
+    def __init__(self, value, line = 0, position = 0, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
     def getVariableName(self):
@@ -182,6 +182,12 @@ class ASTVariable(AST):
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def getFunctionName(self):
+        return self.root
+
+    def getFunctionParameters(self):
+        return self.nodes[0].nodes
 
 class ASTDataType(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -201,6 +207,9 @@ class ASTDataType(AST):
         if len(self.nodes) > 1:
             return self.nodes[1]
         return None
+
+    def getType(self):
+        return self.root
 
 class ASTVoid(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -268,25 +277,48 @@ class ASTFunction(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+    def getReturnType(self):
+        return self.nodes[0].root
+
+    def getFunctionName(self):
+        return self.nodes[1].root
+
+    def getParameters(self):
+        if len(self.nodes) == 4:
+            return self.nodes[2]
+        return []
+
+    def getScope(self):
+        if len(self.nodes) == 4:
+            return self.nodes[3]
+        return self.nodes[2]
+
 class ASTForwardDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def getReturnType(self):
+        return self.nodes[0].root
+
+    def getFunctionName(self):
+        return self.nodes[1].root
+
+    def getParameters(self):
+        if len(self.nodes) == 4:
+            return self.nodes[2]
+        return []
+
+    def getScope(self):
+        if len(self.nodes) == 4:
+            return self.nodes[3]
+        return self.nodes[2]
 
 class ASTParameters(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
-    def getCondition(self):
-        return self.nodes[0]
-
-    def getIfScope(self):
-        return self.nodes[1]
-
-    def containsElseScope(self):
-        return len(self.nodes) > 2
-
-    def getElseScope(self):
-        return self.nodes[2]
+    def getParameterList(self):
+        return self.nodes
 
 class ASTFor(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -307,3 +339,6 @@ class ASTOneTokenStatement(AST):
 class ASTReturn(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def getReturnValue(self):
+        return self.nodes[0]
