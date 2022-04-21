@@ -157,6 +157,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#FunctionForwardDeclaration.
+    def enterFunctionForwardDeclaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#FunctionForwardDeclaration.
+    def exitFunctionForwardDeclaration(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass

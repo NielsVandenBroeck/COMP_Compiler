@@ -4,7 +4,7 @@ class SemanticErrorAnalysis:
     def __init__(self, root):
         self.variables = {}
         self.loopAST(root)
-        self.searchMainFunction(root)
+        self.checkFunctions(root)
         self.checkOneTokenStatements(root)
         self.checkReturnKeyword(root)
         self.deleteUnusedVars(root)
@@ -18,7 +18,7 @@ class SemanticErrorAnalysis:
                     self.variables[node.root] = self.variables.get(node.root,0) + 1
                 self.loopAST(node)
 
-    def searchMainFunction(self, root, foundMain=False):
+    def checkFunctions(self, root, foundMain=False):
         functionNames = []
         if root.nodes is None:
             return
@@ -34,6 +34,7 @@ class SemanticErrorAnalysis:
                         foundMain = True
         if not foundMain:
             exit("[Error] No main function found.")
+
 
     def checkOneTokenStatements(self, root, inLoop=False):
         if root.nodes is None:

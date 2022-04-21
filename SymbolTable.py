@@ -37,13 +37,17 @@ class SymbolTable():
         self.root = root
 
     def loopAST(self, root=None):
-        if root == None:
+        if self.root is None:
+            return
+        if root is None:
             root = self.root
         if root.nodes is None:
             return
         for node in root.nodes:
             if node is not None:
                 self.visitChild(node)
+        if type(self) is UpperSymbolTable:
+            self.checkUndefinedReferences()
 
     def visitChild(self, node):
         #declaration
@@ -71,6 +75,7 @@ class SymbolTable():
         #check for unassigned variables in bodies
         elif self.IsBody(node):
             self.checkBody(node)
+        #check returns
         elif self.IsReturn(node):
             self.checkReturnType(node)
         #scopes
@@ -83,10 +88,16 @@ class SymbolTable():
         else:
             self.loopAST(node)
 
+    def getUpper(self):
+        if type(self) is UpperSymbolTable:
+            return self
+        return self.parent.getUpper()
+
     def addFunctionScope(self,root):
         if root.nodes is None:
             exit("Unexpected Error.")
         params = None
+        scope = None
         for node in root.nodes:
             if type(node) is ASTDataType or type(node) is ASTVoid or type(node) is ASTPointer:
                 returnType = node.root
@@ -96,9 +107,34 @@ class SymbolTable():
                 params = node
             elif type(node) is ASTScope:
                 scope = node
-        s = FunctionSymbolTable(scope,functionName, returnType, self, params)
-        self.functions.append(s)
+        #check if function has been declared before
+        functionAlreadyDeclared = self.searchFunction(returnType, functionName, params)
+
+        if functionAlreadyDeclared is not None:
+            print(functionAlreadyDeclared.functionName)
+            if scope is not None:
+                print("aha")
+                functionAlreadyDeclared.addScope(scope)
+            return
+
+        s = FunctionSymbolTable(scope,functionName, returnType, self.getUpper(), params)
+        self.addFunctionToUpper(s)
         s.loopAST()
+
+    def addFunctionToUpper(self,function):
+        if type(self) is UpperSymbolTable:
+            self.functions.append(function)
+            return
+        return self.parent.addFunctionToUpper(function)
+
+    def searchFunction(self, returnType, name, params):
+        if type(self) is UpperSymbolTable:
+            for function in self.functions:
+                if returnType == function.returnType and name == function.functionName:
+                    if len(params.nodes) == function.paramCount: #todo check if same type of params!!
+                        return function
+            return None
+        return self.parent.searchFunction(returnType, name, params)
 
     def pointerDeclaration(self, node, constness=False):
         objectConstness = False
@@ -209,12 +245,25 @@ class SymbolTable():
                 if function is not None:
                     compared = self.compareFunction(function,root)
                     if compared is True:
+                        if function.scope is None:
+                            self.addundefinedReferenceToUpper(function.functionName)
                         return
                     elif type(compared) == str:
                         exit("[Error] line: " + str(root.line) + ", position: " + str(
                             root.position) + compared)
             exit("[Error] line: " + str(root.line) + ", position: " + str(
-                root.position) + ". Implicit declaration of function '"+root.root+"' is invalid.")
+                root.position) + ". function '"+root.root+"' does not exist.")
+
+    def addundefinedReferenceToUpper(self, functionName):
+        if type(self) is UpperSymbolTable:
+            self.undefinedReferences.append(functionName)
+            return
+        return self.parent.addundefinedReferenceToUpper(functionName)
+
+    def checkUndefinedReferences(self):
+       if len(self.undefinedReferences) > 0:
+            exit("[Error] Undefined reference to '" + self.undefinedReferences[0] + "'.")
+
 
 
     def compareFunction(self, function, functionCall):
@@ -249,6 +298,9 @@ class SymbolTable():
             else:
                 self.checkBody(node.nodes[0])
                 node.nodes[0].correctDataType(self.returnType)
+
+    def checkForwardDeclaration(self, root):
+        self.addFunctionScope(root)
 
     def checkUnusedVariables(self, root):
         if root.nodes is None:
@@ -299,12 +351,16 @@ class SymbolTable():
         return type(node) is ASTReturn
 
     @staticmethod
+    def IsForwardDeclaration(node):
+        return type(node) is ASTForwardDeclaration
+
+    @staticmethod
     def IsScope(node):
         return type(node) is ASTScope
 
     @staticmethod
     def IsFunction(node):
-        return type(node) is ASTFunction
+        return type(node) is ASTFunction or type(node) is ASTForwardDeclaration
 
     @staticmethod
     def IsWhile(node):
@@ -314,15 +370,23 @@ class SymbolTable():
 class UpperSymbolTable(SymbolTable):
     def __init__(self, root):
         self.functions = []
+        self.undefinedReferences = []
         super().__init__(root)
 
 class FunctionSymbolTable(SymbolTable):
     def __init__(self, root, name, returnType, parent, parameters):
+        self.scope = root
         self.functionName = name
         self.returnType = returnType
         super().__init__(root, parent)
         self.paramCount = 0
         self.addParameters(parameters)
+
+    def addScope(self,scope):
+        self.scope = scope
+        if self.functionName in self.parent.undefinedReferences:
+            self.parent.undefinedReferences.remove(self.functionName)
+        self.loopAST(scope)
 
     def addParameters(self, root):
         if root is None:

@@ -42,6 +42,7 @@ newline
     | Print'('b=body')'                                                                         #Printf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
+    | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
 lvalue

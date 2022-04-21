@@ -268,6 +268,10 @@ class ASTFunction(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+class ASTForwardDeclaration(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
 class ASTParameters(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

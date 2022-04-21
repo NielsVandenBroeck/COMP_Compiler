@@ -1,9 +1,11 @@
-float Mul()
-{
-      int i = 5;
-      return i;
-}
+
 
 int main(){
-    Mul();
+    float funt(float z);
+    funt(8);
+    return 0;
+}
+
+int funt(int i){
+    return 10;
 }

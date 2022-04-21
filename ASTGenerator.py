@@ -38,7 +38,6 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#function.
     def visitFunction(self, ctx):
         root = ASTFunction("Function", ctx.start.line, ctx.start.column)
-
         if ctx.t is not None:
             if ctx.pointer is not None:
                 returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
@@ -54,9 +53,27 @@ class ASTGenerator(grammar1Visitor):
         if ctx.p is not None:
             functionParams = self.visit(ctx.p)
             root.addNode(functionParams)
-
         functionScope = self.visit(ctx.s)
         root.addNode(functionScope)
+        return root
+
+    def visitFunctionForwardDeclaration(self, ctx):
+        root = ASTForwardDeclaration("FunctionDeclaration", ctx.start.line, ctx.start.column)
+        if ctx.t is not None:
+            if ctx.pointer is not None:
+                returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+                returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
+            else:
+                returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+        else:
+            returnType = ASTVoid("void", ctx.start.line, ctx.start.column)
+        root.addNode(returnType)
+        functionName = ctx.name.text
+        functionName = ASTFunctionName(functionName, ctx.start.line, ctx.start.column)
+        root.addNode(functionName)
+        if ctx.p is not None:
+            functionParams = self.visit(ctx.p)
+            root.addNode(functionParams)
         return root
 
     # Visit a parse tree produced by grammar1Parser#params.
@@ -136,7 +153,8 @@ class ASTGenerator(grammar1Visitor):
                 else:
                     root.addNode(temp)
             elif line.f is not None:
-                exit("error") #todo
+                exit("[Error] line: " + str( ctx.start.line) + ", position: " + str(
+                    ctx.start.column) + ". Function definition is not allowed here.")
         return root
 
     # Visit a parse tree produced by grammar1Parser#param.
