@@ -111,9 +111,7 @@ class SymbolTable():
         functionAlreadyDeclared = self.searchFunction(returnType, functionName, params)
 
         if functionAlreadyDeclared is not None:
-            print(functionAlreadyDeclared.functionName)
             if scope is not None:
-                print("aha")
                 functionAlreadyDeclared.addScope(scope)
             return
 
@@ -131,8 +129,18 @@ class SymbolTable():
         if type(self) is UpperSymbolTable:
             for function in self.functions:
                 if returnType == function.returnType and name == function.functionName:
-                    if len(params.nodes) == function.paramCount: #todo check if same type of params!!
+                    if len(params.nodes) == len(function.parameters):
+                        for f1, f2 in zip(params.nodes, function.parameters):
+                            pointer = False
+                            while type(f1) is ASTConst or type(f1) is ASTPointer:
+                                if type(f1) is ASTPointer:
+                                    pointer = True
+                                f1 = f1.nodes[0]
+                            print(f1.root, f2[0], pointer, f2[1])
+                            if f1.root != f2[0] or pointer != f2[1]:
+                                return None
                         return function
+
             return None
         return self.parent.searchFunction(returnType, name, params)
 
@@ -272,8 +280,8 @@ class SymbolTable():
             functionCallCount = len(functionCall.nodes[0].nodes)
         if function.functionName != functionCall.root:
             return False
-        elif function.paramCount != functionCallCount:
-            errorText = ". Too few/many arguments to function call, expected "+ str(function.paramCount) +" have "+ str(functionCallCount) +"."
+        elif len(function.parameters) != functionCallCount:
+            errorText = ". Too few/many arguments to function call, expected "+ str(len(function.parameters)) +" have "+ str(functionCallCount) +"."
             return errorText
         return True
 
@@ -379,7 +387,7 @@ class FunctionSymbolTable(SymbolTable):
         self.functionName = name
         self.returnType = returnType
         super().__init__(root, parent)
-        self.paramCount = 0
+        self.parameters = []
         self.addParameters(parameters)
 
     def addScope(self,scope):
@@ -393,17 +401,31 @@ class FunctionSymbolTable(SymbolTable):
             return
         if root.nodes is None:
             return
-        self.paramCount = len(root.nodes)
         for node in root.nodes:
+            datatype = None
+            pointer = False
             if node is not None:
                 if type(node) is ASTConst:
+                    datatype = node.nodes[0].root
                     if type(node.nodes[0]) is ASTPointer:
+                        pointer = True
+                        if type(node.nodes[0].nodes[0]) is ASTConst:
+                            datatype = node.nodes[0].nodes[0].nodes[0].root
+                        else:
+                            datatype = node.nodes[0].nodes[0].root
                         self.pointerDeclaration(node.nodes[0], True)
                     elif type(node.nodes[0]) is ASTDataType:
                         self.variableDeclaration(node.nodes[0], True)
                     else:
                         print("huh")
                 elif self.IsVariableDeclarationSameTypes(node):
+                    datatype = node.root
                     self.variableDeclaration(node)
                 elif self.IsPointerDeclaration(node):
+                    pointer = True
+                    if type(node.nodes[0]) is ASTConst:
+                        datatype = node.nodes[0].nodes[0].root
+                    else:
+                        datatype = node.nodes[0].root
                     self.pointerDeclaration(node)
+            self.parameters.append((datatype,pointer))
