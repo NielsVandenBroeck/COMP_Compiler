@@ -39,7 +39,7 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | identifierOP                                                                              #IdentifierOperationExpression
+    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
     | Print'('f=Format pb=printBodies')'                                                        #Printf
     | Scan'('f=Format  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
@@ -76,7 +76,8 @@ variableAdress
     : ('&')?name=NAME;
 
 identifierOP
-    : name=NAME (p=PLUS PLUS | m=MINUS MINUS)
+    : PLUS PLUS
+    | MINUS MINUS
     ;
 
 dataType
@@ -91,7 +92,6 @@ body
     | bodyOperationBody
     | unary
     | functionCall
-    | identifierOP
     ;
 
 functionCall
@@ -103,7 +103,6 @@ leftOperationBody
     | data
     | unary
     | functionCall
-    | identifierOP
     ;
 
 unaryBody
