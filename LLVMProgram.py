@@ -266,6 +266,7 @@ class LLVMFunction(LLVMProgram):
                 uniqueReg = self.createUniqueRegister()
                 self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
                 valueVariable0 = uniqueReg
+                type = "double"
             argsPrintString += type + " %" + valueVariable0 + ", "
         argsPrintString = argsPrintString[:-2]
         self._addLine("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([" + str(charCount) + " x i8], [" + str(charCount) + " x i8]* @." + printStringName + ", i64 0, i64 0), " + argsPrintString + ")")

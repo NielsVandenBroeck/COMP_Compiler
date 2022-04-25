@@ -134,6 +134,11 @@ class LLVMGenerator:
                 self.currentFunction.newSmartVarible(tempVarible, functionType)
                 self._createAstOperatorLLVM(tempVarible, printArg)
                 printArgs.append(tempVarible)
+            elif isinstance(printArg, ASTValue):
+                tempVarName = self.currentFunction.createUniqueRegister("printTemp")
+                self.currentFunction.newSmartVarible(tempVarName, printArg.getType())
+                self.currentFunction.setVaribleValue(tempVarName, printArg.root)
+                printArgs.append(tempVarName)
             else:
                 printArgs.append(printArg.root)
 
