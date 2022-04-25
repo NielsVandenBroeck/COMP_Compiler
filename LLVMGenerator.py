@@ -144,9 +144,9 @@ class LLVMGenerator:
         printArgs = []
         for printArg in node.getAllVaribles():
             if type(printArg) == ASTAdress:
-                printArgs.append(printArg.getVariableName())
+                printArgs.append([printArg.getVariableName(), ASTAdress])
             else:
-                printArgs.append(printArg.root)
+                printArgs.append([printArg.root, ASTPointer])
 
         self.currentFunction.scan(node.getScanString(), printArgs)
 

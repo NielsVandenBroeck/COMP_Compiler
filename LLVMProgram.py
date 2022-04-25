@@ -252,7 +252,6 @@ class LLVMFunction(LLVMProgram):
         self.setVaribleValue(toVarible.name, "%" + tempRegName)
 
     def print(self, printString ,vars = [], printAs = None):
-
         printStringName = self.createUniqueRegister("printString");
         self.addPrintString(printStringName, printString)
         charCount = len(printString) + 1
@@ -277,7 +276,9 @@ class LLVMFunction(LLVMProgram):
         charCount = len(printString) + 1
 
         argsPrintString = ""
-        for item in vars:
+        for itemType in vars:
+            item = itemType[0]
+            type = itemType[1]
             varible0 = self.getVariable(item)
             valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
             self._addLine(varible0.getLLVMLoadString(valueVariable0))
@@ -286,8 +287,10 @@ class LLVMFunction(LLVMProgram):
                 uniqueReg = self.createUniqueRegister()
                 self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
                 valueVariable0 = uniqueReg
-
-            argsPrintString += type + "* %" + item + ", "
+            if type == ASTPointer:
+                argsPrintString += type + "* %" + item + ", "
+            else:
+                argsPrintString += type + "* %" + item + ", "
         argsPrintString = argsPrintString[:-2]
         self._addLine("call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([" + str(charCount) + " x i8], [" + str(charCount) + " x i8]* @." + printStringName + ", i64 0, i64 0), " + argsPrintString + ")")
 
