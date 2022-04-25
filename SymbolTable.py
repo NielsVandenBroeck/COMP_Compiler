@@ -137,9 +137,13 @@ class SymbolTable():
         return self.parent.addFunctionToUpper(function)
 
     def searchFunction(self, returnType, name, params):
+
         if type(self) is UpperSymbolTable:
             for function in self.functions:
+                print(params, function.parameters)
                 if returnType == function.returnType and name == function.functionName:
+                    if params is None and function.parameters == []:
+                        return function
                     if len(params.nodes) == len(function.parameters):
                         for f1, f2 in zip(params.nodes, function.parameters):
                             pointer = False
@@ -260,8 +264,9 @@ class SymbolTable():
         elif type(root) is ASTFunctionName:
             self.checkFunctionCall(root)
             root.type = self.findReturnTypeOfFunction(root.root)
-            for param in root.nodes[0].nodes:
-                self.searchVariable(param)
+            if root.nodes is not None:
+                for param in root.nodes[0].nodes:
+                    self.searchVariable(param)
             self.checkFunctionCall(root)
             return
         if root.nodes is None:

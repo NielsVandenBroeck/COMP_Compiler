@@ -1,7 +1,7 @@
 from AST import *
 from grammar1Visitor import *
 from SymbolTable import *
-from SemanticErrorAnalysis import SemanticErrorAnalysis
+from ErrorAnalysis import ErrorAnalysis
 
 class ASTGenerator(grammar1Visitor):
     def __init__(self):
@@ -28,7 +28,7 @@ class ASTGenerator(grammar1Visitor):
                 if object is not None:
                     object = object.removePriority()
                     program.addNode(object)
-        SemanticErrorAnalysis(program)
+        ErrorAnalysis(program)
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()

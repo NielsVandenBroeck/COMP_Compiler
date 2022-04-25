@@ -91,7 +91,7 @@ class LLVMProgram:
             return self.VaribleList[name]
         elif self.parantFunction != None:
             return self.parantFunction.getVariable(name)
-        exit("varible bestaat niet: " + name)
+        exit("varible bestaat niet: " + str(name))
 
     def typeToLLVMType(self, type):
         typeDict = {"int": "i32", "char": "i8", ASTVoid: "void", int: "i32", float: "float", chr:"i8"}

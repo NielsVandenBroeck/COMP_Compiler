@@ -1,6 +1,6 @@
 from AST import *
 
-class SemanticErrorAnalysis:
+class ErrorAnalysis:
     def __init__(self, root):
         self.variables = {}
         self.loopAST(root)
