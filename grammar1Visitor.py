@@ -80,6 +80,11 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#Scanf.
+    def visitScanf(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#OneTokenStatement.
     def visitOneTokenStatement(self, ctx):
         return self.visitChildren(ctx)

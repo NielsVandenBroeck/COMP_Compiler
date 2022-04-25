@@ -9,7 +9,7 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u"*\u00fd\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u".\u010a\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
         buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r")
         buf.write(u"\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4")
         buf.write(u"\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\3\2")
@@ -21,107 +21,114 @@ def serializedATN():
         buf.write(u"\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7")
         buf.write(u"\3\7\3\7\3\7\3\7\7\7~\n\7\f\7\16\7\u0081\13\7\3\7\5\7")
         buf.write(u"\u0084\n\7\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write(u"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0098\n\t\3\t\3\t")
-        buf.write(u"\5\t\u009c\n\t\3\t\5\t\u009f\n\t\3\t\3\t\3\t\5\t\u00a4")
-        buf.write(u"\n\t\3\t\5\t\u00a7\n\t\3\n\5\n\u00aa\n\n\3\n\5\n\u00ad")
-        buf.write(u"\n\n\3\n\5\n\u00b0\n\n\3\n\5\n\u00b3\n\n\3\n\3\n\3\13")
-        buf.write(u"\3\13\5\13\u00b9\n\13\3\f\5\f\u00bc\n\f\3\f\3\f\3\r\3")
-        buf.write(u"\r\3\r\3\r\5\r\u00c4\n\r\3\16\3\16\3\17\3\17\3\17\3\17")
-        buf.write(u"\3\17\5\17\u00cd\n\17\3\20\3\20\3\20\5\20\u00d2\n\20")
-        buf.write(u"\3\20\3\20\7\20\u00d6\n\20\f\20\16\20\u00d9\13\20\3\20")
-        buf.write(u"\3\20\3\21\3\21\3\21\3\21\5\21\u00e1\n\21\3\22\3\22\3")
-        buf.write(u"\22\5\22\u00e6\n\22\3\23\3\23\3\23\3\24\3\24\3\24\3\24")
-        buf.write(u"\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26\3\26\5")
-        buf.write(u"\26\u00f9\n\26\3\27\3\27\3\27\2\2\30\2\4\6\b\n\f\16\20")
-        buf.write(u"\22\24\26\30\32\34\36 \"$&(*,\2\5\3\2\17\21\3\2\23\24")
-        buf.write(u"\3\2\23\37\2\u0118\2\61\3\2\2\2\4;\3\2\2\2\6B\3\2\2\2")
-        buf.write(u"\bL\3\2\2\2\nU\3\2\2\2\f\u0083\3\2\2\2\16\u0085\3\2\2")
-        buf.write(u"\2\20\u00a6\3\2\2\2\22\u00a9\3\2\2\2\24\u00b8\3\2\2\2")
-        buf.write(u"\26\u00bb\3\2\2\2\30\u00c3\3\2\2\2\32\u00c5\3\2\2\2\34")
-        buf.write(u"\u00cc\3\2\2\2\36\u00ce\3\2\2\2 \u00e0\3\2\2\2\"\u00e5")
-        buf.write(u"\3\2\2\2$\u00e7\3\2\2\2&\u00ea\3\2\2\2(\u00ee\3\2\2\2")
-        buf.write(u"*\u00f8\3\2\2\2,\u00fa\3\2\2\2.\60\5\4\3\2/.\3\2\2\2")
-        buf.write(u"\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62\3\3\2\2\2")
-        buf.write(u"\63\61\3\2\2\2\64\65\5\16\b\2\65\66\7 \2\2\66<\3\2\2")
-        buf.write(u"\2\67<\7(\2\28<\7)\2\29<\5\f\7\2:<\5\6\4\2;\64\3\2\2")
-        buf.write(u"\2;\67\3\2\2\2;8\3\2\2\2;9\3\2\2\2;:\3\2\2\2<\5\3\2\2")
-        buf.write(u"\2=?\5\32\16\2>@\7\25\2\2?>\3\2\2\2?@\3\2\2\2@C\3\2\2")
-        buf.write(u"\2AC\7\3\2\2B=\3\2\2\2BA\3\2\2\2CD\3\2\2\2DE\7\22\2\2")
-        buf.write(u"EG\7!\2\2FH\5\b\5\2GF\3\2\2\2GH\3\2\2\2HI\3\2\2\2IJ\7")
-        buf.write(u"\"\2\2JK\5\f\7\2K\7\3\2\2\2LQ\5\n\6\2MN\7\4\2\2NP\5\n")
-        buf.write(u"\6\2OM\3\2\2\2PS\3\2\2\2QO\3\2\2\2QR\3\2\2\2R\t\3\2\2")
-        buf.write(u"\2SQ\3\2\2\2TV\7&\2\2UT\3\2\2\2UV\3\2\2\2VW\3\2\2\2W")
-        buf.write(u"Y\5\32\16\2XZ\7\25\2\2YX\3\2\2\2YZ\3\2\2\2Z\\\3\2\2\2")
-        buf.write(u"[]\7&\2\2\\[\3\2\2\2\\]\3\2\2\2]^\3\2\2\2^_\7\22\2\2")
-        buf.write(u"_\13\3\2\2\2`a\7\5\2\2ab\7!\2\2bc\5\34\17\2cd\7\"\2\2")
-        buf.write(u"dg\5\f\7\2ef\7\6\2\2fh\5\f\7\2ge\3\2\2\2gh\3\2\2\2h\u0084")
-        buf.write(u"\3\2\2\2ij\7\7\2\2jk\7!\2\2kl\5\34\17\2lm\7\"\2\2mn\5")
-        buf.write(u"\f\7\2n\u0084\3\2\2\2op\7\b\2\2pq\7!\2\2qr\5\22\n\2r")
-        buf.write(u"s\7\'\2\2st\5\24\13\2tu\7 \2\2uv\5\34\17\2vw\7 \2\2w")
-        buf.write(u"x\5\16\b\2xy\7\"\2\2yz\5\f\7\2z\u0084\3\2\2\2{\177\7")
-        buf.write(u"\t\2\2|~\5\4\3\2}|\3\2\2\2~\u0081\3\2\2\2\177}\3\2\2")
-        buf.write(u"\2\177\u0080\3\2\2\2\u0080\u0082\3\2\2\2\u0081\177\3")
-        buf.write(u"\2\2\2\u0082\u0084\7\n\2\2\u0083`\3\2\2\2\u0083i\3\2")
-        buf.write(u"\2\2\u0083o\3\2\2\2\u0083{\3\2\2\2\u0084\r\3\2\2\2\u0085")
-        buf.write(u"\u0086\5\20\t\2\u0086\17\3\2\2\2\u0087\u0088\5\22\n\2")
-        buf.write(u"\u0088\u0089\7\'\2\2\u0089\u008a\5\24\13\2\u008a\u00a7")
-        buf.write(u"\3\2\2\2\u008b\u00a7\5\22\n\2\u008c\u00a7\5\34\17\2\u008d")
-        buf.write(u"\u008e\7\22\2\2\u008e\u00a7\5\30\r\2\u008f\u0090\7\16")
-        buf.write(u"\2\2\u0090\u0091\7!\2\2\u0091\u0092\5\34\17\2\u0092\u0093")
-        buf.write(u"\7\"\2\2\u0093\u00a7\3\2\2\2\u0094\u00a7\7\r\2\2\u0095")
-        buf.write(u"\u0097\7\13\2\2\u0096\u0098\5\24\13\2\u0097\u0096\3\2")
-        buf.write(u"\2\2\u0097\u0098\3\2\2\2\u0098\u00a7\3\2\2\2\u0099\u009b")
-        buf.write(u"\5\32\16\2\u009a\u009c\7\25\2\2\u009b\u009a\3\2\2\2\u009b")
-        buf.write(u"\u009c\3\2\2\2\u009c\u009f\3\2\2\2\u009d\u009f\7\3\2")
-        buf.write(u"\2\u009e\u0099\3\2\2\2\u009e\u009d\3\2\2\2\u009f\u00a0")
-        buf.write(u"\3\2\2\2\u00a0\u00a1\7\22\2\2\u00a1\u00a3\7!\2\2\u00a2")
-        buf.write(u"\u00a4\5\b\5\2\u00a3\u00a2\3\2\2\2\u00a3\u00a4\3\2\2")
-        buf.write(u"\2\u00a4\u00a5\3\2\2\2\u00a5\u00a7\7\"\2\2\u00a6\u0087")
-        buf.write(u"\3\2\2\2\u00a6\u008b\3\2\2\2\u00a6\u008c\3\2\2\2\u00a6")
-        buf.write(u"\u008d\3\2\2\2\u00a6\u008f\3\2\2\2\u00a6\u0094\3\2\2")
-        buf.write(u"\2\u00a6\u0095\3\2\2\2\u00a6\u009e\3\2\2\2\u00a7\21\3")
-        buf.write(u"\2\2\2\u00a8\u00aa\7&\2\2\u00a9\u00a8\3\2\2\2\u00a9\u00aa")
-        buf.write(u"\3\2\2\2\u00aa\u00ac\3\2\2\2\u00ab\u00ad\5\32\16\2\u00ac")
-        buf.write(u"\u00ab\3\2\2\2\u00ac\u00ad\3\2\2\2\u00ad\u00af\3\2\2")
-        buf.write(u"\2\u00ae\u00b0\7\25\2\2\u00af\u00ae\3\2\2\2\u00af\u00b0")
-        buf.write(u"\3\2\2\2\u00b0\u00b2\3\2\2\2\u00b1\u00b3\7&\2\2\u00b2")
-        buf.write(u"\u00b1\3\2\2\2\u00b2\u00b3\3\2\2\2\u00b3\u00b4\3\2\2")
-        buf.write(u"\2\u00b4\u00b5\7\22\2\2\u00b5\23\3\2\2\2\u00b6\u00b9")
-        buf.write(u"\5\34\17\2\u00b7\u00b9\5\26\f\2\u00b8\u00b6\3\2\2\2\u00b8")
-        buf.write(u"\u00b7\3\2\2\2\u00b9\25\3\2\2\2\u00ba\u00bc\7\f\2\2\u00bb")
-        buf.write(u"\u00ba\3\2\2\2\u00bb\u00bc\3\2\2\2\u00bc\u00bd\3\2\2")
-        buf.write(u"\2\u00bd\u00be\7\22\2\2\u00be\27\3\2\2\2\u00bf\u00c0")
-        buf.write(u"\7\23\2\2\u00c0\u00c4\7\23\2\2\u00c1\u00c2\7\24\2\2\u00c2")
-        buf.write(u"\u00c4\7\24\2\2\u00c3\u00bf\3\2\2\2\u00c3\u00c1\3\2\2")
-        buf.write(u"\2\u00c4\31\3\2\2\2\u00c5\u00c6\t\2\2\2\u00c6\33\3\2")
-        buf.write(u"\2\2\u00c7\u00cd\5(\25\2\u00c8\u00cd\5*\26\2\u00c9\u00cd")
-        buf.write(u"\5&\24\2\u00ca\u00cd\5$\23\2\u00cb\u00cd\5\36\20\2\u00cc")
-        buf.write(u"\u00c7\3\2\2\2\u00cc\u00c8\3\2\2\2\u00cc\u00c9\3\2\2")
-        buf.write(u"\2\u00cc\u00ca\3\2\2\2\u00cc\u00cb\3\2\2\2\u00cd\35\3")
-        buf.write(u"\2\2\2\u00ce\u00cf\7\22\2\2\u00cf\u00d1\7!\2\2\u00d0")
-        buf.write(u"\u00d2\5\34\17\2\u00d1\u00d0\3\2\2\2\u00d1\u00d2\3\2")
-        buf.write(u"\2\2\u00d2\u00d7\3\2\2\2\u00d3\u00d4\7\4\2\2\u00d4\u00d6")
-        buf.write(u"\5\34\17\2\u00d5\u00d3\3\2\2\2\u00d6\u00d9\3\2\2\2\u00d7")
-        buf.write(u"\u00d5\3\2\2\2\u00d7\u00d8\3\2\2\2\u00d8\u00da\3\2\2")
-        buf.write(u"\2\u00d9\u00d7\3\2\2\2\u00da\u00db\7\"\2\2\u00db\37\3")
-        buf.write(u"\2\2\2\u00dc\u00e1\5(\25\2\u00dd\u00e1\5*\26\2\u00de")
-        buf.write(u"\u00e1\5$\23\2\u00df\u00e1\5\36\20\2\u00e0\u00dc\3\2")
-        buf.write(u"\2\2\u00e0\u00dd\3\2\2\2\u00e0\u00de\3\2\2\2\u00e0\u00df")
-        buf.write(u"\3\2\2\2\u00e1!\3\2\2\2\u00e2\u00e6\5(\25\2\u00e3\u00e6")
-        buf.write(u"\5*\26\2\u00e4\u00e6\5&\24\2\u00e5\u00e2\3\2\2\2\u00e5")
-        buf.write(u"\u00e3\3\2\2\2\u00e5\u00e4\3\2\2\2\u00e6#\3\2\2\2\u00e7")
-        buf.write(u"\u00e8\t\3\2\2\u00e8\u00e9\5\"\22\2\u00e9%\3\2\2\2\u00ea")
-        buf.write(u"\u00eb\5 \21\2\u00eb\u00ec\5,\27\2\u00ec\u00ed\5\34\17")
-        buf.write(u"\2\u00ed\'\3\2\2\2\u00ee\u00ef\7!\2\2\u00ef\u00f0\5\34")
-        buf.write(u"\17\2\u00f0\u00f1\7\"\2\2\u00f1)\3\2\2\2\u00f2\u00f9")
-        buf.write(u"\7%\2\2\u00f3\u00f9\7#\2\2\u00f4\u00f9\7$\2\2\u00f5\u00f6")
-        buf.write(u"\7\25\2\2\u00f6\u00f9\7\22\2\2\u00f7\u00f9\7\22\2\2\u00f8")
-        buf.write(u"\u00f2\3\2\2\2\u00f8\u00f3\3\2\2\2\u00f8\u00f4\3\2\2")
-        buf.write(u"\2\u00f8\u00f5\3\2\2\2\u00f8\u00f7\3\2\2\2\u00f9+\3\2")
-        buf.write(u"\2\2\u00fa\u00fb\t\4\2\2\u00fb-\3\2\2\2 \61;?BGQUY\\")
-        buf.write(u"g\177\u0083\u0097\u009b\u009e\u00a3\u00a6\u00a9\u00ac")
-        buf.write(u"\u00af\u00b2\u00b8\u00bb\u00c3\u00cc\u00d1\u00d7\u00e0")
-        buf.write(u"\u00e5\u00f8")
+        buf.write(u"\t\3\t\3\t\3\t\3\t\6\t\u0095\n\t\r\t\16\t\u0096\3\t\3")
+        buf.write(u"\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u00a5")
+        buf.write(u"\n\t\3\t\3\t\5\t\u00a9\n\t\3\t\5\t\u00ac\n\t\3\t\3\t")
+        buf.write(u"\3\t\5\t\u00b1\n\t\3\t\5\t\u00b4\n\t\3\n\5\n\u00b7\n")
+        buf.write(u"\n\3\n\5\n\u00ba\n\n\3\n\5\n\u00bd\n\n\3\n\5\n\u00c0")
+        buf.write(u"\n\n\3\n\3\n\3\13\3\13\5\13\u00c6\n\13\3\f\5\f\u00c9")
+        buf.write(u"\n\f\3\f\3\f\3\r\3\r\3\r\3\r\5\r\u00d1\n\r\3\16\3\16")
+        buf.write(u"\3\17\3\17\3\17\3\17\3\17\5\17\u00da\n\17\3\20\3\20\3")
+        buf.write(u"\20\5\20\u00df\n\20\3\20\3\20\7\20\u00e3\n\20\f\20\16")
+        buf.write(u"\20\u00e6\13\20\3\20\3\20\3\21\3\21\3\21\3\21\5\21\u00ee")
+        buf.write(u"\n\21\3\22\3\22\3\22\5\22\u00f3\n\22\3\23\3\23\3\23\3")
+        buf.write(u"\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\26\3\26\3\26")
+        buf.write(u"\3\26\3\26\3\26\5\26\u0106\n\26\3\27\3\27\3\27\2\2\30")
+        buf.write(u"\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,\2\5\3")
+        buf.write(u"\2\23\25\3\2\27\30\3\2\27#\2\u0127\2\61\3\2\2\2\4;\3")
+        buf.write(u"\2\2\2\6B\3\2\2\2\bL\3\2\2\2\nU\3\2\2\2\f\u0083\3\2\2")
+        buf.write(u"\2\16\u0085\3\2\2\2\20\u00b3\3\2\2\2\22\u00b6\3\2\2\2")
+        buf.write(u"\24\u00c5\3\2\2\2\26\u00c8\3\2\2\2\30\u00d0\3\2\2\2\32")
+        buf.write(u"\u00d2\3\2\2\2\34\u00d9\3\2\2\2\36\u00db\3\2\2\2 \u00ed")
+        buf.write(u"\3\2\2\2\"\u00f2\3\2\2\2$\u00f4\3\2\2\2&\u00f7\3\2\2")
+        buf.write(u"\2(\u00fb\3\2\2\2*\u0105\3\2\2\2,\u0107\3\2\2\2.\60\5")
+        buf.write(u"\4\3\2/.\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2")
+        buf.write(u"\2\2\62\3\3\2\2\2\63\61\3\2\2\2\64\65\5\16\b\2\65\66")
+        buf.write(u"\7$\2\2\66<\3\2\2\2\67<\7,\2\28<\7-\2\29<\5\f\7\2:<\5")
+        buf.write(u"\6\4\2;\64\3\2\2\2;\67\3\2\2\2;8\3\2\2\2;9\3\2\2\2;:")
+        buf.write(u"\3\2\2\2<\5\3\2\2\2=?\5\32\16\2>@\7\31\2\2?>\3\2\2\2")
+        buf.write(u"?@\3\2\2\2@C\3\2\2\2AC\7\3\2\2B=\3\2\2\2BA\3\2\2\2CD")
+        buf.write(u"\3\2\2\2DE\7\26\2\2EG\7%\2\2FH\5\b\5\2GF\3\2\2\2GH\3")
+        buf.write(u"\2\2\2HI\3\2\2\2IJ\7&\2\2JK\5\f\7\2K\7\3\2\2\2LQ\5\n")
+        buf.write(u"\6\2MN\7\4\2\2NP\5\n\6\2OM\3\2\2\2PS\3\2\2\2QO\3\2\2")
+        buf.write(u"\2QR\3\2\2\2R\t\3\2\2\2SQ\3\2\2\2TV\7*\2\2UT\3\2\2\2")
+        buf.write(u"UV\3\2\2\2VW\3\2\2\2WY\5\32\16\2XZ\7\31\2\2YX\3\2\2\2")
+        buf.write(u"YZ\3\2\2\2Z\\\3\2\2\2[]\7*\2\2\\[\3\2\2\2\\]\3\2\2\2")
+        buf.write(u"]^\3\2\2\2^_\7\26\2\2_\13\3\2\2\2`a\7\5\2\2ab\7%\2\2")
+        buf.write(u"bc\5\34\17\2cd\7&\2\2dg\5\f\7\2ef\7\6\2\2fh\5\f\7\2g")
+        buf.write(u"e\3\2\2\2gh\3\2\2\2h\u0084\3\2\2\2ij\7\7\2\2jk\7%\2\2")
+        buf.write(u"kl\5\34\17\2lm\7&\2\2mn\5\f\7\2n\u0084\3\2\2\2op\7\b")
+        buf.write(u"\2\2pq\7%\2\2qr\5\22\n\2rs\7+\2\2st\5\24\13\2tu\7$\2")
+        buf.write(u"\2uv\5\34\17\2vw\7$\2\2wx\5\16\b\2xy\7&\2\2yz\5\f\7\2")
+        buf.write(u"z\u0084\3\2\2\2{\177\7\t\2\2|~\5\4\3\2}|\3\2\2\2~\u0081")
+        buf.write(u"\3\2\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0082\3")
+        buf.write(u"\2\2\2\u0081\177\3\2\2\2\u0082\u0084\7\n\2\2\u0083`\3")
+        buf.write(u"\2\2\2\u0083i\3\2\2\2\u0083o\3\2\2\2\u0083{\3\2\2\2\u0084")
+        buf.write(u"\r\3\2\2\2\u0085\u0086\5\20\t\2\u0086\17\3\2\2\2\u0087")
+        buf.write(u"\u0088\5\22\n\2\u0088\u0089\7+\2\2\u0089\u008a\5\24\13")
+        buf.write(u"\2\u008a\u00b4\3\2\2\2\u008b\u00b4\5\22\n\2\u008c\u00b4")
+        buf.write(u"\5\34\17\2\u008d\u008e\7\26\2\2\u008e\u00b4\5\30\r\2")
+        buf.write(u"\u008f\u0090\7\16\2\2\u0090\u0091\7%\2\2\u0091\u0094")
+        buf.write(u"\7\17\2\2\u0092\u0093\7\4\2\2\u0093\u0095\5\34\17\2\u0094")
+        buf.write(u"\u0092\3\2\2\2\u0095\u0096\3\2\2\2\u0096\u0094\3\2\2")
+        buf.write(u"\2\u0096\u0097\3\2\2\2\u0097\u0098\3\2\2\2\u0098\u0099")
+        buf.write(u"\7&\2\2\u0099\u00b4\3\2\2\2\u009a\u009b\7\20\2\2\u009b")
+        buf.write(u"\u009c\7%\2\2\u009c\u009d\7\21\2\2\u009d\u009e\7\4\2")
+        buf.write(u"\2\u009e\u009f\5\34\17\2\u009f\u00a0\7&\2\2\u00a0\u00b4")
+        buf.write(u"\3\2\2\2\u00a1\u00b4\7\r\2\2\u00a2\u00a4\7\13\2\2\u00a3")
+        buf.write(u"\u00a5\5\24\13\2\u00a4\u00a3\3\2\2\2\u00a4\u00a5\3\2")
+        buf.write(u"\2\2\u00a5\u00b4\3\2\2\2\u00a6\u00a8\5\32\16\2\u00a7")
+        buf.write(u"\u00a9\7\31\2\2\u00a8\u00a7\3\2\2\2\u00a8\u00a9\3\2\2")
+        buf.write(u"\2\u00a9\u00ac\3\2\2\2\u00aa\u00ac\7\3\2\2\u00ab\u00a6")
+        buf.write(u"\3\2\2\2\u00ab\u00aa\3\2\2\2\u00ac\u00ad\3\2\2\2\u00ad")
+        buf.write(u"\u00ae\7\26\2\2\u00ae\u00b0\7%\2\2\u00af\u00b1\5\b\5")
+        buf.write(u"\2\u00b0\u00af\3\2\2\2\u00b0\u00b1\3\2\2\2\u00b1\u00b2")
+        buf.write(u"\3\2\2\2\u00b2\u00b4\7&\2\2\u00b3\u0087\3\2\2\2\u00b3")
+        buf.write(u"\u008b\3\2\2\2\u00b3\u008c\3\2\2\2\u00b3\u008d\3\2\2")
+        buf.write(u"\2\u00b3\u008f\3\2\2\2\u00b3\u009a\3\2\2\2\u00b3\u00a1")
+        buf.write(u"\3\2\2\2\u00b3\u00a2\3\2\2\2\u00b3\u00ab\3\2\2\2\u00b4")
+        buf.write(u"\21\3\2\2\2\u00b5\u00b7\7*\2\2\u00b6\u00b5\3\2\2\2\u00b6")
+        buf.write(u"\u00b7\3\2\2\2\u00b7\u00b9\3\2\2\2\u00b8\u00ba\5\32\16")
+        buf.write(u"\2\u00b9\u00b8\3\2\2\2\u00b9\u00ba\3\2\2\2\u00ba\u00bc")
+        buf.write(u"\3\2\2\2\u00bb\u00bd\7\31\2\2\u00bc\u00bb\3\2\2\2\u00bc")
+        buf.write(u"\u00bd\3\2\2\2\u00bd\u00bf\3\2\2\2\u00be\u00c0\7*\2\2")
+        buf.write(u"\u00bf\u00be\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0\u00c1")
+        buf.write(u"\3\2\2\2\u00c1\u00c2\7\26\2\2\u00c2\23\3\2\2\2\u00c3")
+        buf.write(u"\u00c6\5\34\17\2\u00c4\u00c6\5\26\f\2\u00c5\u00c3\3\2")
+        buf.write(u"\2\2\u00c5\u00c4\3\2\2\2\u00c6\25\3\2\2\2\u00c7\u00c9")
+        buf.write(u"\7\f\2\2\u00c8\u00c7\3\2\2\2\u00c8\u00c9\3\2\2\2\u00c9")
+        buf.write(u"\u00ca\3\2\2\2\u00ca\u00cb\7\26\2\2\u00cb\27\3\2\2\2")
+        buf.write(u"\u00cc\u00cd\7\27\2\2\u00cd\u00d1\7\27\2\2\u00ce\u00cf")
+        buf.write(u"\7\30\2\2\u00cf\u00d1\7\30\2\2\u00d0\u00cc\3\2\2\2\u00d0")
+        buf.write(u"\u00ce\3\2\2\2\u00d1\31\3\2\2\2\u00d2\u00d3\t\2\2\2\u00d3")
+        buf.write(u"\33\3\2\2\2\u00d4\u00da\5(\25\2\u00d5\u00da\5*\26\2\u00d6")
+        buf.write(u"\u00da\5&\24\2\u00d7\u00da\5$\23\2\u00d8\u00da\5\36\20")
+        buf.write(u"\2\u00d9\u00d4\3\2\2\2\u00d9\u00d5\3\2\2\2\u00d9\u00d6")
+        buf.write(u"\3\2\2\2\u00d9\u00d7\3\2\2\2\u00d9\u00d8\3\2\2\2\u00da")
+        buf.write(u"\35\3\2\2\2\u00db\u00dc\7\26\2\2\u00dc\u00de\7%\2\2\u00dd")
+        buf.write(u"\u00df\5\34\17\2\u00de\u00dd\3\2\2\2\u00de\u00df\3\2")
+        buf.write(u"\2\2\u00df\u00e4\3\2\2\2\u00e0\u00e1\7\4\2\2\u00e1\u00e3")
+        buf.write(u"\5\34\17\2\u00e2\u00e0\3\2\2\2\u00e3\u00e6\3\2\2\2\u00e4")
+        buf.write(u"\u00e2\3\2\2\2\u00e4\u00e5\3\2\2\2\u00e5\u00e7\3\2\2")
+        buf.write(u"\2\u00e6\u00e4\3\2\2\2\u00e7\u00e8\7&\2\2\u00e8\37\3")
+        buf.write(u"\2\2\2\u00e9\u00ee\5(\25\2\u00ea\u00ee\5*\26\2\u00eb")
+        buf.write(u"\u00ee\5$\23\2\u00ec\u00ee\5\36\20\2\u00ed\u00e9\3\2")
+        buf.write(u"\2\2\u00ed\u00ea\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed\u00ec")
+        buf.write(u"\3\2\2\2\u00ee!\3\2\2\2\u00ef\u00f3\5(\25\2\u00f0\u00f3")
+        buf.write(u"\5*\26\2\u00f1\u00f3\5&\24\2\u00f2\u00ef\3\2\2\2\u00f2")
+        buf.write(u"\u00f0\3\2\2\2\u00f2\u00f1\3\2\2\2\u00f3#\3\2\2\2\u00f4")
+        buf.write(u"\u00f5\t\3\2\2\u00f5\u00f6\5\"\22\2\u00f6%\3\2\2\2\u00f7")
+        buf.write(u"\u00f8\5 \21\2\u00f8\u00f9\5,\27\2\u00f9\u00fa\5\34\17")
+        buf.write(u"\2\u00fa\'\3\2\2\2\u00fb\u00fc\7%\2\2\u00fc\u00fd\5\34")
+        buf.write(u"\17\2\u00fd\u00fe\7&\2\2\u00fe)\3\2\2\2\u00ff\u0106\7")
+        buf.write(u")\2\2\u0100\u0106\7\'\2\2\u0101\u0106\7(\2\2\u0102\u0103")
+        buf.write(u"\7\31\2\2\u0103\u0106\7\26\2\2\u0104\u0106\7\26\2\2\u0105")
+        buf.write(u"\u00ff\3\2\2\2\u0105\u0100\3\2\2\2\u0105\u0101\3\2\2")
+        buf.write(u"\2\u0105\u0102\3\2\2\2\u0105\u0104\3\2\2\2\u0106+\3\2")
+        buf.write(u"\2\2\u0107\u0108\t\4\2\2\u0108-\3\2\2\2!\61;?BGQUY\\")
+        buf.write(u"g\177\u0083\u0096\u00a4\u00a8\u00ab\u00b0\u00b3\u00b6")
+        buf.write(u"\u00b9\u00bc\u00bf\u00c5\u00c8\u00d0\u00d9\u00de\u00e4")
+        buf.write(u"\u00ed\u00f2\u0105")
         return buf.getvalue()
 
 
@@ -137,19 +144,21 @@ class grammar1Parser ( Parser ):
 
     literalNames = [ u"<INVALID>", u"'void'", u"','", u"'if'", u"'else'", 
                      u"'while'", u"'for'", u"'{'", u"'}'", u"'return'", 
-                     u"'&'", u"<INVALID>", u"'printf'", u"'int'", u"'float'", 
-                     u"'char'", u"<INVALID>", u"'+'", u"'-'", u"'*'", u"'/'", 
-                     u"'>'", u"'<'", u"'=='", u"'>='", u"'<='", u"'!='", 
-                     u"'%'", u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"<INVALID>", 
+                     u"'&'", u"<INVALID>", u"'printf'", u"<INVALID>", u"'scanf'", 
+                     u"<INVALID>", u"<INVALID>", u"'int'", u"'float'", u"'char'", 
+                     u"<INVALID>", u"'+'", u"'-'", u"'*'", u"'/'", u"'>'", 
+                     u"'<'", u"'=='", u"'>='", u"'<='", u"'!='", u"'%'", 
+                     u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"<INVALID>", 
                      u"<INVALID>", u"<INVALID>", u"'const '", u"'='" ]
 
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"OneTokenStatement", 
-                      u"Print", u"INT", u"FLOAT", u"CHAR", u"NAME", u"PLUS", 
-                      u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", 
-                      u"LTE", u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", 
-                      u"LPAREN", u"RPAREN", u"INTINPUT", u"FLOATINPUT", 
+                      u"Print", u"PrintFormat", u"Scan", u"ScanFormat", 
+                      u"TYPESPECIFIER", u"INT", u"FLOAT", u"CHAR", u"NAME", 
+                      u"PLUS", u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", 
+                      u"EQ", u"GTE", u"LTE", u"NEQ", u"MOD", u"AND", u"OR", 
+                      u"SEMICOLON", u"LPAREN", u"RPAREN", u"INTINPUT", u"FLOATINPUT", 
                       u"CHARINPUT", u"CONST", u"IS", u"SingleComment", u"MultiLineComment", 
                       u"WS" ]
 
@@ -195,34 +204,38 @@ class grammar1Parser ( Parser ):
     T__9=10
     OneTokenStatement=11
     Print=12
-    INT=13
-    FLOAT=14
-    CHAR=15
-    NAME=16
-    PLUS=17
-    MINUS=18
-    TIMES=19
-    DIV=20
-    GT=21
-    LT=22
-    EQ=23
-    GTE=24
-    LTE=25
-    NEQ=26
-    MOD=27
-    AND=28
-    OR=29
-    SEMICOLON=30
-    LPAREN=31
-    RPAREN=32
-    INTINPUT=33
-    FLOATINPUT=34
-    CHARINPUT=35
-    CONST=36
-    IS=37
-    SingleComment=38
-    MultiLineComment=39
-    WS=40
+    PrintFormat=13
+    Scan=14
+    ScanFormat=15
+    TYPESPECIFIER=16
+    INT=17
+    FLOAT=18
+    CHAR=19
+    NAME=20
+    PLUS=21
+    MINUS=22
+    TIMES=23
+    DIV=24
+    GT=25
+    LT=26
+    EQ=27
+    GTE=28
+    LTE=29
+    NEQ=30
+    MOD=31
+    AND=32
+    OR=33
+    SEMICOLON=34
+    LPAREN=35
+    RPAREN=36
+    INTINPUT=37
+    FLOATINPUT=38
+    CHARINPUT=39
+    CONST=40
+    IS=41
+    SingleComment=42
+    MultiLineComment=43
+    WS=44
 
     def __init__(self, input, output=sys.stdout):
         super(grammar1Parser, self).__init__(input, output=output)
@@ -276,7 +289,7 @@ class grammar1Parser ( Parser ):
             self.state = 47
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__0) | (1 << grammar1Parser.T__2) | (1 << grammar1Parser.T__4) | (1 << grammar1Parser.T__5) | (1 << grammar1Parser.T__6) | (1 << grammar1Parser.T__8) | (1 << grammar1Parser.OneTokenStatement) | (1 << grammar1Parser.Print) | (1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT) | (1 << grammar1Parser.CONST) | (1 << grammar1Parser.SingleComment) | (1 << grammar1Parser.MultiLineComment))) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__0) | (1 << grammar1Parser.T__2) | (1 << grammar1Parser.T__4) | (1 << grammar1Parser.T__5) | (1 << grammar1Parser.T__6) | (1 << grammar1Parser.T__8) | (1 << grammar1Parser.OneTokenStatement) | (1 << grammar1Parser.Print) | (1 << grammar1Parser.Scan) | (1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT) | (1 << grammar1Parser.CONST) | (1 << grammar1Parser.SingleComment) | (1 << grammar1Parser.MultiLineComment))) != 0):
                 self.state = 44
                 self.programLine()
                 self.state = 49
@@ -906,7 +919,7 @@ class grammar1Parser ( Parser ):
                 self.state = 125
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__0) | (1 << grammar1Parser.T__2) | (1 << grammar1Parser.T__4) | (1 << grammar1Parser.T__5) | (1 << grammar1Parser.T__6) | (1 << grammar1Parser.T__8) | (1 << grammar1Parser.OneTokenStatement) | (1 << grammar1Parser.Print) | (1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT) | (1 << grammar1Parser.CONST) | (1 << grammar1Parser.SingleComment) | (1 << grammar1Parser.MultiLineComment))) != 0):
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__0) | (1 << grammar1Parser.T__2) | (1 << grammar1Parser.T__4) | (1 << grammar1Parser.T__5) | (1 << grammar1Parser.T__6) | (1 << grammar1Parser.T__8) | (1 << grammar1Parser.OneTokenStatement) | (1 << grammar1Parser.Print) | (1 << grammar1Parser.Scan) | (1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT) | (1 << grammar1Parser.CONST) | (1 << grammar1Parser.SingleComment) | (1 << grammar1Parser.MultiLineComment))) != 0):
                     self.state = 122
                     self.programLine()
                     self.state = 127
@@ -1021,17 +1034,21 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.PrintfContext, self).__init__(parser)
-            self.b = None # BodyContext
             self.copyFrom(ctx)
 
         def Print(self):
             return self.getToken(grammar1Parser.Print, 0)
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
+        def PrintFormat(self):
+            return self.getToken(grammar1Parser.PrintFormat, 0)
         def RPAREN(self):
             return self.getToken(grammar1Parser.RPAREN, 0)
-        def body(self):
-            return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
+        def body(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(grammar1Parser.BodyContext)
+            else:
+                return self.getTypedRuleContext(grammar1Parser.BodyContext,i)
 
 
         def enterRule(self, listener):
@@ -1135,6 +1152,39 @@ class grammar1Parser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class ScanfContext(NewlineContext):
+
+        def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
+            super(grammar1Parser.ScanfContext, self).__init__(parser)
+            self.copyFrom(ctx)
+
+        def Scan(self):
+            return self.getToken(grammar1Parser.Scan, 0)
+        def LPAREN(self):
+            return self.getToken(grammar1Parser.LPAREN, 0)
+        def ScanFormat(self):
+            return self.getToken(grammar1Parser.ScanFormat, 0)
+        def body(self):
+            return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
+
+        def RPAREN(self):
+            return self.getToken(grammar1Parser.RPAREN, 0)
+
+        def enterRule(self, listener):
+            if hasattr(listener, "enterScanf"):
+                listener.enterScanf(self)
+
+        def exitRule(self, listener):
+            if hasattr(listener, "exitScanf"):
+                listener.exitScanf(self)
+
+        def accept(self, visitor):
+            if hasattr(visitor, "visitScanf"):
+                return visitor.visitScanf(self)
+            else:
+                return visitor.visitChildren(self)
+
+
     class FunctionForwardDeclarationContext(NewlineContext):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
@@ -1231,9 +1281,9 @@ class grammar1Parser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_newline)
         self._la = 0 # Token type
         try:
-            self.state = 164
+            self.state = 177
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,17,self._ctx)
             if la_ == 1:
                 localctx = grammar1Parser.LValueRvalueContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
@@ -1276,71 +1326,102 @@ class grammar1Parser ( Parser ):
                 self.state = 142
                 self.match(grammar1Parser.LPAREN)
                 self.state = 143
-                localctx.b = self.body()
-                self.state = 144
+                self.match(grammar1Parser.PrintFormat)
+                self.state = 146 
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                while True:
+                    self.state = 144
+                    self.match(grammar1Parser.T__1)
+                    self.state = 145
+                    self.body()
+                    self.state = 148 
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+                    if not (_la==grammar1Parser.T__1):
+                        break
+
+                self.state = 150
                 self.match(grammar1Parser.RPAREN)
                 pass
 
             elif la_ == 6:
-                localctx = grammar1Parser.OneTokenStatementContext(self, localctx)
+                localctx = grammar1Parser.ScanfContext(self, localctx)
                 self.enterOuterAlt(localctx, 6)
-                self.state = 146
-                self.match(grammar1Parser.OneTokenStatement)
+                self.state = 152
+                self.match(grammar1Parser.Scan)
+                self.state = 153
+                self.match(grammar1Parser.LPAREN)
+                self.state = 154
+                self.match(grammar1Parser.ScanFormat)
+                self.state = 155
+                self.match(grammar1Parser.T__1)
+                self.state = 156
+                self.body()
+                self.state = 157
+                self.match(grammar1Parser.RPAREN)
                 pass
 
             elif la_ == 7:
-                localctx = grammar1Parser.ReturnKeywordContext(self, localctx)
+                localctx = grammar1Parser.OneTokenStatementContext(self, localctx)
                 self.enterOuterAlt(localctx, 7)
-                self.state = 147
+                self.state = 159
+                self.match(grammar1Parser.OneTokenStatement)
+                pass
+
+            elif la_ == 8:
+                localctx = grammar1Parser.ReturnKeywordContext(self, localctx)
+                self.enterOuterAlt(localctx, 8)
+                self.state = 160
                 self.match(grammar1Parser.T__8)
-                self.state = 149
+                self.state = 162
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.T__9) | (1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT))) != 0):
-                    self.state = 148
+                    self.state = 161
                     localctx.b = self.rvalue()
 
 
                 pass
 
-            elif la_ == 8:
+            elif la_ == 9:
                 localctx = grammar1Parser.FunctionForwardDeclarationContext(self, localctx)
-                self.enterOuterAlt(localctx, 8)
-                self.state = 156
+                self.enterOuterAlt(localctx, 9)
+                self.state = 169
                 self._errHandler.sync(self)
                 token = self._input.LA(1)
                 if token in [grammar1Parser.INT, grammar1Parser.FLOAT, grammar1Parser.CHAR]:
-                    self.state = 151
+                    self.state = 164
                     localctx.t = self.dataType()
-                    self.state = 153
+                    self.state = 166
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if _la==grammar1Parser.TIMES:
-                        self.state = 152
+                        self.state = 165
                         localctx.pointer = self.match(grammar1Parser.TIMES)
 
 
                     pass
                 elif token in [grammar1Parser.T__0]:
-                    self.state = 155
+                    self.state = 168
                     self.match(grammar1Parser.T__0)
                     pass
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 158
+                self.state = 171
                 localctx.name = self.match(grammar1Parser.NAME)
-                self.state = 159
+                self.state = 172
                 self.match(grammar1Parser.LPAREN)
-                self.state = 161
+                self.state = 174
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR) | (1 << grammar1Parser.CONST))) != 0):
-                    self.state = 160
+                    self.state = 173
                     localctx.p = self.params()
 
 
-                self.state = 163
+                self.state = 176
                 self.match(grammar1Parser.RPAREN)
                 pass
 
@@ -1408,39 +1489,39 @@ class grammar1Parser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 167
+            self.state = 180
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,17,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,18,self._ctx)
             if la_ == 1:
-                self.state = 166
+                self.state = 179
                 localctx.constnessB = self.match(grammar1Parser.CONST)
 
 
-            self.state = 170
+            self.state = 183
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR))) != 0):
-                self.state = 169
+                self.state = 182
                 localctx.t = self.dataType()
 
 
-            self.state = 173
+            self.state = 186
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==grammar1Parser.TIMES:
-                self.state = 172
+                self.state = 185
                 localctx.pointer = self.match(grammar1Parser.TIMES)
 
 
-            self.state = 176
+            self.state = 189
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==grammar1Parser.CONST:
-                self.state = 175
+                self.state = 188
                 localctx.constnessA = self.match(grammar1Parser.CONST)
 
 
-            self.state = 178
+            self.state = 191
             localctx.name = self.match(grammar1Parser.NAME)
         except RecognitionException as re:
             localctx.exception = re
@@ -1490,18 +1571,18 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.RvalueContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_rvalue)
         try:
-            self.state = 182
+            self.state = 195
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,21,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,22,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 180
+                self.state = 193
                 self.body()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 181
+                self.state = 194
                 self.variableAdress()
                 pass
 
@@ -1552,15 +1633,15 @@ class grammar1Parser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 185
+            self.state = 198
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==grammar1Parser.T__9:
-                self.state = 184
+                self.state = 197
                 self.match(grammar1Parser.T__9)
 
 
-            self.state = 187
+            self.state = 200
             localctx.name = self.match(grammar1Parser.NAME)
         except RecognitionException as re:
             localctx.exception = re
@@ -1614,21 +1695,21 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.IdentifierOPContext(self, self._ctx, self.state)
         self.enterRule(localctx, 22, self.RULE_identifierOP)
         try:
-            self.state = 193
+            self.state = 206
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [grammar1Parser.PLUS]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 189
+                self.state = 202
                 self.match(grammar1Parser.PLUS)
-                self.state = 190
+                self.state = 203
                 self.match(grammar1Parser.PLUS)
                 pass
             elif token in [grammar1Parser.MINUS]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 191
+                self.state = 204
                 self.match(grammar1Parser.MINUS)
-                self.state = 192
+                self.state = 205
                 self.match(grammar1Parser.MINUS)
                 pass
             else:
@@ -1685,7 +1766,7 @@ class grammar1Parser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 195
+            self.state = 208
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.INT) | (1 << grammar1Parser.FLOAT) | (1 << grammar1Parser.CHAR))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1752,36 +1833,36 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.BodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 26, self.RULE_body)
         try:
-            self.state = 202
+            self.state = 215
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,24,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,25,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 197
+                self.state = 210
                 self.paren()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 198
+                self.state = 211
                 self.data()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 199
+                self.state = 212
                 self.bodyOperationBody()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 200
+                self.state = 213
                 self.unary()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 201
+                self.state = 214
                 self.functionCall()
                 pass
 
@@ -1845,31 +1926,31 @@ class grammar1Parser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 204
+            self.state = 217
             localctx.name = self.match(grammar1Parser.NAME)
-            self.state = 205
+            self.state = 218
             self.match(grammar1Parser.LPAREN)
-            self.state = 207
+            self.state = 220
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.NAME) | (1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.LPAREN) | (1 << grammar1Parser.INTINPUT) | (1 << grammar1Parser.FLOATINPUT) | (1 << grammar1Parser.CHARINPUT))) != 0):
-                self.state = 206
+                self.state = 219
                 self.body()
 
 
-            self.state = 213
+            self.state = 226
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==grammar1Parser.T__1:
-                self.state = 209
+                self.state = 222
                 self.match(grammar1Parser.T__1)
-                self.state = 210
+                self.state = 223
                 self.body()
-                self.state = 215
+                self.state = 228
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 216
+            self.state = 229
             self.match(grammar1Parser.RPAREN)
         except RecognitionException as re:
             localctx.exception = re
@@ -1927,30 +2008,30 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.LeftOperationBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 30, self.RULE_leftOperationBody)
         try:
-            self.state = 222
+            self.state = 235
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,27,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,28,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 218
+                self.state = 231
                 self.paren()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 219
+                self.state = 232
                 self.data()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 220
+                self.state = 233
                 self.unary()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 221
+                self.state = 234
                 self.functionCall()
                 pass
 
@@ -2007,24 +2088,24 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.UnaryBodyContext(self, self._ctx, self.state)
         self.enterRule(localctx, 32, self.RULE_unaryBody)
         try:
-            self.state = 227
+            self.state = 240
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,28,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,29,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 224
+                self.state = 237
                 self.paren()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 225
+                self.state = 238
                 self.data()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 226
+                self.state = 239
                 self.bodyOperationBody()
                 pass
 
@@ -2094,7 +2175,7 @@ class grammar1Parser ( Parser ):
         try:
             localctx = grammar1Parser.UnaryExpressionContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
-            self.state = 229
+            self.state = 242
             localctx.sign = self._input.LT(1)
             _la = self._input.LA(1)
             if not(_la==grammar1Parser.PLUS or _la==grammar1Parser.MINUS):
@@ -2102,7 +2183,7 @@ class grammar1Parser ( Parser ):
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
-            self.state = 230
+            self.state = 243
             localctx.value = self.unaryBody()
         except RecognitionException as re:
             localctx.exception = re
@@ -2171,11 +2252,11 @@ class grammar1Parser ( Parser ):
         try:
             localctx = grammar1Parser.OperationExpressionContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
-            self.state = 232
+            self.state = 245
             localctx.lValue = self.leftOperationBody()
-            self.state = 233
+            self.state = 246
             localctx.op = self.operation()
-            self.state = 234
+            self.state = 247
             localctx.rValue = self.body()
         except RecognitionException as re:
             localctx.exception = re
@@ -2240,11 +2321,11 @@ class grammar1Parser ( Parser ):
         try:
             localctx = grammar1Parser.ParenExpressionContext(self, localctx)
             self.enterOuterAlt(localctx, 1)
-            self.state = 236
+            self.state = 249
             self.match(grammar1Parser.LPAREN)
-            self.state = 237
+            self.state = 250
             localctx.value = self.body()
-            self.state = 238
+            self.state = 251
             self.match(grammar1Parser.RPAREN)
         except RecognitionException as re:
             localctx.exception = re
@@ -2403,39 +2484,39 @@ class grammar1Parser ( Parser ):
         localctx = grammar1Parser.DataContext(self, self._ctx, self.state)
         self.enterRule(localctx, 40, self.RULE_data)
         try:
-            self.state = 246
+            self.state = 259
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [grammar1Parser.CHARINPUT]:
                 localctx = grammar1Parser.CharExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 240
+                self.state = 253
                 localctx.value = self.match(grammar1Parser.CHARINPUT)
                 pass
             elif token in [grammar1Parser.INTINPUT]:
                 localctx = grammar1Parser.IntExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 241
+                self.state = 254
                 localctx.value = self.match(grammar1Parser.INTINPUT)
                 pass
             elif token in [grammar1Parser.FLOATINPUT]:
                 localctx = grammar1Parser.FloatExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 242
+                self.state = 255
                 localctx.value = self.match(grammar1Parser.FLOATINPUT)
                 pass
             elif token in [grammar1Parser.TIMES]:
                 localctx = grammar1Parser.PointerValueExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 243
+                self.state = 256
                 self.match(grammar1Parser.TIMES)
-                self.state = 244
+                self.state = 257
                 localctx.value = self.match(grammar1Parser.NAME)
                 pass
             elif token in [grammar1Parser.NAME]:
                 localctx = grammar1Parser.VariableExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
-                self.state = 245
+                self.state = 258
                 self.match(grammar1Parser.NAME)
                 pass
             else:
@@ -2522,7 +2603,7 @@ class grammar1Parser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 248
+            self.state = 261
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << grammar1Parser.PLUS) | (1 << grammar1Parser.MINUS) | (1 << grammar1Parser.TIMES) | (1 << grammar1Parser.DIV) | (1 << grammar1Parser.GT) | (1 << grammar1Parser.LT) | (1 << grammar1Parser.EQ) | (1 << grammar1Parser.GTE) | (1 << grammar1Parser.LTE) | (1 << grammar1Parser.NEQ) | (1 << grammar1Parser.MOD) | (1 << grammar1Parser.AND) | (1 << grammar1Parser.OR))) != 0)):
                 self._errHandler.recoverInline(self)
