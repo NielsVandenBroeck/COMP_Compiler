@@ -29,10 +29,10 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        #SemanticErrorAnalysis(program)
-        #symbolTable = UpperSymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
-        #symbolTable.loopAST()
+        SemanticErrorAnalysis(program)
+        symbolTable = UpperSymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.

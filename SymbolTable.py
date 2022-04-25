@@ -352,6 +352,8 @@ class SymbolTable():
                         formatList.append(int)
                     elif formatText[i + 1] == "c":
                         formatList.append(chr)
+                    elif formatText[i + 1] == "f":
+                        formatList.append(float)
                     elif formatText[i + 1] == "s":
                         exit("[Error] line: " + str(root.line) + ", position: " + str(
                             root.position) + ". Cannot scan a string. strings are not implemented yet.")
@@ -378,11 +380,14 @@ class SymbolTable():
                 #char
                 elif type(node) == ASTChar:
                     variableType = chr
+                #float
+                elif type(node) == ASTFloat:
+                    variableType = float
                 elif type(node) == ASTFunctionName:
                     variableType = self.findReturnTypeOfFunction(node.root)
                 if variableType != formatList[i - 1]:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Scanf format specifies type '" + str(
+                        node.position) + ". Printf format specifies type '" + str(
                         formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def findReturnTypeOfFunction(self, functionName):
@@ -408,6 +413,8 @@ class SymbolTable():
                         formatList.append(int)
                     elif formatText[i+1] == "c":
                         formatList.append(chr)
+                    elif formatText[i+1] == "f":
+                        formatList.append(float)
                     elif formatText[i+1] == "s":
                         exit("[Error] line: " + str(root.line) + ", position: " + str(
                             root.position) + ". Cannot scan a string. strings are not implemented yet.")

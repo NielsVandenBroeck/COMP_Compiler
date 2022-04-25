@@ -171,6 +171,7 @@ TYPESPECIFIER
     | '%i'
     | '%s'
     | '%c'
+    | '%f'
     ;
 
 INT
