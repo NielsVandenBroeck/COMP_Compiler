@@ -47,9 +47,9 @@ def main(argv):
         myFile.write(ast.getDot())
 
 
-    print("Comiling complete")
+    print("Compiling complete")
 
-    print("Running programm")
+    print("Running program")
 
     """
     program = LLVMProgram()

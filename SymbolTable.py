@@ -86,7 +86,7 @@ class SymbolTable():
         elif self.IsPrintf(node):
             self.checkPrintf(node)
         #check scanf format
-        elif self.IsPrintf(node):
+        elif self.IsScanf(node):
             self.checkScanf(node)
         #scopes
         elif self.IsScope(node):
@@ -327,7 +327,31 @@ class SymbolTable():
             return
         for node in root.nodes:
             if node is not None:
-                return
+                print(node.root)
+                if self.IsText(node):
+                    if len(node.root) != 2:
+                        exit("[Error] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Format '"+ node.root +"' in scanf is not correct.")
+                    else:
+                        scanType = node.root[1]
+                elif self.IsVariable(node):
+                    variableType = self.searchVariable(node).type
+                else:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". An unkown Error occured.")
+        if scanType == "i" or scanType == "d":
+            scanType = int
+        elif scanType == "c":
+            scanType = chr
+        elif scanType == "s":
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Cannot scan a string. strings are not implemented yet.")
+        else:
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". An unkown Error occured.")
+        if scanType != variableType:
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Scanf format specifies type '" + str(scanType) + "', but the argument type is '" + str(variableType) + "'.")
 
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
@@ -388,6 +412,14 @@ class SymbolTable():
     @staticmethod
     def IsScanf(node):
         return type(node) is ASTScanf
+
+    @staticmethod
+    def IsText(node):
+        return type(node) is ASTText
+
+    @staticmethod
+    def IsVariable(node):
+        return type(node) is ASTVariable
 
     @staticmethod
     def IsForwardDeclaration(node):

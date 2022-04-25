@@ -39,15 +39,27 @@ newline
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
-    | Print'('f=(SingleFormat|MultiFormat) printBody+')'                                                        #Printf
-    | Scan'('f=SingleFormat  ',' b=body ')'                                                           #Scanf
+    | Print'('f=Format pb=printBodies')'                                                        #Printf
+    | Scan'('f=Format  sv=scanVariables ')'                                                           #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
     | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
+printBodies
+    : printBody+
+    ;
+
 printBody
     : ',' b=body
+    ;
+
+scanVariables
+    : scanVariable+
+    ;
+
+scanVariable
+    : ',' (d=data|v=variableAdress)
     ;
 
 lvalue
@@ -86,9 +98,9 @@ functionCall
     ;
 
 leftOperationBody
-    :paren
-    |data
-    |unary
+    : paren
+    | data
+    | unary
     | functionCall
     ;
 
@@ -144,11 +156,7 @@ Print
     : 'printf'
     ;
 
-SingleFormat
-    : '"'TYPESPECIFIER'"'
-    ;
-
-MultiFormat
+Format
     : '"'((~('%'|'"')|TYPESPECIFIER)*)'"'
     ;
 

@@ -184,6 +184,33 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#printBody.
+    def enterPrintBody(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#printBody.
+    def exitPrintBody(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#scanVariables.
+    def enterScanVariables(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#scanVariables.
+    def exitScanVariables(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#scanVariable.
+    def enterScanVariable(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#scanVariable.
+    def exitScanVariable(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass

@@ -1,14 +1,6 @@
-int function(float i){
-    return 2;
-}
-
 int main(){
-    int a = 8;
-    function(a);
-    int x = 5;
-    printf("dsdq %i %i", x, x);
-    scanf("%i",x);
+    int i;
+    int* p = &i;
+    scanf("hallo%i%i",i,&p);
+    printf("This is: %i,%i",i,*p);
 }
-/*
- hallo
- */

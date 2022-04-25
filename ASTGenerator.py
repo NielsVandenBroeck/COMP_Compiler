@@ -29,10 +29,10 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        SemanticErrorAnalysis(program)
-        symbolTable = UpperSymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
-        symbolTable.loopAST()
+        #SemanticErrorAnalysis(program)
+        #symbolTable = UpperSymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
+        #symbolTable.loopAST()
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.
@@ -226,14 +226,21 @@ class ASTGenerator(grammar1Visitor):
     def visitPrintf(self, ctx):
         root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
         root.addNode(ASTText(ctx.f.text.replace('"', ''), ctx.start.line, ctx.start.column))
+        for body in ctx.pb.getChildren():
+            if body.b is not None:
+                root.addNode(self.visit(body.b))
         return root
 
 
     # Visit a parse tree produced by grammar1Parser#Scanf.
     def visitScanf(self, ctx):
-        root = ASTPrintf("scanf", ctx.start.line, ctx.start.column)
+        root = ASTScanf("scanf", ctx.start.line, ctx.start.column)
         root.addNode(ASTText(ctx.f.text.replace('"', ''), ctx.start.line, ctx.start.column))
-        root.addNode(self.visit(ctx.b))
+        for variable in ctx.sv.getChildren():
+            if variable.d is not None:
+                root.addNode(self.visit(variable.d))
+            elif variable.v is not None:
+                root.addNode(self.visit(variable.v))
         return root
 
     # Visit a parse tree produced by grammar1Parser#OneTokenStatement.
