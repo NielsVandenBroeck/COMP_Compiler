@@ -29,7 +29,7 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        SemanticErrorAnalysis(program)
+        #SemanticErrorAnalysis(program)
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()
@@ -213,10 +213,14 @@ class ASTGenerator(grammar1Visitor):
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
         return node
 
-    # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def visitIdentifierOperationExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#identifierOP.
+    def identifierOP(self, ctx):
         name = ctx.name.text
-        operation = ctx.op.getText()
+        operation = None
+        if ctx.p is not None:
+            operation = ctx.p.getText()
+        elif ctx.m is not None:
+            operation = ctx.m.getText()
         operation = operation[0]
         root = ASTVariable(name, ctx.start.line, ctx.start.column, [ASTOperator(operation, ctx.start.line, ctx.start.column, [ASTVariable(name, ctx.start.line, ctx.start.column), ASTInt(1,  ctx.start.line, ctx.start.column)])])
         return root

@@ -86,12 +86,12 @@ class AST():
             elif isinstance(value1, str):
                 self.root = chr(-ord(value1[1]))
                 self.nodes = None
-            self.__class__ = AST
+            self.__class__ = ASTChar
         # unary +
         elif len(self.nodes) == 1 and self.root == '+':
+            self.__class__ = type(self.nodes[0])
             self.root = self.nodes[0].root
             self.nodes = None
-            self.__class__ = AST
         # all operations bv: 3+4
         elif len(self.nodes) == 2:
             # cannot convert variable that can still change. for example in loops or functions
@@ -134,7 +134,12 @@ class AST():
                 else:
                     self.root = resulttype(ops[self.root](value1, value2))
                 self.nodes = None
-                self.__class__ = AST
+                if resulttype == chr:
+                    self.__class__ = ASTChar
+                elif resulttype == float:
+                    self.__class__ = ASTFloat
+                elif resulttype == int:
+                    self.__class__ = ASTInt
 
     def correctDataType(self,destinationType):
         if type(self) is ASTFunctionName:
@@ -161,9 +166,9 @@ class AST():
             else:
                 conversion = True
                 self.root = '\'' + chr(int((self.root))) + '\''
-        if conversion:
-            print("[Warning] line: " + str(self.line) + ", position: " + str(
-                self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
+        #if conversion:
+        #    print("[Warning] line: " + str(self.line) + ", position: " + str(
+        #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
     def findType(self):
         typeDict = {float: 0, int: 1, chr: 2}
@@ -181,8 +186,9 @@ class AST():
             return self.getType()
         elif type(self) is ASTPointer:
             return self.nodes[0].findType()
-        else:
-            print("eerrorrr")
+        elif type(self) is ASTFunctionName:
+            return self.getType()
+
 
 
 
@@ -235,6 +241,7 @@ class ASTVariable(AST):
 
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):
+        self.type = None
         super().__init__(value, line, position, childNodes)
 
     def getFunctionName(self):
@@ -242,6 +249,9 @@ class ASTFunctionName(AST):
 
     def getFunctionParameters(self):
         return self.nodes[0].nodes
+
+    def getType(self):
+        return self.type
 
 class ASTDataType(AST):
     def __init__(self, value, line, position, childNodes=None):

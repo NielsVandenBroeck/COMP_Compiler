@@ -27,7 +27,6 @@ class SymbolObjectPointer:
 
     # set value of real adress (not pointer)
     def setPointer(self,object, node):
-        print("set pointer")
         if not self.constness:
             self.object = object
         else:
@@ -61,7 +60,7 @@ class SymbolTable():
             elif type(node.nodes[0]) is ASTDataType:
                 self.variableDeclaration(node.nodes[0],True)
             else:
-                print("huh")
+                print("error")
         elif self.IsVariableDeclarationSameTypes(node):
             self.variableDeclaration(node)
         #asignment
@@ -146,7 +145,6 @@ class SymbolTable():
                                 if type(f1) is ASTPointer:
                                     pointer = True
                                 f1 = f1.nodes[0]
-                            print(f1.root, f2[0], pointer, f2[1])
                             if f1.root != f2[0] or pointer != f2[1]:
                                 return None
                         return function
@@ -215,36 +213,50 @@ class SymbolTable():
                         node.root) + ". ")
             else:
                 self.checkBody(node.nodes[1])
+                bodyType = node.nodes[1].findType()
+                if bodyType != node.getType():
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        bodyType) + " to " + str(
+                        node.getType()) + ". ")
                 node.nodes[1].correctDataType(node.root)
         self.SymbolList[variable] = SymbolObject(node.root,variable,constness)
 
     def variableAssignment(self, node):
-        if(self.searchVariable(node).constness):
+        variable = self.searchVariable(node)
+        if(variable.constness):
             exit("[Error] line: " + str(node.line) + ", position: " + str(
                 node.position) + " variable: \'" + node.root + "\' is of const-type and cannot be changed.")
 
         #als het 2 pointers zijn bv: a = b
-        if(type(node.nodes[0]) is ASTVariable and type(self.searchVariable(node)) == SymbolObjectPointer and type(self.searchVariable(node.nodes[0])) == SymbolObjectPointer):
-            self.searchVariable(node).setPointer(self.searchVariable(node.nodes[0]), node)
+        if(type(node.nodes[0]) is ASTVariable and type(variable) == SymbolObjectPointer and type(self.searchVariable(node.nodes[0])) == SymbolObjectPointer):
+            variable.setPointer(self.searchVariable(node.nodes[0]), node)
         #als er een waarde word gezet bv: *a = 10
         elif type(node.nodes[0]) is ASTAdress:
             adress = node.nodes[0]
-            self.searchVariable(node).setPointer(self.searchVariable(adress), node)
+            variable.setPointer(self.searchVariable(adress), node)
         elif type(node.nodes[0]) is ASTVariable:
-            if not self.searchVariable(node.nodes[0]).type is self.returnType:
+            if self.searchVariable(node.nodes[0]).type is not variable.type:
                 print("[Warning] line: " + str(node.line) + ", position: " + str(
                     node.position) + ". Implicit conversion from " + str(
                     self.searchVariable(node.nodes[0]).type) + " to " + str(
-                    self.returnType) + ". ")
+                    variable.type) + ". ")
         else:
             self.checkBody(node.nodes[0])
-            node.nodes[0].correctDataType(self.searchVariable(node).type)
+            bodyType = node.nodes[0].findType()
+            if bodyType != variable.type:
+                print("[Warning] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Implicit conversion from " + str(
+                    bodyType) + " to " + str(
+                    variable.type) + ". ")
+            node.nodes[0].correctDataType(variable.type)
 
 
     def checkBody(self, root):
         if type(root) is ASTVariable:
             self.searchVariable(root)
         elif type(root) is ASTFunctionName:
+            root.type = self.findReturnTypeOfFunction(root.root)
             for param in root.nodes[0].nodes:
                 self.searchVariable(param)
             self.checkFunctionCall(root)
@@ -317,6 +329,12 @@ class SymbolTable():
                         self.returnType) + ". ")
             else:
                 self.checkBody(node.nodes[0])
+                bodyType = node.nodes[0].findType()
+                if bodyType != self.returnType:
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        bodyType) + " to " + str(
+                        self.returnType) + ". ")
                 node.nodes[0].correctDataType(self.returnType)
 
     def checkPrintf(self, root):
@@ -360,13 +378,20 @@ class SymbolTable():
                 #char
                 elif type(node) == ASTChar:
                     variableType = chr
-                else:
-                    exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Variable must be of type Pointer of passed by reference.")
+                elif type(node) == ASTFunctionName:
+                    variableType = self.findReturnTypeOfFunction(node.root)
                 if variableType != formatList[i - 1]:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". Scanf format specifies type '" + str(
                         formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
+
+    def findReturnTypeOfFunction(self, functionName):
+        if self.parent is not None:
+            return self.parent.findReturnTypeOfFunction(functionName)
+        else:
+            for function in self.functions:
+                if function.functionName == functionName:
+                    return function.returnType
 
     def checkScanf(self, root):
         if root.nodes is None:
@@ -547,7 +572,7 @@ class FunctionSymbolTable(SymbolTable):
                     elif type(node.nodes[0]) is ASTDataType:
                         self.variableDeclaration(node.nodes[0], True)
                     else:
-                        print("huh")
+                        print("error")
                 elif self.IsVariableDeclarationSameTypes(node):
                     datatype = node.root
                     self.variableDeclaration(node)

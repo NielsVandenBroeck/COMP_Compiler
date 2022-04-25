@@ -10,6 +10,7 @@ programLine
     | MultiLineComment
     | s=scope
     | f=function
+    | IncludeStdio
     ;
 
 function
@@ -38,16 +39,16 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
+    | identifierOP                                                                              #IdentifierOperationExpression
     | Print'('f=Format pb=printBodies')'                                                        #Printf
-    | Scan'('f=Format  sv=scanVariables ')'                                                           #Scanf
+    | Scan'('f=Format  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
     | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
 printBodies
-    : printBody+
+    : printBody*
     ;
 
 printBody
@@ -75,8 +76,7 @@ variableAdress
     : ('&')?name=NAME;
 
 identifierOP
-    : PLUS PLUS
-    | MINUS MINUS
+    : name=NAME (p=PLUS PLUS | m=MINUS MINUS)
     ;
 
 dataType
@@ -91,6 +91,7 @@ body
     | bodyOperationBody
     | unary
     | functionCall
+    | identifierOP
     ;
 
 functionCall
@@ -102,6 +103,7 @@ leftOperationBody
     | data
     | unary
     | functionCall
+    | identifierOP
     ;
 
 unaryBody
@@ -279,6 +281,9 @@ MultiLineComment
     : '/*'.*?'*/'
     ;
 
+IncludeStdio
+    : '#include <stdio.h>'
+    ;
 WS
     : [ \n\t\r]+ -> skip
     ;
