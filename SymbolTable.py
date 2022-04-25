@@ -320,38 +320,90 @@ class SymbolTable():
                 node.nodes[0].correctDataType(self.returnType)
 
     def checkPrintf(self, root):
-        return
+        if root.nodes is None:
+            return
+        formatText = root.nodes[0].root
+        formatList = []
+        for i in range(len(formatText)):
+            if formatText[i] == '%':
+                if len(formatText) < i:
+                    exit("[Error] line: " + str(root.line) + ", position: " + str(
+                        root.position) + ". An unkown Error occured.")
+                else:
+                    if formatText[i + 1] == "i" or formatText[i + 1] == "d":
+                        formatList.append(int)
+                    elif formatText[i + 1] == "c":
+                        formatList.append(chr)
+                    elif formatText[i + 1] == "s":
+                        exit("[Error] line: " + str(root.line) + ", position: " + str(
+                            root.position) + ". Cannot scan a string. strings are not implemented yet.")
+        if len(formatList) != len(root.nodes) - 1:
+            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                root.position) + ". Too many/few parameters were given in scanf function.")
+        for i in range(1, len(root.nodes)):
+            node = root.nodes[i]
+            if node is not None:
+                variableType = None
+                #Variable
+                if type(node) == ASTVariable:
+                    variableType = self.searchVariable(node).type
+                #body
+                elif type(node) == ASTOperator:
+                    #TODO check typeeee
+                    variableType = self.searchVariable(node).type
+                #body
+                elif type(node) == ASTPointer:
+                    variableType = self.searchVariable(node.nodes[0]).type
+                else:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Variable must be of type Pointer of passed by reference.")
+                if variableType != formatList[i - 1]:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Scanf format specifies type '" + str(
+                        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def checkScanf(self, root):
         if root.nodes is None:
             return
-        for node in root.nodes:
+        formatText = root.nodes[0].root
+        formatList = []
+        for i in range(len(formatText)):
+            if formatText[i] == '%':
+                if len(formatText) < i:
+                    exit("[Error] line: " + str(root.line) + ", position: " + str(
+                        root.position) + ". An unkown Error occured.")
+                else:
+                    if formatText[i+1] == "i" or formatText[i+1] == "d":
+                        formatList.append(int)
+                    elif formatText[i+1] == "c":
+                        formatList.append(chr)
+                    elif formatText[i+1] == "s":
+                        exit("[Error] line: " + str(root.line) + ", position: " + str(
+                            root.position) + ". Cannot scan a string. strings are not implemented yet.")
+        if len(formatList) != len(root.nodes)-1:
+            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                root.position) + ". Too many/few parameters were given in scanf function.")
+        for i in range(1,len(root.nodes)):
+            node = root.nodes[i]
             if node is not None:
-                print(node.root)
-                if self.IsText(node):
-                    if len(node.root) != 2:
-                        exit("[Error] line: " + str(node.line) + ", position: " + str(
-                            node.position) + ". Format '"+ node.root +"' in scanf is not correct.")
-                    else:
-                        scanType = node.root[1]
-                elif self.IsVariable(node):
+                #pointer
+                if type(node) == ASTPointer:
                     variableType = self.searchVariable(node).type
+                #address
+                elif type(node) == ASTAdress:
+                    if node.nodes is None:
+                        exit("[Error] line: " + str(root.line) + ", position: " + str(
+                            root.position) + ". An unkown Error occured.")
+                    else:
+                        variableType = self.searchVariable(node.nodes[0]).type
                 else:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
-                            node.position) + ". An unkown Error occured.")
-        if scanType == "i" or scanType == "d":
-            scanType = int
-        elif scanType == "c":
-            scanType = chr
-        elif scanType == "s":
-            exit("[Error] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". Cannot scan a string. strings are not implemented yet.")
-        else:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". An unkown Error occured.")
-        if scanType != variableType:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". Scanf format specifies type '" + str(scanType) + "', but the argument type is '" + str(variableType) + "'.")
+                        node.position) + ". Variable must be of type Pointer of passed by reference.")
+                if variableType != formatList[i - 1]:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Scanf format specifies type '" + str(
+                        formatList[i-1]) + "', but the argument type is '" + str(variableType) + "'.")
+
 
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
@@ -399,7 +451,7 @@ class SymbolTable():
 
     @staticmethod
     def IsBody(node):
-        return type(node) is ASTOperator or type(node) is ASTFunctionName or type(node) is ASTPrintf
+        return type(node) is ASTOperator or type(node) is ASTFunctionName
 
     @staticmethod
     def IsReturn(node):

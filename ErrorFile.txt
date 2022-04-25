@@ -1,6 +1,6 @@
 int main(){
-    int i;
+    int i = 7;
+    int j = 5;
     int* p = &i;
-    scanf("hallo%i%i",i,&p);
-    printf("This is: %i,%i",i,*p);
+    printf("dit is een int: %c", *p);
 }
