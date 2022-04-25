@@ -133,7 +133,6 @@ class ASTGenerator(grammar1Visitor):
         root.addNode(node2)
         return root
 
-
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
     def visitEmptyScope(self, ctx):
         root = ASTScope("Scope", ctx.start.line, ctx.start.column)

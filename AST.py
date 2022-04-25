@@ -151,7 +151,7 @@ class AST():
             self.root = self.root[1]
         if destinationType is float or destinationType is int:
             conversion = True
-            if originalType is  float or originalType is int:
+            if originalType is float or originalType is int:
                 self.root = destinationType(self.root)
             else:
                 self.root = destinationType(ord(self.root))
@@ -185,6 +185,9 @@ class AST():
             print("eerrorrr")
 
 
+
+    def getPointerDept(self):
+        return 0
 
 class ASTValue(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
@@ -282,6 +285,18 @@ class ASTPointer(AST):
             return None
         return self.nodes[1]
 
+    def getType(self):
+        return self.getSetObject().getType()
+
+    def getPointerDept(self):
+        add = 1
+        if self.getSetObject() == ASTPointer:
+            add = self.getPointerDept() + 1
+        return add
+
+    def getVariableName(self):
+        return self.getSetObject().getVariableName()
+
 class ASTAdress(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -292,6 +307,13 @@ class ASTAdress(AST):
 class ASTPrintf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def getPrintString(self):
+        return self.nodes[0].root
+
+    def getAllVaribles(self):
+        listOfItems = self.nodes[1:]
+        return listOfItems
 
 class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -318,6 +340,14 @@ class ASTOperator(AST):
             return None
         return self.nodes[1]
 
+    def getType(self):
+        convertScore = {float: 2, int: 0, chr: 1}
+        node0 = self.nodes[0].getType()
+        node1 = self.nodes[1].getType()
+        if convertScore[node0] > convertScore[node1]:
+            return self.nodes[0].getType()
+        return self.nodes[1].getType()
+
 class ASTWhile(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -337,6 +367,9 @@ class ASTFunction(AST):
         super().__init__(value, line, position, childNodes)
 
     def getReturnType(self):
+        return self.nodes[0].root
+
+    def getType(self):
         return self.nodes[0].root
 
     def getFunctionName(self):
