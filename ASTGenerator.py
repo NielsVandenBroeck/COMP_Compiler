@@ -29,7 +29,7 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        #SemanticErrorAnalysis(program)
+        SemanticErrorAnalysis(program)
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()

@@ -165,6 +165,27 @@ class AST():
             print("[Warning] line: " + str(self.line) + ", position: " + str(
                 self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
+    def findType(self):
+        typeDict = {float: 0, int: 1, chr: 2}
+        if type(self) is ASTOperator:
+            if len(self.nodes) == 1:
+                return self.nodes[0].findType()
+            elif len(self.nodes) == 2:
+                type1 = self.nodes[0].findType()
+                type2 = self.nodes[1].findType()
+                if typeDict[type1] <= typeDict[type2]:
+                    return type1
+                else:
+                    return type2
+        elif type(self) is ASTVariable or type(self) is ASTInt or type(self) is ASTFloat or type(self) is ASTChar:
+            return self.getType()
+        elif type(self) is ASTPointer:
+            return self.nodes[0].findType()
+        else:
+            print("eerrorrr")
+
+
+
 class ASTValue(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
         super().__init__(value, line, position, childNodes)

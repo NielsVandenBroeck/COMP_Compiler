@@ -1,16 +1,8 @@
 -Reserved words: int char float const if else while for break continue return void
--type conversion
-	-body met expressies
 -constant propagation (opdracht 2)
--unsused variable met functies, print,..
 
  project 6:
  - arrays
     declaration
     assignment
     operations
- -import
-    stdio
-    int printf()
-    int scanf()
-    d, i, s, c

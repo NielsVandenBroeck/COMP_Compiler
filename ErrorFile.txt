@@ -1,6 +1,8 @@
+
+
 int main(){
-    int i = 7;
-    int j = 5;
-    int* p = &i;
-    printf("dit is een int: %c", *p);
+    int i = 6;
+    float* p = &i;
+    int j = 9;
+    printf("dit is een int: %i", i+*p);
 }

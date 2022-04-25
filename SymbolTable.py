@@ -349,11 +349,17 @@ class SymbolTable():
                     variableType = self.searchVariable(node).type
                 #body
                 elif type(node) == ASTOperator:
-                    #TODO check typeeee
-                    variableType = self.searchVariable(node).type
-                #body
+                    self.searchAllvars(node)
+                    variableType = node.findType()
+                #pointer
                 elif type(node) == ASTPointer:
                     variableType = self.searchVariable(node.nodes[0]).type
+                #int
+                elif type(node) == ASTInt:
+                    variableType = int
+                #char
+                elif type(node) == ASTChar:
+                    variableType = chr
                 else:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". Variable must be of type Pointer of passed by reference.")
@@ -415,8 +421,17 @@ class SymbolTable():
             if node is not None:
                 self.checkUnusedVariables(node)
 
+    def searchAllvars(self, root):
+        if type(root) is ASTVariable:
+            self.searchVariable(root)
+        elif type(root) is ASTPointer:
+            self.searchVariable(root.nodes[0])
+        elif type(root) is ASTOperator:
+            for node in root.nodes:
+                self.searchAllvars(node)
+
     def searchVariable(self, node):
-        if type(node) is not ASTVariable and type(node) is not ASTAdress:
+        if type(node) is not ASTVariable:
             return None
         varName = node.getVariableName()
         if varName in self.SymbolList:
