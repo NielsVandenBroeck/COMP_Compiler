@@ -225,6 +225,15 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#Printf.
     def visitPrintf(self, ctx):
         root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
+        root.addNode(ASTText(ctx.format.text.replace('"', ''), ctx.start.line, ctx.start.column))
+        root.addNode(self.visit(ctx.b))
+        return root
+
+    # Visit a parse tree produced by grammar1Parser#Scanf.
+    def visitScanf(self, ctx):
+        root = ASTPrintf("scanf", ctx.start.line, ctx.start.column)
+        root.addNode(ASTText(ctx.format.text.replace('"', ''), ctx.start.line, ctx.start.column))
+        root.addNode(self.visit(ctx.b))
         return root
 
     # Visit a parse tree produced by grammar1Parser#OneTokenStatement.

@@ -1034,16 +1034,18 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.PrintfContext, self).__init__(parser)
+            self.format = None # Token
+            self.b = None # BodyContext
             self.copyFrom(ctx)
 
         def Print(self):
             return self.getToken(grammar1Parser.Print, 0)
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
-        def PrintFormat(self):
-            return self.getToken(grammar1Parser.PrintFormat, 0)
         def RPAREN(self):
             return self.getToken(grammar1Parser.RPAREN, 0)
+        def PrintFormat(self):
+            return self.getToken(grammar1Parser.PrintFormat, 0)
         def body(self, i=None):
             if i is None:
                 return self.getTypedRuleContexts(grammar1Parser.BodyContext)
@@ -1156,19 +1158,21 @@ class grammar1Parser ( Parser ):
 
         def __init__(self, parser, ctx): # actually a grammar1Parser.NewlineContext)
             super(grammar1Parser.ScanfContext, self).__init__(parser)
+            self.format = None # Token
+            self.b = None # BodyContext
             self.copyFrom(ctx)
 
         def Scan(self):
             return self.getToken(grammar1Parser.Scan, 0)
         def LPAREN(self):
             return self.getToken(grammar1Parser.LPAREN, 0)
+        def RPAREN(self):
+            return self.getToken(grammar1Parser.RPAREN, 0)
         def ScanFormat(self):
             return self.getToken(grammar1Parser.ScanFormat, 0)
         def body(self):
             return self.getTypedRuleContext(grammar1Parser.BodyContext,0)
 
-        def RPAREN(self):
-            return self.getToken(grammar1Parser.RPAREN, 0)
 
         def enterRule(self, listener):
             if hasattr(listener, "enterScanf"):
@@ -1326,7 +1330,7 @@ class grammar1Parser ( Parser ):
                 self.state = 142
                 self.match(grammar1Parser.LPAREN)
                 self.state = 143
-                self.match(grammar1Parser.PrintFormat)
+                localctx.format = self.match(grammar1Parser.PrintFormat)
                 self.state = 146 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
@@ -1334,7 +1338,7 @@ class grammar1Parser ( Parser ):
                     self.state = 144
                     self.match(grammar1Parser.T__1)
                     self.state = 145
-                    self.body()
+                    localctx.b = self.body()
                     self.state = 148 
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
@@ -1353,11 +1357,11 @@ class grammar1Parser ( Parser ):
                 self.state = 153
                 self.match(grammar1Parser.LPAREN)
                 self.state = 154
-                self.match(grammar1Parser.ScanFormat)
+                localctx.format = self.match(grammar1Parser.ScanFormat)
                 self.state = 155
                 self.match(grammar1Parser.T__1)
                 self.state = 156
-                self.body()
+                localctx.b = self.body()
                 self.state = 157
                 self.match(grammar1Parser.RPAREN)
                 pass
