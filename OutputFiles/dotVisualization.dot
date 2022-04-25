@@ -1,150 +1,24 @@
 digraph G { 
-"<AST.AST object at 0x0000025A4E051EB0> (0)"[label="program"]
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"[label="Function"]
-"<AST.AST object at 0x0000025A4E051EB0> (0)"->"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"[label="Function"]
-"<AST.ASTDataType object at 0x0000025A4E051D30> (2)"[label="<class 'int'>"]
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"->"<AST.ASTDataType object at 0x0000025A4E051D30> (2)"
-"<AST.ASTFunctionName object at 0x0000025A4E0513D0> (2)"[label="f"]
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"->"<AST.ASTFunctionName object at 0x0000025A4E0513D0> (2)"
-"<AST.ASTParameters object at 0x0000025A4E051190> (2)"[label="Parameters"]
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"->"<AST.ASTParameters object at 0x0000025A4E051190> (2)"
-"<AST.ASTParameters object at 0x0000025A4E051190> (2)"[label="Parameters"]
-"<AST.ASTDataType object at 0x0000025A4E051CA0> (3)"[label="<class 'int'>"]
-"<AST.ASTParameters object at 0x0000025A4E051190> (2)"->"<AST.ASTDataType object at 0x0000025A4E051CA0> (3)"
-"<AST.ASTDataType object at 0x0000025A4E051CA0> (3)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x0000025A4E051E80> (4)"[label="a"]
-"<AST.ASTDataType object at 0x0000025A4E051CA0> (3)"->"<AST.ASTVariable object at 0x0000025A4E051E80> (4)"
-"<AST.ASTScope object at 0x0000025A4E051A30> (2)"[label="Scope"]
-"<AST.ASTFunction object at 0x0000025A4E051BE0> (1)"->"<AST.ASTScope object at 0x0000025A4E051A30> (2)"
-"<AST.ASTScope object at 0x0000025A4E051A30> (2)"[label="Scope"]
-"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"[label="if-else"]
-"<AST.ASTScope object at 0x0000025A4E051A30> (2)"->"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"
-"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"[label="if-else"]
-"<AST.ASTCondition object at 0x0000025A4E051670> (4)"[label="Condition"]
-"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"->"<AST.ASTCondition object at 0x0000025A4E051670> (4)"
-"<AST.ASTCondition object at 0x0000025A4E051670> (4)"[label="Condition"]
-"<AST.ASTOperator object at 0x0000025A4E0517C0> (5)"[label="<"]
-"<AST.ASTCondition object at 0x0000025A4E051670> (4)"->"<AST.ASTOperator object at 0x0000025A4E0517C0> (5)"
-"<AST.ASTOperator object at 0x0000025A4E0517C0> (5)"[label="<"]
-"<AST.ASTVariable object at 0x0000025A4E051F10> (6)"[label="a"]
-"<AST.ASTOperator object at 0x0000025A4E0517C0> (5)"->"<AST.ASTVariable object at 0x0000025A4E051F10> (6)"
-"<AST.ASTInt object at 0x0000025A4E051790> (6)"[label="2"]
-"<AST.ASTOperator object at 0x0000025A4E0517C0> (5)"->"<AST.ASTInt object at 0x0000025A4E051790> (6)"
-"<AST.ASTScope object at 0x0000025A4E051220> (4)"[label="Scope"]
-"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"->"<AST.ASTScope object at 0x0000025A4E051220> (4)"
-"<AST.ASTScope object at 0x0000025A4E051220> (4)"[label="Scope"]
-"<AST.ASTReturn object at 0x0000025A4E051970> (5)"[label="return"]
-"<AST.ASTScope object at 0x0000025A4E051220> (4)"->"<AST.ASTReturn object at 0x0000025A4E051970> (5)"
-"<AST.ASTReturn object at 0x0000025A4E051970> (5)"[label="return"]
-"<AST.ASTVariable object at 0x0000025A4E0511F0> (6)"[label="a"]
-"<AST.ASTReturn object at 0x0000025A4E051970> (5)"->"<AST.ASTVariable object at 0x0000025A4E0511F0> (6)"
-"<AST.ASTScope object at 0x0000025A4E0519D0> (4)"[label="Scope"]
-"<AST.ASTIfElse object at 0x0000025A4E051FA0> (3)"->"<AST.ASTScope object at 0x0000025A4E0519D0> (4)"
-"<AST.ASTScope object at 0x0000025A4E0519D0> (4)"[label="Scope"]
-"<AST.ASTReturn object at 0x0000025A4E0518B0> (5)"[label="return"]
-"<AST.ASTScope object at 0x0000025A4E0519D0> (4)"->"<AST.ASTReturn object at 0x0000025A4E0518B0> (5)"
-"<AST.ASTReturn object at 0x0000025A4E0518B0> (5)"[label="return"]
-"<AST.ASTOperator object at 0x0000025A4E051C40> (6)"[label="+"]
-"<AST.ASTReturn object at 0x0000025A4E0518B0> (5)"->"<AST.ASTOperator object at 0x0000025A4E051C40> (6)"
-"<AST.ASTOperator object at 0x0000025A4E051C40> (6)"[label="+"]
-"<AST.ASTFunctionName object at 0x0000025A4E051160> (7)"[label="f"]
-"<AST.ASTOperator object at 0x0000025A4E051C40> (6)"->"<AST.ASTFunctionName object at 0x0000025A4E051160> (7)"
-"<AST.ASTFunctionName object at 0x0000025A4E051160> (7)"[label="f"]
-"<AST.ASTParameters object at 0x0000025A4E051CD0> (8)"[label="Parameters"]
-"<AST.ASTFunctionName object at 0x0000025A4E051160> (7)"->"<AST.ASTParameters object at 0x0000025A4E051CD0> (8)"
-"<AST.ASTParameters object at 0x0000025A4E051CD0> (8)"[label="Parameters"]
-"<AST.ASTOperator object at 0x0000025A4E051280> (9)"[label="-"]
-"<AST.ASTParameters object at 0x0000025A4E051CD0> (8)"->"<AST.ASTOperator object at 0x0000025A4E051280> (9)"
-"<AST.ASTOperator object at 0x0000025A4E051280> (9)"[label="-"]
-"<AST.ASTVariable object at 0x0000025A4E0510D0> (10)"[label="a"]
-"<AST.ASTOperator object at 0x0000025A4E051280> (9)"->"<AST.ASTVariable object at 0x0000025A4E0510D0> (10)"
-"<AST.ASTInt object at 0x0000025A4E051B80> (10)"[label="1"]
-"<AST.ASTOperator object at 0x0000025A4E051280> (9)"->"<AST.ASTInt object at 0x0000025A4E051B80> (10)"
-"<AST.ASTFunctionName object at 0x0000025A4E0518E0> (7)"[label="f"]
-"<AST.ASTOperator object at 0x0000025A4E051C40> (6)"->"<AST.ASTFunctionName object at 0x0000025A4E0518E0> (7)"
-"<AST.ASTFunctionName object at 0x0000025A4E0518E0> (7)"[label="f"]
-"<AST.ASTParameters object at 0x0000025A4E051040> (8)"[label="Parameters"]
-"<AST.ASTFunctionName object at 0x0000025A4E0518E0> (7)"->"<AST.ASTParameters object at 0x0000025A4E051040> (8)"
-"<AST.ASTParameters object at 0x0000025A4E051040> (8)"[label="Parameters"]
-"<AST.ASTOperator object at 0x0000025A4E0519A0> (9)"[label="-"]
-"<AST.ASTParameters object at 0x0000025A4E051040> (8)"->"<AST.ASTOperator object at 0x0000025A4E0519A0> (9)"
-"<AST.ASTOperator object at 0x0000025A4E0519A0> (9)"[label="-"]
-"<AST.ASTVariable object at 0x0000025A4E051A00> (10)"[label="a"]
-"<AST.ASTOperator object at 0x0000025A4E0519A0> (9)"->"<AST.ASTVariable object at 0x0000025A4E051A00> (10)"
-"<AST.ASTInt object at 0x0000025A4E051700> (10)"[label="2"]
-"<AST.ASTOperator object at 0x0000025A4E0519A0> (9)"->"<AST.ASTInt object at 0x0000025A4E051700> (10)"
-"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"[label="Function"]
-"<AST.AST object at 0x0000025A4E051EB0> (0)"->"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"
-"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"[label="Function"]
-"<AST.ASTDataType object at 0x0000025A4E049820> (2)"[label="<class 'int'>"]
-"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"->"<AST.ASTDataType object at 0x0000025A4E049820> (2)"
-"<AST.ASTFunctionName object at 0x0000025A4E049C40> (2)"[label="main"]
-"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"->"<AST.ASTFunctionName object at 0x0000025A4E049C40> (2)"
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"[label="Scope"]
-"<AST.ASTFunction object at 0x0000025A4E0517F0> (1)"->"<AST.ASTScope object at 0x0000025A4E049970> (2)"
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"[label="Scope"]
-"<AST.ASTDataType object at 0x0000025A4E049F10> (3)"[label="<class 'int'>"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTDataType object at 0x0000025A4E049F10> (3)"
-"<AST.ASTDataType object at 0x0000025A4E049F10> (3)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x0000025A4E049E20> (4)"[label="n"]
-"<AST.ASTDataType object at 0x0000025A4E049F10> (3)"->"<AST.ASTVariable object at 0x0000025A4E049E20> (4)"
-"<AST.ASTPrintf object at 0x0000025A4E057760> (3)"[label="printf"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTPrintf object at 0x0000025A4E057760> (3)"
-"<AST.ASTPrintf object at 0x0000025A4E057760> (3)"[label="printf"]
-"<AST.ASTText object at 0x0000025A4E0571C0> (4)"[label="Enter a number:"]
-"<AST.ASTPrintf object at 0x0000025A4E057760> (3)"->"<AST.ASTText object at 0x0000025A4E0571C0> (4)"
-"<AST.ASTScanf object at 0x0000025A4E057B20> (3)"[label="scanf"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTScanf object at 0x0000025A4E057B20> (3)"
-"<AST.ASTScanf object at 0x0000025A4E057B20> (3)"[label="scanf"]
-"<AST.ASTText object at 0x0000025A4E057610> (4)"[label="%d"]
-"<AST.ASTScanf object at 0x0000025A4E057B20> (3)"->"<AST.ASTText object at 0x0000025A4E057610> (4)"
-"<AST.ASTAdress object at 0x0000025A4E057670> (4)"[label="<class 'AST.ASTAdress'>"]
-"<AST.ASTScanf object at 0x0000025A4E057B20> (3)"->"<AST.ASTAdress object at 0x0000025A4E057670> (4)"
-"<AST.ASTAdress object at 0x0000025A4E057670> (4)"[label="<class 'AST.ASTAdress'>"]
-"<AST.ASTVariable object at 0x0000025A4E057B50> (5)"[label="n"]
-"<AST.ASTAdress object at 0x0000025A4E057670> (4)"->"<AST.ASTVariable object at 0x0000025A4E057B50> (5)"
-"<AST.ASTDataType object at 0x0000025A4E057580> (3)"[label="<class 'int'>"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTDataType object at 0x0000025A4E057580> (3)"
-"<AST.ASTDataType object at 0x0000025A4E057580> (3)"[label="<class 'int'>"]
-"<AST.ASTVariable object at 0x0000025A4E057880> (4)"[label="i"]
-"<AST.ASTDataType object at 0x0000025A4E057580> (3)"->"<AST.ASTVariable object at 0x0000025A4E057880> (4)"
-"<AST.ASTInt object at 0x0000025A4E0578E0> (4)"[label="1"]
-"<AST.ASTDataType object at 0x0000025A4E057580> (3)"->"<AST.ASTInt object at 0x0000025A4E0578E0> (4)"
-"<AST.ASTWhile object at 0x0000025A4E057340> (3)"[label="while"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTWhile object at 0x0000025A4E057340> (3)"
-"<AST.ASTWhile object at 0x0000025A4E057340> (3)"[label="while"]
-"<AST.ASTCondition object at 0x0000025A4E057250> (4)"[label="Condition"]
-"<AST.ASTWhile object at 0x0000025A4E057340> (3)"->"<AST.ASTCondition object at 0x0000025A4E057250> (4)"
-"<AST.ASTCondition object at 0x0000025A4E057250> (4)"[label="Condition"]
-"<AST.ASTOperator object at 0x0000025A4E0573D0> (5)"[label="<="]
-"<AST.ASTCondition object at 0x0000025A4E057250> (4)"->"<AST.ASTOperator object at 0x0000025A4E0573D0> (5)"
-"<AST.ASTOperator object at 0x0000025A4E0573D0> (5)"[label="<="]
-"<AST.ASTVariable object at 0x0000025A4E057190> (6)"[label="i"]
-"<AST.ASTOperator object at 0x0000025A4E0573D0> (5)"->"<AST.ASTVariable object at 0x0000025A4E057190> (6)"
-"<AST.ASTVariable object at 0x0000025A4E057BB0> (6)"[label="n"]
-"<AST.ASTOperator object at 0x0000025A4E0573D0> (5)"->"<AST.ASTVariable object at 0x0000025A4E057BB0> (6)"
-"<AST.ASTScope object at 0x0000025A4E057910> (4)"[label="Scope"]
-"<AST.ASTWhile object at 0x0000025A4E057340> (3)"->"<AST.ASTScope object at 0x0000025A4E057910> (4)"
-"<AST.ASTScope object at 0x0000025A4E057910> (4)"[label="Scope"]
-"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"[label="printf"]
-"<AST.ASTScope object at 0x0000025A4E057910> (4)"->"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"
-"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"[label="printf"]
-"<AST.ASTText object at 0x0000025A4E0577C0> (6)"[label="fib(%d)\t= %d;\n"]
-"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"->"<AST.ASTText object at 0x0000025A4E0577C0> (6)"
-"<AST.ASTVariable object at 0x0000025A4E0576D0> (6)"[label="i"]
-"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"->"<AST.ASTVariable object at 0x0000025A4E0576D0> (6)"
-"<AST.ASTFunctionName object at 0x0000025A4E057F40> (6)"[label="f"]
-"<AST.ASTPrintf object at 0x0000025A4E057730> (5)"->"<AST.ASTFunctionName object at 0x0000025A4E057F40> (6)"
-"<AST.ASTFunctionName object at 0x0000025A4E057F40> (6)"[label="f"]
-"<AST.ASTParameters object at 0x0000025A4E057E80> (7)"[label="Parameters"]
-"<AST.ASTFunctionName object at 0x0000025A4E057F40> (6)"->"<AST.ASTParameters object at 0x0000025A4E057E80> (7)"
-"<AST.ASTParameters object at 0x0000025A4E057E80> (7)"[label="Parameters"]
-"<AST.ASTVariable object at 0x0000025A4E057640> (8)"[label="i"]
-"<AST.ASTParameters object at 0x0000025A4E057E80> (7)"->"<AST.ASTVariable object at 0x0000025A4E057640> (8)"
-"<AST.ASTReturn object at 0x0000025A4E0579A0> (3)"[label="return"]
-"<AST.ASTScope object at 0x0000025A4E049970> (2)"->"<AST.ASTReturn object at 0x0000025A4E0579A0> (3)"
-"<AST.ASTReturn object at 0x0000025A4E0579A0> (3)"[label="return"]
-"<AST.ASTInt object at 0x0000025A4E0579D0> (4)"[label="0"]
-"<AST.ASTReturn object at 0x0000025A4E0579A0> (3)"->"<AST.ASTInt object at 0x0000025A4E0579D0> (4)"
+"<AST.AST object at 0x0000019986E495B0> (0)"[label="program"]
+"<AST.ASTFunction object at 0x0000019986E49100> (1)"[label="Function"]
+"<AST.AST object at 0x0000019986E495B0> (0)"->"<AST.ASTFunction object at 0x0000019986E49100> (1)"
+"<AST.ASTFunction object at 0x0000019986E49100> (1)"[label="Function"]
+"<AST.ASTDataType object at 0x0000019986E49F70> (2)"[label="<class 'int'>"]
+"<AST.ASTFunction object at 0x0000019986E49100> (1)"->"<AST.ASTDataType object at 0x0000019986E49F70> (2)"
+"<AST.ASTFunctionName object at 0x0000019986E49940> (2)"[label="main"]
+"<AST.ASTFunction object at 0x0000019986E49100> (1)"->"<AST.ASTFunctionName object at 0x0000019986E49940> (2)"
+"<AST.ASTScope object at 0x0000019986E49AF0> (2)"[label="Scope"]
+"<AST.ASTFunction object at 0x0000019986E49100> (1)"->"<AST.ASTScope object at 0x0000019986E49AF0> (2)"
+"<AST.ASTScope object at 0x0000019986E49AF0> (2)"[label="Scope"]
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"[label="printf"]
+"<AST.ASTScope object at 0x0000019986E49AF0> (2)"->"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"[label="printf"]
+"<AST.ASTText object at 0x0000019986E49D90> (4)"[label="%d%f%c"]
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"->"<AST.ASTText object at 0x0000019986E49D90> (4)"
+"<AST.ASTInt object at 0x0000019986E49B20> (4)"[label="10"]
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"->"<AST.ASTInt object at 0x0000019986E49B20> (4)"
+"<AST.ASTFloat object at 0x0000019986E49E50> (4)"[label="0.5"]
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"->"<AST.ASTFloat object at 0x0000019986E49E50> (4)"
+"<AST.ASTChar object at 0x0000019986E493D0> (4)"[label="'%'"]
+"<AST.ASTPrintf object at 0x0000019986E49E80> (3)"->"<AST.ASTChar object at 0x0000019986E493D0> (4)"
 }
