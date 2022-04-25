@@ -1,7 +1,12 @@
+int function(float i){
+    return 2;
+}
+
 int main(){
-    char a = 'a';
+    int a = 8;
+    function(a);
     int x = 5;
-    printf("dsdq %i", x);
+    printf("dsdq %i %i", x, x);
     scanf("%i",x);
 }
 /*

@@ -245,6 +245,8 @@ class SymbolTable():
         if type(root) is ASTVariable:
             self.searchVariable(root)
         elif type(root) is ASTFunctionName:
+            for param in root.nodes[0].nodes:
+                self.searchVariable(param)
             self.checkFunctionCall(root)
             return
         if root.nodes is None:
@@ -321,7 +323,11 @@ class SymbolTable():
         return
 
     def checkScanf(self, root):
-        return
+        if root.nodes is None:
+            return
+        for node in root.nodes:
+            if node is not None:
+                return
 
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
