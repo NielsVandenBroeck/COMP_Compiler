@@ -30,9 +30,9 @@ class ASTGenerator(grammar1Visitor):
                     program.addNode(object)
 
         #SemanticErrorAnalysis(program)
-        symbolTable = UpperSymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
-        symbolTable.loopAST()
+        #symbolTable = UpperSymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
+        #symbolTable.loopAST()
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.

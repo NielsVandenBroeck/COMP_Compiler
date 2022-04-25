@@ -171,8 +171,11 @@ class AST():
         #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
     def findType(self):
+        intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=']
         typeDict = {float: 0, int: 1, chr: 2}
         if type(self) is ASTOperator:
+            if self.root in intOps:
+                return int
             if len(self.nodes) == 1:
                 return self.nodes[0].findType()
             elif len(self.nodes) == 2:
