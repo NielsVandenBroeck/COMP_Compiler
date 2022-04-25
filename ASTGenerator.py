@@ -28,11 +28,11 @@ class ASTGenerator(grammar1Visitor):
                 if object is not None:
                     object = object.removePriority()
                     program.addNode(object)
-
         SemanticErrorAnalysis(program)
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()
+
         return program
 
     # Visit a parse tree produced by grammar1Parser#function.
@@ -179,6 +179,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
+
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
 
         if ctx.pointer and ctx.t == None:

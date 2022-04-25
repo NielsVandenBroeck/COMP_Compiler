@@ -5,20 +5,29 @@ Compiler From Stein Vandenbroeke and Niels Van den Broeck
  - Parsing mathematical expressions
  - Parsing a subset of C language
    - Variable declarations and initializations
-   - Datatypes
+   - Datatypes with operations
      - int
      - float
      - char
      - pointer
    - Comments
-   - Printf()
+   - Printf() and scanf()
+   - If, else, while, for, break, continue
+   - scopes
+   - Functions
+   - Local and global variables
+   - unreachable and dead code
  - Translating to an Abstract syntax tree
  - Error analysis
+ - Translating above features to LLVM
+
+### Not yet implemented Mandatory Features ###
+- Arrays
+- Import Files (scanf and printf do work)
 
 ### Optional Features ###
 - Comparison operators >=, <=, and !=
 - Binary operator %
-- Identifier Operations ++ and --
 - Conversions (float isRicherThan int isRicherThan char)
 
 

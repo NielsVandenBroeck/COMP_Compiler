@@ -66,6 +66,8 @@ class SymbolTable():
         #asignment
         elif self.IsVariableAssignmentSameTypes(node):
             self.variableAssignment(node)
+        elif self.IsVariable(node):
+            self.searchVariable(node)
         #pointer declaration bv: int* b ( = a)
         elif self.IsPointerDeclaration(node):
             self.pointerDeclaration(node)
@@ -256,6 +258,7 @@ class SymbolTable():
         if type(root) is ASTVariable:
             self.searchVariable(root)
         elif type(root) is ASTFunctionName:
+            self.checkFunctionCall(root)
             root.type = self.findReturnTypeOfFunction(root.root)
             for param in root.nodes[0].nodes:
                 self.searchVariable(param)
@@ -384,6 +387,7 @@ class SymbolTable():
                 elif type(node) == ASTFloat:
                     variableType = float
                 elif type(node) == ASTFunctionName:
+                    self.checkFunctionCall(root)
                     variableType = self.findReturnTypeOfFunction(node.root)
                 if variableType != formatList[i - 1]:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
@@ -425,8 +429,12 @@ class SymbolTable():
             node = root.nodes[i]
             if node is not None:
                 #pointer
-                if type(node) == ASTPointer:
-                    variableType = self.searchVariable(node).type
+                if type(node) == ASTVariable:
+                    if type(self.searchVariable(node)) is SymbolObjectPointer:
+                        variableType = self.searchVariable(node).type
+                    else:
+                        exit("[Error] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Variable must be of type Pointer of passed by reference.")
                 #address
                 elif type(node) == ASTAdress:
                     if node.nodes is None:
@@ -483,6 +491,10 @@ class SymbolTable():
     @staticmethod
     def IsVariableAssignmentSameTypes(node):
         return type(node) is ASTVariable and node.nodes is not None
+
+    @staticmethod
+    def IsVariable(node):
+        return type(node) is ASTVariable and node.nodes is None
 
     @staticmethod
     def IsPointerDeclaration(node):
