@@ -181,24 +181,25 @@ class LLVMGenerator:
             node.nodes[0] = ASTVariable(tempName, 0,0)
 
         if isinstance(node.getLeftValue(), ASTValue):
-            if type(node.getRightValue()) == ASTVariable:
-                node.nodes[0] = node.getRightValue()
+            if type(node.getLeftValue()) == ASTVariable:
+                node.nodes[0] = node.getLeftValue()
             else:
                 tempName = self.currentFunction.createUniqueRegister()
-                self.currentFunction.newSmartVarible(tempName, node.getRightValue().getType())
+                self.currentFunction.newSmartVarible(tempName, node.getLeftValue().getType())
                 self.currentFunction.setVaribleValue(tempName, node.getLeftValue().getValue())
                 node.nodes[0] = ASTVariable(tempName, 0, 0)
         elif type(node.getLeftValue()) == ASTFunctionName:
             tempName = self.currentFunction.createUniqueRegister()
             functionType = self.currentFunction.getFunctionType(node.getLeftValue().getFunctionName())
             self.currentFunction.newSmartVarible(tempName, functionType)
-            self._createAstOperatorLLVM(tempName, node.getRightValue())
+            self._createAstOperatorLLVM(tempName, node.getLeftValue())
             node.nodes[0] = ASTVariable(tempName, 0, 0)
         elif type(node.getLeftValue()) == ASTPointer:
             pointerTOValueName = self.currentFunction.createUniqueRegister(node.getLeftValue().getVariableName() + "pointerToValue")
             valueName = self.currentFunction.createUniqueRegister(node.getLeftValue().getVariableName() + "pointerToValue")
             self.currentFunction._addLine(self.currentFunction.getVariable(node.getLeftValue().getVariableName()).loadPointerValueString(pointerTOValueName))
             self.currentFunction.newSmartVarible(valueName, node.getLeftValue().getType())
+            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName)
             node.nodes[0] = ASTVariable(valueName, 0, 0, None, node.getLeftValue().getType())
 
         if isinstance(node.getRightValue(), ASTValue):
@@ -220,7 +221,8 @@ class LLVMGenerator:
             valueName = self.currentFunction.createUniqueRegister(node.getRightValue().getVariableName() + "pointerToValue")
             self.currentFunction._addLine(self.currentFunction.getVariable(node.getRightValue().getVariableName()).loadPointerValueString(pointerTOValueName))
             self.currentFunction.newSmartVarible(valueName, node.getRightValue().getType())
-            node.nodes[0] = ASTVariable(valueName, 0, 0, None, node.getRightValue().getType())
+            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName)
+            node.nodes[1] = ASTVariable(valueName, 0, 0, None, node.getRightValue().getType())
 
         if type(node.getLeftValue()) == ASTVariable and type(node.getRightValue()) == ASTVariable:
             self.currentFunction.operationOnVarible(toRegName,node.getLeftValue().root, node.getRightValue().root, node.root)
