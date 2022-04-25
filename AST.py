@@ -332,6 +332,13 @@ class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+    def getScanString(self):
+        return self.nodes[0].root
+
+    def getAllVaribles(self):
+        listOfItems = self.nodes[1:]
+        return listOfItems
+
 class ASTText(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

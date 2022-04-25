@@ -10,7 +10,7 @@ class LLVMProgram:
     VaribleList = {}
     functionReturnTypeDict = {}
     def __init__(self):
-        self.programArray.append('@.procentD = private unnamed_addr constant [3 x i8] c"%d\\00", align 1') #string %d needed to print ints
+        self.programArray.append('declare dso_local i32 @__isoc99_scanf(i8*, ...) #1') #string %d needed to print ints
         self.programArray.append('@.procentC = private unnamed_addr constant [3 x i8] c"%c\\00", align 1')  # string %c needed to print chars
         self.programArray.append('@.procentF = private unnamed_addr constant [3 x i8] c"%f\\00", align 1')  # string %f needed to print floats
         self.programArray.append('declare dso_local i32 @printf(i8*, ...) #1')  # print function
@@ -197,7 +197,6 @@ class LLVMFunction(LLVMProgram):
             returnVar = self.getVariable(value.root)
             self._addLine(returnVar.getLLVMLoadString("returnItem"))
             returnItem = "returnItem"
-
             if self.returnType != self.typeToLLVMType(returnVar.getType()):
                 returnItem1 = self.createUniqueRegister("returnItem")
                 self.convert(returnItem1, returnItem,self.returnType, self.typeToLLVMType(returnVar.getType()))
@@ -272,24 +271,25 @@ class LLVMFunction(LLVMProgram):
         argsPrintString = argsPrintString[:-2]
         self._addLine("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([" + str(charCount) + " x i8], [" + str(charCount) + " x i8]* @." + printStringName + ", i64 0, i64 0), " + argsPrintString + ")")
 
-        """
-        
-        varible0 = self.getVariable(varName)
-        valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
-        self._addLine(varible0.getLLVMLoadString(valueVariable0))
-        type = varible0.type
-        format = "procentD"
-        if (printAs == chr or varible0.getType() == chr):
-            format = "procentC"
-        elif(printAs == float or varible0.getType() == float):
-            format = "procentF"
-            type = "double"
-            uniqueReg = self.createUniqueRegister()
-            self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
-            valueVariable0 = uniqueReg
+    def scan(self, printString ,vars = [], printAs = None):
+        printStringName = self.createUniqueRegister("scanString");
+        self.addPrintString(printStringName, printString)
+        charCount = len(printString) + 1
 
-        self._addLine("call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @." + format + ", i64 0, i64 0), " + type + " %" + valueVariable0 + ")")
-        """
+        argsPrintString = ""
+        for item in vars:
+            varible0 = self.getVariable(item)
+            valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
+            self._addLine(varible0.getLLVMLoadString(valueVariable0))
+            type = varible0.type
+            if varible0.getType() == float:
+                uniqueReg = self.createUniqueRegister()
+                self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
+                valueVariable0 = uniqueReg
+
+            argsPrintString += type + "* %" + item + ", "
+        argsPrintString = argsPrintString[:-2]
+        self._addLine("call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([" + str(charCount) + " x i8], [" + str(charCount) + " x i8]* @." + printStringName + ", i64 0, i64 0), " + argsPrintString + ")")
 
     def printValue(self, value, printAs = int):
         type = "i32"

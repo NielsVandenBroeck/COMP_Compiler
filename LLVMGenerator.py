@@ -1,5 +1,5 @@
 from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition, ASTIfElse, \
-    ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue, ASTAdress
+    ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue, ASTAdress, ASTScanf
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
 
 #TODO all undifinded varible to smartvarible!!!
@@ -19,6 +19,9 @@ class LLVMGenerator:
             return True
         elif type(node) == ASTPrintf:
             self._createAstPrintfLLVM(node)
+            return True
+        elif type(node) == ASTScanf:
+            self._createAstScanfLLVM(node)
             return True
         elif type(node) == ASTOperator:
             tempName = self.currentFunction.createUniqueRegister()
@@ -135,20 +138,17 @@ class LLVMGenerator:
                 printArgs.append(printArg.root)
 
         self.currentFunction.print(node.getPrintString(), printArgs)
-        """
-        if type(node.nodes[0]) == ASTVariable:
-            self.currentFunction.print(node.nodes[0].root)
-        elif type(node.nodes[0]) == ASTOperator or type(node.nodes[0]) == ASTFunctionName:
-            tempVarible = self.currentFunction.createUniqueRegister("returnValue")
-            if type(node.nodes[0]) == ASTFunctionName:
-                functionType = self.currentFunction.getFunctionType(node.nodes[0].getFunctionName())
+
+    def _createAstScanfLLVM(self, node):
+        print("scan")
+        printArgs = []
+        for printArg in node.getAllVaribles():
+            if type(printArg) == ASTAdress:
+                printArgs.append(printArg.getVariableName())
             else:
-                exit("afhankelijk van string die nog geprogrameerd moet worden")
-            self.currentFunction.newSmartVarible(tempVarible, functionType)
-            self._createAstOperatorLLVM(tempVarible, node.nodes[0])
-            self.currentFunction.print(tempVarible)
-        else:
-            self.currentFunction.printValue(node.nodes[0].root)"""
+                printArgs.append(printArg.root)
+
+        self.currentFunction.scan(node.getScanString(), printArgs)
 
     def _createAstOperatorLLVM(self, toRegName, node):
         if node.nodes == None:
