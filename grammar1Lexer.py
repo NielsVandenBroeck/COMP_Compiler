@@ -167,8 +167,8 @@ class grammar1Lexer(Lexer):
     T__9 = 10
     OneTokenStatement = 11
     Print = 12
-    ScanFormat = 13
-    PrintFormat = 14
+    SingleFormat = 13
+    MultiFormat = 14
     Scan = 15
     TYPESPECIFIER = 16
     INT = 17
@@ -212,7 +212,7 @@ class grammar1Lexer(Lexer):
             u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"'const '", u"'='" ]
 
     symbolicNames = [ u"<INVALID>",
-            u"OneTokenStatement", u"Print", u"ScanFormat", u"PrintFormat", 
+            u"OneTokenStatement", u"Print", u"SingleFormat", u"MultiFormat", 
             u"Scan", u"TYPESPECIFIER", u"INT", u"FLOAT", u"CHAR", u"NAME", 
             u"PLUS", u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", 
             u"LTE", u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", u"LPAREN", 
@@ -221,7 +221,7 @@ class grammar1Lexer(Lexer):
 
     ruleNames = [ u"T__0", u"T__1", u"T__2", u"T__3", u"T__4", u"T__5", 
                   u"T__6", u"T__7", u"T__8", u"T__9", u"OneTokenStatement", 
-                  u"Print", u"ScanFormat", u"PrintFormat", u"Scan", u"TYPESPECIFIER", 
+                  u"Print", u"SingleFormat", u"MultiFormat", u"Scan", u"TYPESPECIFIER", 
                   u"INT", u"FLOAT", u"CHAR", u"NAME", u"PLUS", u"MINUS", 
                   u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", u"LTE", 
                   u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", u"LPAREN", 

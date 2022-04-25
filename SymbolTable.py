@@ -16,8 +16,7 @@ class SymbolObjectPointer:
         self.objectConst = objectConst
         if pointsTo == None:
             pointsTo = SymbolObject("nullptr", "nullptr", True)
-        else:
-            self.object = pointsTo
+        self.object = pointsTo
 
         self.name = name
 
@@ -83,6 +82,12 @@ class SymbolTable():
         #check returns
         elif self.IsReturn(node):
             self.checkReturnType(node)
+        #check printf format
+        elif self.IsPrintf(node):
+            self.checkPrintf(node)
+        #check scanf format
+        elif self.IsPrintf(node):
+            self.checkScanf(node)
         #scopes
         elif self.IsScope(node):
             s = SymbolTable(node, self)
@@ -312,6 +317,12 @@ class SymbolTable():
                 self.checkBody(node.nodes[0])
                 node.nodes[0].correctDataType(self.returnType)
 
+    def checkPrintf(self, root):
+        return
+
+    def checkScanf(self, root):
+        return
+
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
 
@@ -327,6 +338,7 @@ class SymbolTable():
             return None
         varName = node.getVariableName()
         if varName in self.SymbolList:
+            node.type = self.SymbolList[varName].type
             return self.SymbolList[varName]
         elif self.parent is None:
             exit("[Error] line: " + str(node.line) + ", position: " + str(
@@ -362,6 +374,14 @@ class SymbolTable():
     @staticmethod
     def IsReturn(node):
         return type(node) is ASTReturn
+
+    @staticmethod
+    def IsPrintf(node):
+        return type(node) is ASTPrintf
+
+    @staticmethod
+    def IsScanf(node):
+        return type(node) is ASTScanf
 
     @staticmethod
     def IsForwardDeclaration(node):

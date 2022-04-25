@@ -39,8 +39,8 @@ newline
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
     | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
-    | Print'('format=PrintFormat (',' b=body)+')'                                                        #Printf
-    | Scan'('format=ScanFormat  ',' b=body ')'                                                           #Scanf
+    | Print'('format=(SingleFormat|MultiFormat) (',' b=body)+')'                                                        #Printf
+    | Scan'('format=SingleFormat  ',' b=body ')'                                                           #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
     | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
@@ -140,12 +140,12 @@ Print
     : 'printf'
     ;
 
-ScanFormat
+SingleFormat
     : '"'TYPESPECIFIER'"'
     ;
 
-PrintFormat
-    : '"'((~('%' | '"'  )|TYPESPECIFIER)*)'"'
+MultiFormat
+    : '"'((~('%'|'"')|TYPESPECIFIER)*)'"'
     ;
 
 Scan

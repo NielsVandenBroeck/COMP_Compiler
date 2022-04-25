@@ -59,8 +59,8 @@ null
 null
 OneTokenStatement
 Print
-ScanFormat
-PrintFormat
+SingleFormat
+MultiFormat
 Scan
 TYPESPECIFIER
 INT
@@ -105,8 +105,8 @@ T__8
 T__9
 OneTokenStatement
 Print
-ScanFormat
-PrintFormat
+SingleFormat
+MultiFormat
 Scan
 TYPESPECIFIER
 INT

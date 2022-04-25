@@ -194,7 +194,8 @@ class ASTFloat(ASTValue):
         return float
 
 class ASTVariable(AST):
-    def __init__(self, value, line = 0, position = 0, childNodes=None):
+    def __init__(self, value, line = 0, position = 0, childNodes=None, type=None):
+        self.type = type
         super().__init__(value, line, position, childNodes)
 
     def getVariableName(self):
@@ -204,6 +205,9 @@ class ASTVariable(AST):
         if len(self.nodes) > 1:
             return self.nodes[1]
         return self.nodes[0]
+
+    def getType(self):
+        return self.type
 
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):
