@@ -29,7 +29,7 @@ class ASTGenerator(grammar1Visitor):
                     object = object.removePriority()
                     program.addNode(object)
 
-        SemanticErrorAnalysis(program)
+        #SemanticErrorAnalysis(program)
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()
@@ -225,7 +225,6 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#Printf.
     def visitPrintf(self, ctx):
         root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
-        root.addNode(self.visitChildren(ctx.b))
         return root
 
     # Visit a parse tree produced by grammar1Parser#OneTokenStatement.

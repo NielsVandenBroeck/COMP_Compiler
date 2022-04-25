@@ -1,5 +1,9 @@
 int main(){
     int x;
     int y = x;
-    printf("Entered Website:%i %i", x, y);
+    printf("Ef afaf: %i%i", x, y);
+    scanf("%i",x);
 }
+/*
+ hallo
+ */

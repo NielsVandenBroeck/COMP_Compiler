@@ -22,15 +22,15 @@ def serializedATN():
         buf.write(u"\7\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\13\3")
         buf.write(u"\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3")
         buf.write(u"\f\5\f\u008f\n\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\16\3\16")
-        buf.write(u"\3\16\7\16\u009b\n\16\f\16\16\16\u009e\13\16\3\16\3\16")
-        buf.write(u"\3\17\3\17\3\17\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3")
-        buf.write(u"\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\5\21\u00b4\n\21")
-        buf.write(u"\3\22\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\3")
-        buf.write(u"\24\3\24\3\24\3\24\3\24\3\25\3\25\7\25\u00c7\n\25\f\25")
-        buf.write(u"\16\25\u00ca\13\25\3\26\3\26\3\27\3\27\3\30\3\30\3\31")
-        buf.write(u"\3\31\3\32\3\32\3\33\3\33\3\34\3\34\3\34\3\35\3\35\3")
-        buf.write(u"\35\3\36\3\36\3\36\3\37\3\37\3\37\3 \3 \3!\3!\3!\3\"")
-        buf.write(u"\3\"\3\"\3#\3#\3$\3$\3%\3%\3&\5&\u00f3\n&\3&\6&\u00f6")
+        buf.write(u"\3\16\3\16\3\17\3\17\3\17\7\17\u009f\n\17\f\17\16\17")
+        buf.write(u"\u00a2\13\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\20")
+        buf.write(u"\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\5\21\u00b4\n")
+        buf.write(u"\21\3\22\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23")
+        buf.write(u"\3\24\3\24\3\24\3\24\3\24\3\25\3\25\7\25\u00c7\n\25\f")
+        buf.write(u"\25\16\25\u00ca\13\25\3\26\3\26\3\27\3\27\3\30\3\30\3")
+        buf.write(u"\31\3\31\3\32\3\32\3\33\3\33\3\34\3\34\3\34\3\35\3\35")
+        buf.write(u"\3\35\3\36\3\36\3\36\3\37\3\37\3\37\3 \3 \3!\3!\3!\3")
+        buf.write(u"\"\3\"\3\"\3#\3#\3$\3$\3%\3%\3&\5&\u00f3\n&\3&\6&\u00f6")
         buf.write(u"\n&\r&\16&\u00f7\3\'\5\'\u00fb\n\'\3\'\6\'\u00fe\n\'")
         buf.write(u"\r\'\16\'\u00ff\3\'\3\'\6\'\u0104\n\'\r\'\16\'\u0105")
         buf.write(u"\5\'\u0108\n\'\3(\3(\3(\3(\3(\3(\3(\3(\3(\3(\5(\u0114")
@@ -40,8 +40,8 @@ def serializedATN():
         buf.write(u"\2.\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n\23\13\25\f\27")
         buf.write(u"\r\31\16\33\17\35\20\37\21!\22#\23%\24\'\25)\26+\27-")
         buf.write(u"\30/\31\61\32\63\33\65\34\67\359\36;\37= ?!A\"C#E$G%")
-        buf.write(u"I&K\'M(O)Q*S+U,W-Y.\3\2\t\3\2$$\5\2C\\aac|\6\2\62;C\\")
-        buf.write(u"aac|\3\2\62;\3\2))\3\2\f\f\5\2\13\f\17\17\"\"\2\u014f")
+        buf.write(u"I&K\'M(O)Q*S+U,W-Y.\3\2\t\4\2$$\'\'\5\2C\\aac|\6\2\62")
+        buf.write(u";C\\aac|\3\2\62;\3\2))\3\2\f\f\5\2\13\f\17\17\"\"\2\u014f")
         buf.write(u"\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13")
         buf.write(u"\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2\2\2\23\3")
         buf.write(u"\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\2\31\3\2\2\2\2\33\3")
@@ -55,7 +55,7 @@ def serializedATN():
         buf.write(u"\2\2\5`\3\2\2\2\7b\3\2\2\2\te\3\2\2\2\13j\3\2\2\2\rp")
         buf.write(u"\3\2\2\2\17t\3\2\2\2\21v\3\2\2\2\23x\3\2\2\2\25\177\3")
         buf.write(u"\2\2\2\27\u008e\3\2\2\2\31\u0090\3\2\2\2\33\u0097\3\2")
-        buf.write(u"\2\2\35\u00a1\3\2\2\2\37\u00a7\3\2\2\2!\u00b3\3\2\2\2")
+        buf.write(u"\2\2\35\u009b\3\2\2\2\37\u00a5\3\2\2\2!\u00b3\3\2\2\2")
         buf.write(u"#\u00b5\3\2\2\2%\u00b9\3\2\2\2\'\u00bf\3\2\2\2)\u00c4")
         buf.write(u"\3\2\2\2+\u00cb\3\2\2\2-\u00cd\3\2\2\2/\u00cf\3\2\2\2")
         buf.write(u"\61\u00d1\3\2\2\2\63\u00d3\3\2\2\2\65\u00d5\3\2\2\2\67")
@@ -79,14 +79,14 @@ def serializedATN():
         buf.write(u"\3\2\2\2\u008e\u0086\3\2\2\2\u008f\30\3\2\2\2\u0090\u0091")
         buf.write(u"\7r\2\2\u0091\u0092\7t\2\2\u0092\u0093\7k\2\2\u0093\u0094")
         buf.write(u"\7p\2\2\u0094\u0095\7v\2\2\u0095\u0096\7h\2\2\u0096\32")
-        buf.write(u"\3\2\2\2\u0097\u009c\7$\2\2\u0098\u009b\n\2\2\2\u0099")
-        buf.write(u"\u009b\5!\21\2\u009a\u0098\3\2\2\2\u009a\u0099\3\2\2")
-        buf.write(u"\2\u009b\u009e\3\2\2\2\u009c\u009a\3\2\2\2\u009c\u009d")
-        buf.write(u"\3\2\2\2\u009d\u009f\3\2\2\2\u009e\u009c\3\2\2\2\u009f")
-        buf.write(u"\u00a0\7$\2\2\u00a0\34\3\2\2\2\u00a1\u00a2\7u\2\2\u00a2")
-        buf.write(u"\u00a3\7e\2\2\u00a3\u00a4\7c\2\2\u00a4\u00a5\7p\2\2\u00a5")
-        buf.write(u"\u00a6\7h\2\2\u00a6\36\3\2\2\2\u00a7\u00a8\7$\2\2\u00a8")
-        buf.write(u"\u00a9\5!\21\2\u00a9\u00aa\7$\2\2\u00aa \3\2\2\2\u00ab")
+        buf.write(u"\3\2\2\2\u0097\u0098\7$\2\2\u0098\u0099\5!\21\2\u0099")
+        buf.write(u"\u009a\7$\2\2\u009a\34\3\2\2\2\u009b\u00a0\7$\2\2\u009c")
+        buf.write(u"\u009f\n\2\2\2\u009d\u009f\5!\21\2\u009e\u009c\3\2\2")
+        buf.write(u"\2\u009e\u009d\3\2\2\2\u009f\u00a2\3\2\2\2\u00a0\u009e")
+        buf.write(u"\3\2\2\2\u00a0\u00a1\3\2\2\2\u00a1\u00a3\3\2\2\2\u00a2")
+        buf.write(u"\u00a0\3\2\2\2\u00a3\u00a4\7$\2\2\u00a4\36\3\2\2\2\u00a5")
+        buf.write(u"\u00a6\7u\2\2\u00a6\u00a7\7e\2\2\u00a7\u00a8\7c\2\2\u00a8")
+        buf.write(u"\u00a9\7p\2\2\u00a9\u00aa\7h\2\2\u00aa \3\2\2\2\u00ab")
         buf.write(u"\u00ac\7\'\2\2\u00ac\u00b4\7f\2\2\u00ad\u00ae\7\'\2\2")
         buf.write(u"\u00ae\u00b4\7k\2\2\u00af\u00b0\7\'\2\2\u00b0\u00b4\7")
         buf.write(u"u\2\2\u00b1\u00b2\7\'\2\2\u00b2\u00b4\7e\2\2\u00b3\u00ab")
@@ -143,8 +143,8 @@ def serializedATN():
         buf.write(u"\7,\2\2\u0133\u0134\7\61\2\2\u0134X\3\2\2\2\u0135\u0137")
         buf.write(u"\t\b\2\2\u0136\u0135\3\2\2\2\u0137\u0138\3\2\2\2\u0138")
         buf.write(u"\u0136\3\2\2\2\u0138\u0139\3\2\2\2\u0139\u013a\3\2\2")
-        buf.write(u"\2\u013a\u013b\b-\2\2\u013bZ\3\2\2\2\23\2\u008e\u009a")
-        buf.write(u"\u009c\u00b3\u00c6\u00c8\u00f2\u00f7\u00fa\u00ff\u0105")
+        buf.write(u"\2\u013a\u013b\b-\2\2\u013bZ\3\2\2\2\23\2\u008e\u009e")
+        buf.write(u"\u00a0\u00b3\u00c6\u00c8\u00f2\u00f7\u00fa\u00ff\u0105")
         buf.write(u"\u0107\u0113\u0126\u012f\u0138\3\b\2\2")
         return buf.getvalue()
 
@@ -167,9 +167,9 @@ class grammar1Lexer(Lexer):
     T__9 = 10
     OneTokenStatement = 11
     Print = 12
-    PrintFormat = 13
-    Scan = 14
-    ScanFormat = 15
+    ScanFormat = 13
+    PrintFormat = 14
+    Scan = 15
     TYPESPECIFIER = 16
     INT = 17
     FLOAT = 18
@@ -212,16 +212,16 @@ class grammar1Lexer(Lexer):
             u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"'const '", u"'='" ]
 
     symbolicNames = [ u"<INVALID>",
-            u"OneTokenStatement", u"Print", u"PrintFormat", u"Scan", u"ScanFormat", 
-            u"TYPESPECIFIER", u"INT", u"FLOAT", u"CHAR", u"NAME", u"PLUS", 
-            u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", u"LTE", 
-            u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", u"LPAREN", u"RPAREN", 
-            u"INTINPUT", u"FLOATINPUT", u"CHARINPUT", u"CONST", u"IS", u"SingleComment", 
-            u"MultiLineComment", u"WS" ]
+            u"OneTokenStatement", u"Print", u"ScanFormat", u"PrintFormat", 
+            u"Scan", u"TYPESPECIFIER", u"INT", u"FLOAT", u"CHAR", u"NAME", 
+            u"PLUS", u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", 
+            u"LTE", u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", u"LPAREN", 
+            u"RPAREN", u"INTINPUT", u"FLOATINPUT", u"CHARINPUT", u"CONST", 
+            u"IS", u"SingleComment", u"MultiLineComment", u"WS" ]
 
     ruleNames = [ u"T__0", u"T__1", u"T__2", u"T__3", u"T__4", u"T__5", 
                   u"T__6", u"T__7", u"T__8", u"T__9", u"OneTokenStatement", 
-                  u"Print", u"PrintFormat", u"Scan", u"ScanFormat", u"TYPESPECIFIER", 
+                  u"Print", u"ScanFormat", u"PrintFormat", u"Scan", u"TYPESPECIFIER", 
                   u"INT", u"FLOAT", u"CHAR", u"NAME", u"PLUS", u"MINUS", 
                   u"TIMES", u"DIV", u"GT", u"LT", u"EQ", u"GTE", u"LTE", 
                   u"NEQ", u"MOD", u"AND", u"OR", u"SEMICOLON", u"LPAREN", 

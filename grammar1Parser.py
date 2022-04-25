@@ -69,11 +69,11 @@ def serializedATN():
         buf.write(u"\2\u008a\u00b4\3\2\2\2\u008b\u00b4\5\22\n\2\u008c\u00b4")
         buf.write(u"\5\34\17\2\u008d\u008e\7\26\2\2\u008e\u00b4\5\30\r\2")
         buf.write(u"\u008f\u0090\7\16\2\2\u0090\u0091\7%\2\2\u0091\u0094")
-        buf.write(u"\7\17\2\2\u0092\u0093\7\4\2\2\u0093\u0095\5\34\17\2\u0094")
+        buf.write(u"\7\20\2\2\u0092\u0093\7\4\2\2\u0093\u0095\5\34\17\2\u0094")
         buf.write(u"\u0092\3\2\2\2\u0095\u0096\3\2\2\2\u0096\u0094\3\2\2")
         buf.write(u"\2\u0096\u0097\3\2\2\2\u0097\u0098\3\2\2\2\u0098\u0099")
-        buf.write(u"\7&\2\2\u0099\u00b4\3\2\2\2\u009a\u009b\7\20\2\2\u009b")
-        buf.write(u"\u009c\7%\2\2\u009c\u009d\7\21\2\2\u009d\u009e\7\4\2")
+        buf.write(u"\7&\2\2\u0099\u00b4\3\2\2\2\u009a\u009b\7\21\2\2\u009b")
+        buf.write(u"\u009c\7%\2\2\u009c\u009d\7\17\2\2\u009d\u009e\7\4\2")
         buf.write(u"\2\u009e\u009f\5\34\17\2\u009f\u00a0\7&\2\2\u00a0\u00b4")
         buf.write(u"\3\2\2\2\u00a1\u00b4\7\r\2\2\u00a2\u00a4\7\13\2\2\u00a3")
         buf.write(u"\u00a5\5\24\13\2\u00a4\u00a3\3\2\2\2\u00a4\u00a5\3\2")
@@ -144,8 +144,8 @@ class grammar1Parser ( Parser ):
 
     literalNames = [ u"<INVALID>", u"'void'", u"','", u"'if'", u"'else'", 
                      u"'while'", u"'for'", u"'{'", u"'}'", u"'return'", 
-                     u"'&'", u"<INVALID>", u"'printf'", u"<INVALID>", u"'scanf'", 
-                     u"<INVALID>", u"<INVALID>", u"'int'", u"'float'", u"'char'", 
+                     u"'&'", u"<INVALID>", u"'printf'", u"<INVALID>", u"<INVALID>", 
+                     u"'scanf'", u"<INVALID>", u"'int'", u"'float'", u"'char'", 
                      u"<INVALID>", u"'+'", u"'-'", u"'*'", u"'/'", u"'>'", 
                      u"'<'", u"'=='", u"'>='", u"'<='", u"'!='", u"'%'", 
                      u"'&&'", u"'||'", u"';'", u"'('", u"')'", u"<INVALID>", 
@@ -154,7 +154,7 @@ class grammar1Parser ( Parser ):
     symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
                       u"<INVALID>", u"<INVALID>", u"<INVALID>", u"OneTokenStatement", 
-                      u"Print", u"PrintFormat", u"Scan", u"ScanFormat", 
+                      u"Print", u"ScanFormat", u"PrintFormat", u"Scan", 
                       u"TYPESPECIFIER", u"INT", u"FLOAT", u"CHAR", u"NAME", 
                       u"PLUS", u"MINUS", u"TIMES", u"DIV", u"GT", u"LT", 
                       u"EQ", u"GTE", u"LTE", u"NEQ", u"MOD", u"AND", u"OR", 
@@ -204,9 +204,9 @@ class grammar1Parser ( Parser ):
     T__9=10
     OneTokenStatement=11
     Print=12
-    PrintFormat=13
-    Scan=14
-    ScanFormat=15
+    ScanFormat=13
+    PrintFormat=14
+    Scan=15
     TYPESPECIFIER=16
     INT=17
     FLOAT=18

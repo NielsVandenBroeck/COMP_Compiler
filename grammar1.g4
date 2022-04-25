@@ -140,17 +140,19 @@ Print
     : 'printf'
     ;
 
+ScanFormat
+    : '"'TYPESPECIFIER'"'
+    ;
+
 PrintFormat
-    : '"'(~('"') | TYPESPECIFIER)*'"'
+    : '"'((~('%' | '"'  )|TYPESPECIFIER)*)'"'
     ;
 
 Scan
     : 'scanf'
     ;
 
-ScanFormat
-    : '"' TYPESPECIFIER '"'
-    ;
+
 
 TYPESPECIFIER
     : '%d'
