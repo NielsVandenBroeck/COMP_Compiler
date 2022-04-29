@@ -432,7 +432,8 @@ class LLVMVarible:
         try:
             isRegister = value[0] == "%"
         except:
-            print("not a register")
+            isRegister = isRegister
+            #print("not a register")
 
         if self.type == "float" and not isRegister:
             value = hex(struct.unpack('<Q', struct.pack('<d', value))[0])[:-7] +"0000000"#'{:.7e}'.format(value)
