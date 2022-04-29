@@ -25,43 +25,72 @@ def main(argv):
     #goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
     workingCounter = 0
     brokenCounter = 0
-    for filename in os.listdir("testFiles"):
-        print("---------------")
-        try:
-            print(filename + ":")
-            input_stream = FileStream("testFiles/" + filename)
-            #if(len(argv) > 1):
-            #    input_stream = FileStream(argv[1])
-            lexer = grammar1Lexer(input_stream)
-            stream = CommonTokenStream(lexer)
-            parser = grammar1Parser(stream)
-            tree = parser.start()
 
-            visistor = ASTGenerator()
-            ast = visistor.visit(tree)
+    if (len(argv) > 1):
+        print(argv[1] + ":")
+        input_stream = FileStream(argv[1])
+        # if(len(argv) > 1):
+        #    input_stream = FileStream(argv[1])
+        lexer = grammar1Lexer(input_stream)
+        stream = CommonTokenStream(lexer)
+        parser = grammar1Parser(stream)
+        tree = parser.start()
 
-            ast.constantFold()
+        visistor = ASTGenerator()
+        ast = visistor.visit(tree)
 
-            with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
-                myFile.write(ast.getDot())
+        ast.constantFold()
 
+        with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+            myFile.write(ast.getDot())
 
-            llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-            llvm.write()
+        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        llvm.write()
 
-            with open("OutputFiles/dotVisualization1.dot", 'w') as myFile:
-                myFile.write(ast.getDot())
+        with open("OutputFiles/dotVisualization1.dot", 'w') as myFile:
+            myFile.write(ast.getDot())
 
-            print("Compiling complete")
+        print("Compiling complete")
 
-            print()
-            os.system("lli-9 " + " OutputFiles/code.ll")
-            workingCounter+=1
-        except:
-            print("Failed")
-            brokenCounter+=1
         print()
-        print("---------------")
+        os.system("lli-9 " + " OutputFiles/code.ll")
+    else:
+        for filename in os.listdir("testFiles"):
+            print("---------------")
+            try:
+                print(filename + ":")
+                input_stream = FileStream("testFiles/" + filename)
+                #if(len(argv) > 1):
+                #    input_stream = FileStream(argv[1])
+                lexer = grammar1Lexer(input_stream)
+                stream = CommonTokenStream(lexer)
+                parser = grammar1Parser(stream)
+                tree = parser.start()
+
+                visistor = ASTGenerator()
+                ast = visistor.visit(tree)
+
+                ast.constantFold()
+
+                with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+                    myFile.write(ast.getDot())
+
+
+                llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+                llvm.write()
+
+                with open("OutputFiles/dotVisualization1.dot", 'w') as myFile:
+                    myFile.write(ast.getDot())
+
+                print("Compiling complete")
+
+                print()
+                os.system("lli-9 " + " OutputFiles/code.ll")
+                workingCounter+=1
+            except:
+                print("Failed")
+                brokenCounter+=1
+            print()
 
     print("aantal werkende files:", workingCounter)
     print("aantal niet werkende files:", brokenCounter)
