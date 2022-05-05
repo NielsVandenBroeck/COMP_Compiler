@@ -1,0 +1,19 @@
+binaryOperations2.c:
+    lijn 5 -->  2*(2+3) is niet 7!!!
+
+comparisons1.c:
+    Fout iets met ast
+
+comparisons1.c:
+    lijn 9 fout met type geeft een double terug maar moet een bool (int) zijn want is een vergelijking
+
+dereferenceAssignment.c:
+    Fout in ast of taal (denk ik)
+
+fibonacciRecursive.c:
+    Fout in ast of taal (denk ik)
+
+forwardDeclaration.c:
+    string werken nog niet
+
+-------------Ik was nog niet klaar----------

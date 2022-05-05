@@ -6,6 +6,11 @@ from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
 class LLVMGenerator:
     def __init__(self,file_name, ast):
         self.file_name = file_name
+
+        LLVMProgram.programArray = []
+        LLVMProgram.VaribleList = {}
+        LLVMProgram.functionReturnTypeDict = {}
+
         self.program = LLVMProgram()
         self.currentFunction = self.program
         self.preOrderTraverse(ast)
@@ -262,3 +267,4 @@ class LLVMGenerator:
         #self.currentFunction.setReturnValue(0)
         with open(self.file_name, 'w') as myFile:
             myFile.write(self.program.output())
+            myFile.close()
