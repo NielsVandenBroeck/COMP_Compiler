@@ -1,10 +1,16 @@
+binaryOperations1.c:
+    OK
+
 binaryOperations2.c:
     lijn 5 -->  2*(2+3) is niet 7!!!
+
+breakAndContinue.c:
+    OK
 
 comparisons1.c:
     Fout iets met ast
 
-comparisons1.c:
+comparisons2.c:
     lijn 9 fout met type geeft een double terug maar moet een bool (int) zijn want is een vergelijking
 
 dereferenceAssignment.c:
@@ -13,7 +19,77 @@ dereferenceAssignment.c:
 fibonacciRecursive.c:
     Fout in ast of taal (denk ik)
 
+floatToIntConversion.c:
+    OK (denk ik)
+
+for.c:
+    OK
+
 forwardDeclaration.c:
     string werken nog niet
 
--------------Ik was nog niet klaar----------
+if.c:
+    FOUT
+
+ifElse.c:
+    FOUT
+
+intToFloatConversion.c:
+    OK (doet niks)
+
+modulo.c:
+    OK
+
+pointerArgument.c:
+    FOUT in taal
+
+prime.c
+    FOUT mulitple varible declaration
+
+printf1.c:
+    OK
+
+printf2.c:
+    Strings werken nog niet
+
+printf3.c:
+    OK
+
+scanf1.c:
+    OK
+
+scanf2.c:
+    FOUT
+
+scoping.c:
+    FOUT LLVM
+
+unaryOperations.c:
+    FOUT arrays
+
+variables1.c:
+    OK
+
+variables2.c:
+    OK
+
+variables3.c:
+    FOUT arrays
+
+variables4.c:
+    OK
+
+variables5.c:
+    OK
+
+variables6.c:
+    FOUT Dubbele pointers!
+
+variables7.c:
+    FOUT arrays
+
+variables8.c:
+    FOUT arrays
+
+while.c:
+    OK
