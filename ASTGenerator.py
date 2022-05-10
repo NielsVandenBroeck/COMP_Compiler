@@ -214,17 +214,6 @@ class ASTGenerator(grammar1Visitor):
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
         return node
 
-    # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def visitIdentifierOperationExpression(self, ctx):
-        name = ctx.name.text
-        operation = ctx.op.getText()
-        operation = operation[0]
-        root = ASTVariable(name, ctx.start.line, ctx.start.column, [
-            ASTOperator(operation, ctx.start.line, ctx.start.column,
-                        [ASTVariable(name, ctx.start.line, ctx.start.column),
-                         ASTInt(1, ctx.start.line, ctx.start.column)])])
-        return root
-
     # Visit a parse tree produced by grammar1Parser#Printf.
     def visitPrintf(self, ctx):
         root = ASTPrintf("printf", ctx.start.line, ctx.start.column)
@@ -320,22 +309,12 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#IntExpression.
     def visitIntExpression(self, ctx):
-        if ctx.getText()[0] == '!':
-            tempNumber = int(ctx.getText()[1:len(ctx.getText())])
-            if tempNumber:
-                number = 0
-            else: number = 1
-        else: number = int(ctx.getText())
+        number = int(ctx.getText())
         return ASTInt(number, ctx.start.line, ctx.start.column)
 
     # Visit a parse tree produced by grammar1Parser#FloatExpression.
     def visitFloatExpression(self, ctx):
-        if ctx.getText()[0] == '!':
-            tempNumber = float(ctx.getText()[1:len(ctx.getText())])
-            if tempNumber:
-                number = 0.0
-            else: number = 1.0
-        else: number = float(ctx.getText())
+        number = float(ctx.getText())
         return ASTFloat(number, ctx.start.line, ctx.start.column,)
 
     # Visit a parse tree produced by grammar1Parser#CharExpression.
@@ -345,8 +324,22 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
-        variable = ctx.getText()
-        return ASTVariable(variable, ctx.start.line, ctx.start.column)
+        variable = ctx.value.text
+        if ctx.identifier is None:
+            return ASTVariable(variable, ctx.start.line, ctx.start.column)
+        else:
+            operation = ctx.identifier.getText()[0]
+            root = ASTOperator(operation, ctx.start.line, ctx.start.column,
+                               [ASTVariable(variable, ctx.start.line, ctx.start.column),
+                                ASTInt(1, ctx.start.line, ctx.start.column)])
+            return root
+
+
+    # Visit a parse tree produced by grammar1Parser#negation.
+    def visitNegation(self, ctx):
+        negate = ASTOperator('!',ctx.start.line, ctx.start.column)
+        negate.addNode(self.visit(ctx.b).removePriority())
+        return negate
 
     # Visit a parse tree produced by grammar1Parser#operation.
     def visitOperation(self, ctx):
@@ -359,5 +352,11 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
-        return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)])
-
+        if ctx.identifier is None:
+            return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)])
+        else:
+            operation = ctx.identifier.getText()[0]
+            root = ASTOperator(operation, ctx.start.line, ctx.start.column,
+                               [ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)]),
+                                ASTInt(1, ctx.start.line, ctx.start.column)])
+            return root

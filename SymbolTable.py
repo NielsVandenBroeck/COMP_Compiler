@@ -137,10 +137,8 @@ class SymbolTable():
         return self.parent.addFunctionToUpper(function)
 
     def searchFunction(self, returnType, name, params):
-
         if type(self) is UpperSymbolTable:
             for function in self.functions:
-                print(params, function.parameters)
                 if returnType == function.returnType and name == function.functionName:
                     if params is None and function.parameters == []:
                         return function
@@ -392,7 +390,7 @@ class SymbolTable():
                 elif type(node) == ASTFloat:
                     variableType = float
                 elif type(node) == ASTFunctionName:
-                    self.checkFunctionCall(root)
+                    self.checkFunctionCall(node)
                     variableType = self.findReturnTypeOfFunction(node.root)
                 if variableType != formatList[i - 1]:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(

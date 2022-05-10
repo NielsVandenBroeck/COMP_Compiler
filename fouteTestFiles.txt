@@ -8,19 +8,19 @@ breakAndContinue.c:
     OK
 
 comparisons1.c:
-    Fout iets met ast
+    OK
 
 comparisons2.c:
-    lijn 9 fout met type geeft een double terug maar moet een bool (int) zijn want is een vergelijking
+    OK
 
 dereferenceAssignment.c:
-    Fout in ast of taal (denk ik)
+    OK
 
 fibonacciRecursive.c:
-    Fout in ast of taal (denk ik)
+    OK
 
 floatToIntConversion.c:
-    OK (denk ik)
+    OK
 
 for.c:
     OK
@@ -35,16 +35,16 @@ ifElse.c:
     FOUT
 
 intToFloatConversion.c:
-    OK (doet niks)
+    OK
 
 modulo.c:
     OK
 
 pointerArgument.c:
-    FOUT in taal
+    FOUT in taal                        (Niels)
 
 prime.c
-    FOUT mulitple varible declaration
+    FOUT mulitple varible declaration   (Niels)
 
 printf1.c:
     OK
@@ -59,7 +59,7 @@ scanf1.c:
     OK
 
 scanf2.c:
-    FOUT
+    FOUT arrays
 
 scoping.c:
     FOUT LLVM
@@ -83,7 +83,7 @@ variables5.c:
     OK
 
 variables6.c:
-    FOUT Dubbele pointers!
+    FOUT Dubbele pointers!  (Niels)
 
 variables7.c:
     FOUT arrays

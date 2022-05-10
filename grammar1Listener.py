@@ -121,15 +121,6 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def enterIdentifierOperationExpression(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def exitIdentifierOperationExpression(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by grammar1Parser#Printf.
     def enterPrintf(self, ctx):
         pass
@@ -235,15 +226,6 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#variableAdress.
     def exitVariableAdress(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by grammar1Parser#identifierOP.
-    def enterIdentifierOP(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#identifierOP.
-    def exitIdentifierOP(self, ctx):
         pass
 
 
@@ -361,6 +343,24 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#VariableExpression.
     def exitVariableExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#identifierOP.
+    def enterIdentifierOP(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#identifierOP.
+    def exitIdentifierOP(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#negation.
+    def enterNegation(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#negation.
+    def exitNegation(self, ctx):
         pass
 
 

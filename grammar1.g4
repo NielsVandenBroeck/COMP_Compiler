@@ -39,7 +39,6 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
     | Print'('f=Format pb=printBodies')'                                                        #Printf
     | Scan'('f=Format  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
@@ -75,10 +74,6 @@ rvalue
 variableAdress
     : ('&')?name=NAME;
 
-identifierOP
-    : PLUS PLUS
-    | MINUS MINUS
-    ;
 
 dataType
     : INT
@@ -92,6 +87,7 @@ body
     | bodyOperationBody
     | unary
     | functionCall
+    | negation
     ;
 
 functionCall
@@ -103,12 +99,14 @@ leftOperationBody
     | data
     | unary
     | functionCall
+    | negation
     ;
 
 unaryBody
     : paren
     | data
     | bodyOperationBody
+    | negation
     ;
 
 unary
@@ -127,8 +125,17 @@ data
     : value=CHARINPUT                                                   #CharExpression
     | value=INTINPUT                                                    #IntExpression
     | value=FLOATINPUT                                                  #FloatExpression
-    | '*'value=NAME                                                     #PointerValueExpression
-    | NAME                                                              #VariableExpression
+    | ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?                            #PointerValueExpression
+    | ((LPAREN value=NAME RPAREN)|(value=NAME)) identifier=identifierOP?                               #VariableExpression
+    ;
+
+identifierOP
+    : PLUS PLUS
+    | MINUS MINUS
+    ;
+
+negation
+    : NEGATE b=body
     ;
 
 operation
@@ -254,15 +261,19 @@ RPAREN
     ;
 
 INTINPUT
-    : ('!')?  [0-9]+
+    : [0-9]+
     ;
 
 FLOATINPUT
-    : ('!')?  [0-9]+('.'[0-9]+)?
+    : [0-9]+('.'[0-9]+)?
     ;
 
 CHARINPUT
     : '\'' ((~('\'')) | ('\\' '\'') | ('\\n') | ('\\r') | ('\\t')) '\''
+    ;
+
+NEGATE
+    : '!'
     ;
 
 CONST

@@ -80,17 +80,38 @@ class AST():
             if type(self.nodes[0]) is ASTVariable:
                 return
             value1 = self.nodes[0].root
-            if isinstance(value1, float) or isinstance(value1, int):
+            if isinstance(value1, float):
                 self.root = -value1
-                self.nodes = None
+                self.__class__ = ASTFloat
+            elif isinstance(value1, int):
+                self.root = -value1
+                self.__class__ = ASTInt
             elif isinstance(value1, str):
                 self.root = chr(-ord(value1[1]))
-                self.nodes = None
-            self.__class__ = ASTChar
+                self.__class__ = ASTChar
+            self.nodes = None
         # unary +
         elif len(self.nodes) == 1 and self.root == '+':
             self.__class__ = type(self.nodes[0])
             self.root = self.nodes[0].root
+            self.nodes = None
+        #negation bv: !8
+        elif len(self.nodes) == 1 and self.root == '!':
+            value = self.nodes[0].root
+            # cannot convert variable that can still change. for example in loops or functions
+            if type(self.nodes[0]) is ASTVariable:
+                return
+            if isinstance(value, float):
+                self.root = float(not value)
+                self.__class__ = ASTFloat
+            elif isinstance(value, int):
+                self.root = int(not value)
+                self.__class__ = ASTInt
+            elif isinstance(value, str):
+                self.root = chr(int(not value))
+                self.__class__ = ASTChar
+            else:
+                print('errorr')
             self.nodes = None
         # all operations bv: 3+4
         elif len(self.nodes) == 2:
@@ -129,6 +150,18 @@ class AST():
                     '/': operator.truediv,
                     '%': operator.mod,
                 }
+                #cannot do || and && on floats or chars.
+                if self.root == '||' or self.root == '&&':
+                    resulttype = int
+                    value1 = int(value1)
+                    value2 = int(value2)
+                    if value1 != 0:
+                        value1 = 1
+                    if value2 != 0:
+                        value2 = 1
+                #boolean expressions should return a boolean (int 0 or 1)
+                elif self.root == '!=' or self.root == '==' or self.root == '<=' or self.root == '>=' or self.root == '>' or self.root == '<':
+                    resulttype = int
                 if resulttype == chr:
                     self.root = '\'' + resulttype(ops[self.root](value1, value2)) + '\''
                 else:
@@ -160,12 +193,17 @@ class AST():
                 self.root = destinationType(self.root)
             else:
                 self.root = destinationType(ord(self.root))
+            if destinationType is float:
+                self.__class__ = ASTFloat
+            elif destinationType is int:
+                self.__class__ = ASTInt
         elif destinationType is chr:
             if originalType is str:
                 self.root = '\''+self.root+'\''
             else:
                 conversion = True
                 self.root = '\'' + chr(int((self.root))) + '\''
+            self.__class__ = ASTChar
         #if conversion:
         #    print("[Warning] line: " + str(self.line) + ", position: " + str(
         #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")

@@ -27,6 +27,7 @@ def main(argv):
     workingCounter = 0
     brokenCounter = 0
 
+
     if (len(argv) > 1):
         print(argv[1] + ":")
         input_stream = FileStream(argv[1])
@@ -45,18 +46,18 @@ def main(argv):
         with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
             myFile.write(ast.getDot())
 
-        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-        llvm.write()
+        #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        #llvm.write()
 
         print("Compiling complete")
 
         print()
-        os.system("lli-9 " + "OutputFiles/code.ll")
+        #os.system("lli-9 " + "OutputFiles/code.ll")
         print("\nRunning complete")
         #os.system("lli-9 " + " OutputFiles/code.ll")
     else:
         for filename in os.listdir("testFiles"):
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n---------------")
+            print("\n---------------")
             try:
                 print(filename + ":")
                 input_stream = FileStream("testFiles/" + filename)
@@ -75,22 +76,21 @@ def main(argv):
                 with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
                     myFile.write(ast.getDot())
 
-                llvm = LLVMGenerator("OutputFiles/" + filename.split(".")[0] + ".ll", ast)
-                llvm.write()
+                #llvm = LLVMGenerator("OutputFiles/" + filename.split(".")[0] + ".ll", ast)
+                #llvm.write()
 
                 print("Compiling complete")
 
                 print()
-                os.system("lli-9 " + " OutputFiles/" + filename.split(".")[0] + ".ll")
+                #os.system("lli-9 " + " OutputFiles/" + filename.split(".")[0] + ".ll")
                 workingCounter += 1
                 print("\nRunning complete")
-                if (workingCounter == 7):
-                    break
+                #if (workingCounter == 7):
+                #    break
             except:
                 print("Failed")
                 brokenCounter += 1
             print()
-            input()
 
     print("aantal werkende files:", workingCounter)
     print("aantal niet werkende files:", brokenCounter)
