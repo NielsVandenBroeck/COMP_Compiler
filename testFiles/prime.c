@@ -17,7 +17,7 @@ int main()
    while(count <= n){
       c = 2;
       while(c <= i - 1) {
-         if ( i% c == 0 ){
+         if ( i%c == 0 ){
             break;
          }
 	c++;

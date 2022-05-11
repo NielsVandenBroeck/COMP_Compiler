@@ -213,7 +213,7 @@ class LLVMFunction(LLVMProgram):
             self._addLine("ret " + returntype + " " + returnItem)
 
     def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
-        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge"}
+        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "mod", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge"}
 
         toVarible = self.getVariable(toName)
         varible1 = self.getVariable(nameItem1)
@@ -237,7 +237,7 @@ class LLVMFunction(LLVMProgram):
             valueVariable2 = newValueVariable2
 
         if operationType == float:
-            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge"}
+            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "%":"fmod", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge"}
 
         tempRegName = self.createUniqueRegister()
         self._addLine("%" + tempRegName + " = " + operations[operation] + " " + self.typeToLLVMType(operationType) + " %" + valueVariable1 + ", %" + valueVariable2 + "")

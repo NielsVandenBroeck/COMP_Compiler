@@ -84,11 +84,8 @@ rvalue
     | variableAdress
     ;
 
-
-
 variableAdress
     : ('&')?name=NAME;
-
 
 dataType
     : INT
@@ -137,11 +134,11 @@ paren
     ;
 
 data
-    : value=CHARINPUT                                                   #CharExpression
-    | value=INTINPUT                                                    #IntExpression
-    | value=FLOATINPUT                                                  #FloatExpression
-    | ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?                            #PointerValueExpression
-    | ((LPAREN value=NAME RPAREN)|(value=NAME)) identifier=identifierOP?                               #VariableExpression
+    : value=CHARINPUT                                                                   #CharExpression
+    | value=INTINPUT                                                                    #IntExpression
+    | value=FLOATINPUT                                                                  #FloatExpression
+    | ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?          #PointerValueExpression
+    | ((LPAREN value=NAME RPAREN)|(value=NAME)) identifier=identifierOP?                #VariableExpression
     ;
 
 identifierOP
@@ -180,7 +177,7 @@ Print
     ;
 
 Format
-    : '"'((~('%'|'"')|TYPESPECIFIER)*)'"'
+    : '"'((~('"'))*)'"'
     ;
 
 
@@ -188,13 +185,6 @@ Scan
     : 'scanf'
     ;
 
-TYPESPECIFIER
-    : '%d'
-    | '%i'
-    | '%s'
-    | '%c'
-    | '%f'
-    ;
 
 INT
     : 'int'

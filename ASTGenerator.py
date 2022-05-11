@@ -34,10 +34,10 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        #ErrorAnalysis(program)
-        #symbolTable = UpperSymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
-        #symbolTable.loopAST()
+        ErrorAnalysis(program)
+        symbolTable = UpperSymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
 
         return program
 
@@ -326,7 +326,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#OperationExpression.
     def visitOperationExpression(self, ctx):
-        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%%': 4}
+        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
         node1 = self.visit(ctx.lValue).removePriority()
         node2 = self.visit(ctx.rValue).removePriority()
 

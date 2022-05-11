@@ -44,7 +44,7 @@ pointerArgument.c:
     FOUT in taal                        (Niels)
 
 prime.c
-    OK als modulo = %% ipv % (omdat antlr suckt)
+    OK
 
 printf1.c:
     OK
