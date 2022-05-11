@@ -115,6 +115,21 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def visitMultiAssignmentsDeclarations(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#multideclarations.
+    def visitMultideclarations(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#multideclaration.
+    def visitMultideclaration(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
         return self.visitChildren(ctx)

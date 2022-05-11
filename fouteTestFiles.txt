@@ -44,7 +44,7 @@ pointerArgument.c:
     FOUT in taal                        (Niels)
 
 prime.c
-    FOUT mulitple varible declaration   (Niels)
+    OK als modulo = %% ipv % (omdat antlr suckt)
 
 printf1.c:
     OK

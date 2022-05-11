@@ -10,6 +10,7 @@ programLine
     | MultiLineComment
     | s=scope
     | f=function
+    | m=multiAssignmentsDeclarations SEMICOLON
     | IncludeStdio
     ;
 
@@ -62,6 +63,18 @@ scanVariable
     : ',' (d=data|v=variableAdress)
     ;
 
+multiAssignmentsDeclarations
+    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? multidecl=multideclarations
+    ;
+
+multideclarations
+    : multideclaration (',' multideclaration)+
+    ;
+
+multideclaration
+    : name=NAME (IS rval=rvalue)?
+    ;
+
 lvalue
     : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME
     ;
@@ -70,6 +83,8 @@ rvalue
     : body
     | variableAdress
     ;
+
+
 
 variableAdress
     : ('&')?name=NAME;
@@ -167,6 +182,7 @@ Print
 Format
     : '"'((~('%'|'"')|TYPESPECIFIER)*)'"'
     ;
+
 
 Scan
     : 'scanf'

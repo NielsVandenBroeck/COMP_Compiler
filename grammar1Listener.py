@@ -202,6 +202,33 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def enterMultiAssignmentsDeclarations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def exitMultiAssignmentsDeclarations(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#multideclarations.
+    def enterMultideclarations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multideclarations.
+    def exitMultideclarations(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#multideclaration.
+    def enterMultideclaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multideclaration.
+    def exitMultideclaration(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass

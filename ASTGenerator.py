@@ -1,6 +1,7 @@
 from AST import *
 from grammar1Visitor import *
 from SymbolTable import *
+import copy
 from ErrorAnalysis import ErrorAnalysis
 
 class ASTGenerator(grammar1Visitor):
@@ -28,10 +29,15 @@ class ASTGenerator(grammar1Visitor):
                 if object is not None:
                     object = object.removePriority()
                     program.addNode(object)
-        ErrorAnalysis(program)
-        symbolTable = UpperSymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
-        symbolTable.loopAST()
+            elif line.m is not None:
+                temp = self.visit(line.m)
+                if type(temp) is ASTMultiDeclaration:
+                    for node in temp.nodes:
+                        program.addNode(node)
+        #ErrorAnalysis(program)
+        #symbolTable = UpperSymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
+        #symbolTable.loopAST()
 
         return program
 
@@ -154,6 +160,11 @@ class ASTGenerator(grammar1Visitor):
             elif line.f is not None:
                 exit("[Error] line: " + str( ctx.start.line) + ", position: " + str(
                     ctx.start.column) + ". Function definition is not allowed here.")
+            elif line.m is not None:
+                temp = self.visit(line.m)
+                if type(temp) is ASTMultiDeclaration:
+                    for node in temp.nodes:
+                        root.addNode(node)
         return root
 
     # Visit a parse tree produced by grammar1Parser#param.
@@ -177,11 +188,54 @@ class ASTGenerator(grammar1Visitor):
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
         return lValue
 
+    # Visit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def visitMultiAssignmentsDeclarations(self, ctx):
+        root = ASTMultiDeclaration("multiDeclaration", ctx.start.line, ctx.start.column)
+        dataType = self.getDataTypeForMultiDeclaration(ctx)
+
+        if ctx.multidecl is not None:
+            for declaration in ctx.multidecl.getChildren():
+                if declaration.getChildCount() == 0:
+                    continue
+                UppernewDataType = copy.deepcopy(dataType)
+                newdataType = UppernewDataType
+                while newdataType.nodes is not None:
+                    newdataType = newdataType.nodes[0]
+                newdataType.addNode(ASTVariable(declaration.name.text, declaration.start.line, declaration.start.column))
+                if declaration.rval is not None:
+                    rvalue = self.visit(declaration.rval)
+                    UppernewDataType.getFirstNonConst(UppernewDataType).addNode(rvalue)
+                root.addNode(UppernewDataType)
+        return root
+
+
+    def getDataTypeForMultiDeclaration(self, ctx):
+        if ctx.pointer and ctx.t == None:
+            dataType = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column)
+            return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [dataType])
+
+        if ctx.pointer != None:
+            if ctx.t == None:
+                dataType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column)
+                return dataType
+            dataType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+            if ctx.constnessB != None:
+                dataType = ASTConst("const",ctx.start.line, ctx.start.column, [dataType])
+            dataType =  ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [dataType])
+            if ctx.constnessA != None:
+                dataType = ASTConst("const",ctx.start.line, ctx.start.column, [dataType])
+        else:
+            dataType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
+            if ctx.constnessB != None:
+                dataType = ASTConst("const", ctx.start.line, ctx.start.column, [dataType])
+            if ctx.constnessA != None:
+                dataType = ASTConst("const", ctx.start.line, ctx.start.column, [dataType])
+        return dataType
+
+
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
-
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
-
         if ctx.pointer and ctx.t == None:
             lValue = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [lValue])
             return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
@@ -272,7 +326,7 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#OperationExpression.
     def visitOperationExpression(self, ctx):
-        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%': 4}
+        dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4, '%%': 4}
         node1 = self.visit(ctx.lValue).removePriority()
         node2 = self.visit(ctx.rValue).removePriority()
 
