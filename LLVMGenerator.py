@@ -93,8 +93,11 @@ class LLVMGenerator:
         return False
 
     def _createAstDataTyeLLVm(self, node):
-        self.currentFunction.newSmartVarible(node.getVariableName(), node.getType())
-        self._createSetAstVariableLLVM(node)
+        if node.getVariableName()[0] == '@':
+            self.currentFunction.newSmartVarible(node.getVariableName(), node.getType(), True, node.getValue())
+        else:
+            self.currentFunction.newSmartVarible(node.getVariableName(), node.getType())
+            self._createSetAstVariableLLVM(node)
 
     def _createAstPointerLLVm(self, node):
         if type(node) != ASTPointer:

@@ -30,19 +30,20 @@ class LLVMProgram:
     def _addLine(self, line):
         self.programArray.insert(len(self.programArray) - 1, "\t" + line)  # create a new line to close the bracket
 
-    def newVarible(self, name, type = "i32", align = 4, addLine = True):
+    def newVarible(self, name, type = "i32", align = 4, addLine = True, value = 0):
         varible = LLVMVarible(name, type, align)
         self.setVariable(name, varible)
         if addLine:
-            self._addLine(varible.getLLVMDecString())
+            print("value blabkjdfjkldfdhjklgfdhjklgf", value)
+            self._addLine(varible.getGlobalLLVMDecString(value))
 
-    def newSmartVarible(self, name, type, addline = True):
+    def newSmartVarible(self, name, type, addline = True, inivalue = None):
         if type == int or type == "i32":
-            self.newVarible(name, "i32", 4, addline)
+            self.newVarible(name, "i32", 4, addline, inivalue)
         elif type == chr or type == "i8":
-            self.newVarible(name,  "i8", 1, addline)
+            self.newVarible(name,  "i8", 1, addline, inivalue)
         elif type == float or type == "float":
-            self.newVarible(name,  "float", 4, addline)
+            self.newVarible(name,  "float", 4, addline, inivalue)
         else:
             exit("Not known type")
 
@@ -121,6 +122,14 @@ class LLVMFunction(LLVMProgram):
         self.programArray.append("}")
         self._initializeParameter(parameters)
         self.parameterTypeList = self._getCallParameterTypes(parameters)
+
+    def newVarible(self, name, type = "i32", align = 4, addLine = True, iniValue = None):
+        if iniValue != None:
+            exit("geen globale variable")
+        varible = LLVMVarible(name, type, align)
+        self.setVariable(name, varible)
+        if addLine:
+            self._addLine(varible.getLLVMDecString())
 
     def addPrintString(self, name, printString):
         self.parantFunction.addPrintString(name, printString)
@@ -213,7 +222,7 @@ class LLVMFunction(LLVMProgram):
             self._addLine("ret " + returntype + " " + returnItem)
 
     def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
-        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "mod", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge"}
+        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "mod", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge", "&&": "and", "||": "or"}
 
         toVarible = self.getVariable(toName)
         varible1 = self.getVariable(nameItem1)
@@ -237,7 +246,7 @@ class LLVMFunction(LLVMProgram):
             valueVariable2 = newValueVariable2
 
         if operationType == float:
-            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "%":"fmod", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge"}
+            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "%":"fmod", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge", "&&": "and", "||": "or"}
 
         tempRegName = self.createUniqueRegister()
         self._addLine("%" + tempRegName + " = " + operations[operation] + " " + self.typeToLLVMType(operationType) + " %" + valueVariable1 + ", %" + valueVariable2 + "")
@@ -409,13 +418,20 @@ class LLVMIfElse(LLVMFunction):
 
 class LLVMVarible:
     def __init__(self, name, type, align = 4):
+        self.llvmChar = "%"
         self.name = name
         self.LLVMname = name
         self.type = type
         self.align = align
+        if name[0] == "@":
+            self.llvmChar = "@"
+            self.LLVMname = self.LLVMname[1:]
 
     def getLLVMDecString(self):
         return "%" + self.LLVMname + " = alloca " + self.type + ", align " + str(self.align)
+
+    def getGlobalLLVMDecString(self, iniValue = 0):
+        return self.llvmChar + self.LLVMname + " = dso_local global " + self.type + " " + str(iniValue) + ", align " + str(self.align)
 
     def getType(self):
         if self.type == "float":
@@ -440,10 +456,10 @@ class LLVMVarible:
         elif self.type == "i8" and len(value) == 3 and value[0] == "'" and value[2] == "'":
             value = ord(value[1])
 
-        return "store " + self.type + " " + str(value) + ", " + self.type + "* %" + self.LLVMname + ", align " + str(self.align)
+        return "store " + self.type + " " + str(value) + ", " + self.type + "* " + self.llvmChar + self.LLVMname + ", align " + str(self.align)
 
     def getLLVMLoadString(self, loadAdress):
-        return "%" + loadAdress + " = load " + self.type + ", " + self.type + "* %" + str(self.LLVMname) + ", align " + str(self.align)
+        return "%" + loadAdress + " = load " + self.type + ", " + self.type + "* " + self.llvmChar + str(self.LLVMname) + ", align " + str(self.align)
 
     def loadPointerValueString(self, loadAdress):
         loadString = ""
@@ -451,7 +467,7 @@ class LLVMVarible:
         counter = 0
         currentAdress = loadAdress + str(counter)
         while "*" in varType:
-            loadString += "%" + loadAdress + str(counter) + " = load " + varType + ", " + varType + "* %" + str(self.LLVMname) + ", align " + str(self.align) + "\n\t"
+            loadString += "%" + loadAdress + str(counter) + " = load " + varType + ", " + varType + "* " + self.llvmChar + str(self.LLVMname) + ", align " + str(self.align) + "\n\t"
             varType = varType[:-1]
-        loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* %" + loadAdress + str(counter) + ", align " + str(self.align)
+        loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* " + self.llvmChar + loadAdress + str(counter) + ", align " + str(self.align)
         return loadString
