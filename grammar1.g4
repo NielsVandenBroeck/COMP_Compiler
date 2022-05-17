@@ -23,7 +23,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME
+    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME ('[' array=INTINPUT ']')?
     ;
 
 scope
@@ -72,11 +72,11 @@ multideclarations
     ;
 
 multideclaration
-    : name=NAME (IS rval=rvalue)?
+    : name=NAME (('[' array=INTINPUT ']')|(IS rval=rvalue))?
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME
+    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME ('[' array=INTINPUT ']')?
     ;
 
 rvalue
@@ -85,7 +85,7 @@ rvalue
     ;
 
 variableAdress
-    : ('&')?name=NAME;
+    : ('&')?name=NAME ('[' array=INTINPUT ']')?;
 
 dataType
     : INT
@@ -137,9 +137,16 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?          #PointerValueExpression
-    | ((LPAREN value=NAME RPAREN)|(value=NAME)) identifier=identifierOP?                #VariableExpression
+    | '*'value=NAME ('[' array=INTINPUT ']')?                                           #PointerValueExpression
+    | value=NAME ('[' array=INTINPUT ']')?                                              #VariableExpression
     ;
+
+    //++ and --
+    //| ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?          #PointerValueExpression
+    //| ((LPAREN value=NAME RPAREN)|(value=NAME))  identifier=identifierOP?               #VariableExpression
+    //;
+
+
 
 identifierOP
     : PLUS PLUS

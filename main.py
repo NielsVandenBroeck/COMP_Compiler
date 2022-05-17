@@ -46,8 +46,8 @@ def main(argv):
         with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
             myFile.write(ast.getDot())
 
-        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-        llvm.write()
+        #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        #llvm.write()
 
         print("Compiling complete")
 
