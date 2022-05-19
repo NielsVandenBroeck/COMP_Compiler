@@ -2,7 +2,6 @@ import struct
 
 from AST import ASTVoid, ASTVariable, AST, ASTPointer
 
-
 class LLVMProgram:
     adressCounter = 0
     programArray = []
@@ -34,8 +33,23 @@ class LLVMProgram:
         varible = LLVMVarible(name, type, align)
         self.setVariable(name, varible)
         if addLine:
-            print("value blabkjdfjkldfdhjklgfdhjklgf", value)
             self._addLine(varible.getGlobalLLVMDecString(value))
+
+    def newArray(self, name, length, type = "i32", align = 4, addLine = True):
+        varible = LLVMArray(name, type, length, align)
+        self.setVariable(name, varible)
+        if addLine:
+            self._addLine(varible.getLLVMDecString())
+
+    def newSmartArray(self, name, type, length, addline = True):
+        if type == int or type == "i32":
+            self.newArray(name,length, "i32", 4, addline)
+        elif type == chr or type == "i8":
+            self.newArray(name,length,  "i8", 1, addline)
+        elif type == float or type == "float":
+            self.newArray(name,length,  "float", 4, addline)
+        else:
+            exit("Not known type")
 
     def newSmartVarible(self, name, type, addline = True, inivalue = None):
         if type == int or type == "i32":
@@ -57,18 +71,21 @@ class LLVMProgram:
         else:
             exit("Not known type")
 
-    def setVaribleValue(self, name, value):
+    def setVaribleValue(self, name, value, index=None):
         varible = self.getVariable(name)
         if type(value) == ASTVariable:
             varible1 = self.getVariable(value.getValue())
             registerVar = self.createUniqueRegister(value.getValue())
-            self._addLine(varible1.getLLVMLoadString(registerVar))
+            self._getLLVMVariableLoadString(varible1, registerVar, index)
             if varible.getType() != varible1.getType():
                 registerVar1 = self.createUniqueRegister(value.getValue())
                 self.convert(registerVar1, registerVar, varible.getType(), varible1.getType())
                 registerVar = registerVar1
             value = "%" + registerVar
-        self._addLine(varible.getLLVMIniString(value))
+        if index == None:
+            self._addLine(varible.getLLVMIniString(value))
+        else:
+            self._addLine(varible.getLLVMIniString(value, index))
 
     def convert(self, toName, fromName, toType, fromType):
         toType = self.typeToLLVMType(toType)
@@ -110,6 +127,12 @@ class LLVMProgram:
         charCount = len(printString) + 1
         printStringLLVM = "@." + name + " = private unnamed_addr constant [" + str(charCount) +" x i8] c\"" + printString + "\\00\", align 1"
         self.programArray.insert(0, printStringLLVM)
+
+    def _getLLVMVariableLoadString(self, varible, loadRegister, index= None):
+        if type(varible) == LLVMArray:
+            self._addLine(varible.getLLVMLoadString(loadRegister, index))
+            return
+        self._addLine(varible.getLLVMLoadString(loadRegister))
 
 class LLVMFunction(LLVMProgram):
     def __init__(self, functionName, parantFunction = None, returnType = "i32", parameters = None):
@@ -167,6 +190,7 @@ class LLVMFunction(LLVMProgram):
             self._addLine(self.getVariable(parameter.getVariableName()).getLLVMIniString("%parameter" + parameter.getVariableName()))
 
     def functionCall(self, functionName, parameters, toVarible = None):
+        print("test")
         returnType = self.getFunctionType(functionName)
         callTypeList = self.getFunctionCallTypes(functionName)
 
@@ -178,7 +202,7 @@ class LLVMFunction(LLVMProgram):
             value = parameters[i]
             if type(parameters[i]) == ASTVariable:
                 parameterAdress = self.createUniqueRegister("parameter")
-                self._addLine(self.getVariable(parameters[i].root).getLLVMLoadString(parameterAdress))
+                self._getLLVMVariableLoadString(self.getVariable(parameters[i].root), parameterAdress, value.getIndex())
                 if self.getVariable(parameters[i].root).getLLVMType() != callTypeList[i]:
                     parameterAdress1 = self.createUniqueRegister("parameter")
                     self.convert(parameterAdress1, parameterAdress, callTypeList[i],self.getVariable(parameters[i].root).getType())
@@ -204,7 +228,7 @@ class LLVMFunction(LLVMProgram):
         returnItem= ""
         if type(value) == ASTVariable:
             returnVar = self.getVariable(value.root)
-            self._addLine(returnVar.getLLVMLoadString("returnItem"))
+            self._getLLVMVariableLoadString(returnVar, "returnItem")
             returnItem = "returnItem"
             if self.returnType != self.typeToLLVMType(returnVar.getType()):
                 returnItem1 = self.createUniqueRegister("returnItem")
@@ -221,7 +245,7 @@ class LLVMFunction(LLVMProgram):
         else:
             self._addLine("ret " + returntype + " " + returnItem)
 
-    def operationOnVarible(self, toName, nameItem1, nameItem2, operation):
+    def operationOnVarible(self, toName, nameItem1, nameItem2, operation, toIndex=None, index1 = None, index2 = None):
         operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "mod", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge", "&&": "and", "||": "or"}
 
         toVarible = self.getVariable(toName)
@@ -229,10 +253,10 @@ class LLVMFunction(LLVMProgram):
         varible2 = self.getVariable(nameItem2)
 
         valueVariable1 = self.createUniqueRegister(varible1.LLVMname)
-        self._addLine(varible1.getLLVMLoadString(valueVariable1))
+        self._getLLVMVariableLoadString(varible1, valueVariable1, index1)
 
         valueVariable2 = self.createUniqueRegister(varible2.LLVMname)
-        self._addLine(varible2.getLLVMLoadString(valueVariable2))
+        self._getLLVMVariableLoadString(varible2, valueVariable2, index2)
 
         operationType = varible1.getType()
         if self.convertScore[varible1.getType()] < self.convertScore[varible2.getType()]:
@@ -258,7 +282,7 @@ class LLVMFunction(LLVMProgram):
             tempRegName1 = self.createUniqueRegister(tempRegName + "convert")
             self.convert(tempRegName1, tempRegName, toVarible.getType(), operationType)
             tempRegName = tempRegName1
-        self.setVaribleValue(toVarible.name, "%" + tempRegName)
+        self.setVaribleValue(toVarible.name, "%" + tempRegName,toIndex)
 
     def print(self, printString ,vars = [], printAs = None):
         printStringName = self.createUniqueRegister("printString");
@@ -269,7 +293,7 @@ class LLVMFunction(LLVMProgram):
         for item in vars:
             varible0 = self.getVariable(item)
             valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
-            self._addLine(varible0.getLLVMLoadString(valueVariable0))
+            self._getLLVMVariableLoadString(varible0, valueVariable0)
             type = varible0.type
             if varible0.getType() == float:
                 uniqueReg = self.createUniqueRegister()
@@ -293,7 +317,7 @@ class LLVMFunction(LLVMProgram):
             type = itemType[1]
             varible0 = self.getVariable(item)
             valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
-            self._addLine(varible0.getLLVMLoadString(valueVariable0))
+            self._getLLVMVariableLoadString(varible0, valueVariable0)
             type = varible0.type
             if varible0.getType() == float:
                 uniqueReg = self.createUniqueRegister()
@@ -416,6 +440,7 @@ class LLVMIfElse(LLVMFunction):
         self._addLine("br label %" + "endIfElseStatement_" + self.functionName)  #ga naar de condition of while loop
         self._addLineToFunctionNoTab("\n" + "endIfElseStatement_" + self.functionName + ":")  # end while loop
 
+
 class LLVMVarible:
     def __init__(self, name, type, align = 4):
         self.llvmChar = "%"
@@ -471,3 +496,42 @@ class LLVMVarible:
             varType = varType[:-1]
         loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* " + self.llvmChar + loadAdress + str(counter) + ", align " + str(self.align)
         return loadString
+
+class LLVMArray(LLVMVarible):
+    def __init__(self, name, type,length, align = 4):
+        self.length = length
+        self.tempRegCounter = 0
+        super().__init__(name,type,align)
+
+    def getLLVMDecString(self):
+        return "%" + self.LLVMname + " = alloca [" + self.length + " x " + self.type + "], align " + str(self.align)
+
+    def getLLVMIniString(self, value, index):
+        isRegister = False
+        try:
+            isRegister = value[0] == "%"
+        except:
+            isRegister = isRegister
+            #print("not a register")
+
+        self.tempRegCounter+=1
+        if self.type == "float" and not isRegister:
+            value = hex(struct.unpack('<Q', struct.pack('<d', value))[0])[:-7] +"0000000"#'{:.7e}'.format(value)
+        elif self.type == "i8" and len(value) == 3 and value[0] == "'" and value[2] == "'":
+            value = ord(value[1])
+
+        tempRegName = "temp" + str(self.tempRegCounter) + str(self.LLVMname)
+        pointerToArrayPlace = self.getPointerToIndex(tempRegName, index)
+        storeInArrayPlace = "store " + self.type + " " + str(value) + ", " + self.type + "* " + self.llvmChar + tempRegName + ", align " + str(self.align)
+        self.tempRegCounter+=1;
+        return pointerToArrayPlace + "\n" + storeInArrayPlace
+
+    def getLLVMLoadString(self, loadAdress, index):
+        tempRegName = "temp" + str(self.tempRegCounter) + str(self.LLVMname)
+        pointerToArrayPlace = self.getPointerToIndex(tempRegName, index)
+        load = "%" + loadAdress + " = load " + self.type + ", " + self.type + "* " + self.llvmChar + tempRegName + ", align " + str(self.align)
+        self.tempRegCounter += 1;
+        return pointerToArrayPlace + "\n" + load
+
+    def getPointerToIndex(self,regName, index):
+        return "%" + regName + "= getelementptr inbounds [" + self.length + " x " + self.type + "], [" + self.length + " x " + self.type + "]* " + self.llvmChar + self.LLVMname + ", i64 0, i64 " + str(index)

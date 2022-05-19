@@ -1,4 +1,4 @@
-from AST import ASTScope, ASTVariable, ASTDataType, AST
+from AST import ASTScope, ASTVariable, ASTDataType, AST, ASTParameters, ASTFunction
 
 number = 0
 
@@ -10,7 +10,7 @@ class ASTFixScoping:
         if type(scope) == AST:
             self.isGlobal = True
 
-        if type(scope) == ASTScope:
+        if type(scope) == ASTScope or type(scope) == ASTFunction:
             for node in scope.nodes:
                 self.preOrderTraverse(node)
         else:
@@ -38,15 +38,12 @@ class ASTFixScoping:
             self.symbolTable[varible.getVariableName()] = '@' + varible.nodes[0].root
             varible.nodes[0].root = '@' + varible.nodes[0].root
 
-
-
-
     def getMostCorrectName(self, varName):
         if varName in self.symbolTable:
             return self.symbolTable[varName]
         elif self.parantScope != None:
             return self.parantScope.getMostCorrectName(varName)
-        exit("name not found")
+        exit("name not found " + varName)
 
     def checkIfNameExists(self, varName):
         if varName in self.symbolTable:
@@ -56,11 +53,11 @@ class ASTFixScoping:
         return False
 
     def preOrderTraverse(self, ast):
-        if not type(ast) == ASTScope and not type(ast) == ASTVariable and not (type(ast) == ASTDataType) and ast.nodes != None:
+        if not type(ast) == ASTScope and not type(ast) == ASTFunction and not type(ast) == ASTVariable and not (type(ast) == ASTDataType) and ast.nodes != None:
             for node in ast.nodes:
                 print(node)
                 self.preOrderTraverse(node)
-        elif type(ast) == ASTScope:
+        elif type(ast) == ASTScope or type(ast) == ASTFunction:
             print(ast)
             ASTFixScoping(ast, self)
         elif type(ast) == ASTVariable:

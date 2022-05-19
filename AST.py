@@ -230,6 +230,8 @@ class AST():
         elif type(self) is ASTFunctionName:
             return self.getType()
 
+    def getIndex(self):#TODO
+        return None
 
 
 
@@ -277,7 +279,19 @@ class ASTVariable(AST):
             return self.nodes[1]
         return self.nodes[0]
 
+    def getIndex(self):
+        if self.nodes != None and type(self.nodes[0]) == ASTArrayIndex:
+            return self.nodes[0].root
+        return None
+
+    def isArrayItem(self):
+        if self.nodes != None and type(self.nodes[0]) == ASTArrayIndex:
+            return True
+        return False
+
     def getType(self):
+        if self.type == None:
+            return int
         return self.type
 
 class ASTFunctionName(AST):
@@ -289,6 +303,8 @@ class ASTFunctionName(AST):
         return self.root
 
     def getFunctionParameters(self):
+        if self.nodes == None:
+            return []
         return self.nodes[0].nodes
 
     def getType(self):
@@ -513,6 +529,17 @@ class ASTMultiDeclaration(AST):
 class ASTArray(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def getVariableName(self):
+        return self.nodes[0].nodes[0].root
+
+    def getLength(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1].root
+        return None
+
+    def getType(self):
+        return self.nodes[0].root
 
 class ASTArrayLength(AST):
     def __init__(self, value, line, position, childNodes=None):

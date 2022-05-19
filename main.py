@@ -6,6 +6,7 @@ import time
 
 from antlr4 import *
 
+from ASTFixScoping import ASTFixScoping
 from LLVMProgram import LLVMProgram, LLVMFunction
 from grammar1Lexer import grammar1Lexer
 from grammar1Parser import grammar1Parser
@@ -43,11 +44,13 @@ def main(argv):
 
         ast.constantFold()
 
+        ASTFixScoping(ast)
+
         with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
             myFile.write(ast.getDot())
 
-        #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-        #llvm.write()
+        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        llvm.write()
 
         print("Compiling complete")
 

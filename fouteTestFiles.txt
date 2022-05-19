@@ -29,10 +29,10 @@ forwardDeclaration.c:
     string werken nog niet
 
 if.c:
-    FOUT
+    OK
 
 ifElse.c:
-    FOUT
+    OK
 
 intToFloatConversion.c:
     OK
@@ -62,7 +62,7 @@ scanf2.c:
     FOUT arrays
 
 scoping.c:
-    FOUT LLVM
+    OK
 
 unaryOperations.c:
     FOUT arrays
