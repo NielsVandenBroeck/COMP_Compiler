@@ -35,10 +35,10 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        #ErrorAnalysis(program)
-        #symbolTable = UpperSymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
-        #symbolTable.loopAST()
+        symbolTable = UpperSymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
+        ErrorAnalysis(program)
 
         return program
 
@@ -244,6 +244,8 @@ class ASTGenerator(grammar1Visitor):
     def visitLvalue(self, ctx):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
         if ctx.pointer and ctx.t is None:
+            if ctx.array is not None:
+                lValue.addNode(ASTArrayIndex(ctx.array.text, ctx.start.line, ctx.start.column))
             lValue = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [lValue])
             return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
 
@@ -256,9 +258,6 @@ class ASTGenerator(grammar1Visitor):
 
         #declaration
         if ctx.pointer is not None:
-            if ctx.t is None:
-                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
-                return lValue
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB is not None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])

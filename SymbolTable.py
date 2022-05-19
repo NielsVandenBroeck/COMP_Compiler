@@ -1,5 +1,6 @@
 from AST import *
 
+
 class SymbolObject:
     def __init__(self, type, name, constness):
         self.type = type
@@ -9,16 +10,23 @@ class SymbolObject:
     def getObject(self):
         return self
 
-class SymbolObjectPointer:
+
+class SymbolObjectArray(SymbolObject):
+    def __init__(self, type, name, constness, arrayLength):
+        self.arrayLength = arrayLength
+        super().__init__(type, name, constness)
+
+    def getObject(self):
+        return self
+
+
+class SymbolObjectPointer(SymbolObject):
     def __init__(self, type, name, constness, objectConst, pointsTo=None):
-        self.type = type
-        self.constness = constness
         self.objectConst = objectConst
         if pointsTo == None:
             pointsTo = SymbolObject("nullptr", "nullptr", True)
         self.object = pointsTo
-
-        self.name = name
+        super().__init__(type, name, constness)
 
     def getObject(self):
         if type(self.object) == SymbolObjectPointer:
@@ -26,11 +34,19 @@ class SymbolObjectPointer:
         return self.object
 
     # set value of real adress (not pointer)
-    def setPointer(self,object, node):
+    def setPointer(self, object, node):
         if not self.constness:
             self.object = object
         else:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +" variable: \'" + node.root + "\' is of const-type and cannot be changed.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + " variable: \'" + node.root + "\' is of const-type and cannot be changed.")
+
+
+class SymbolObjectPointerArray(SymbolObjectPointer):
+    def __init__(self, type, name, constness, objectConst, arrayLength, pointsTo=None):
+        self.arrayLength = arrayLength
+        super().__init__(type, name, constness, objectConst, pointsTo)
+
 
 class SymbolTable():
     def __init__(self, root, parent=None):
@@ -53,47 +69,35 @@ class SymbolTable():
             self.checkUndefinedReferences()
 
     def visitChild(self, node):
-        #declaration
-        if type(node) is ASTConst:
-            if type(node.nodes[0]) is ASTPointer:
-                self.pointerDeclaration(node.nodes[0],True)
-            elif type(node.nodes[0]) is ASTDataType:
-                self.variableDeclaration(node.nodes[0],True)
-            else:
-                print("error")
-        elif self.IsVariableDeclarationSameTypes(node):
-            self.variableDeclaration(node)
-        #asignment
+        # declarations
+        if type(node) is ASTConst or self.IsVariableDeclarationSameTypes(node) or self.IsPointerDeclaration(
+                node) or type(node) is ASTArray:
+            self.declaration(node)
+        # asignment
         elif self.IsVariableAssignmentSameTypes(node):
             self.variableAssignment(node)
-        elif self.IsVariable(node):
-            self.searchVariable(node)
-        #pointer declaration bv: int* b ( = a)
-        elif self.IsPointerDeclaration(node):
-            self.pointerDeclaration(node)
-        #pointer varible assignment (sets te variable where to pointer is pointing at) bv: *b = a of *b = 10;
+        # pointer variable assignment (sets the variable where to pointer is pointing to) bv: *b = a of *b = 10;
         elif self.IsPointerVariableAssignment(node):
             self.pointerAssignment(node)
-        #set a pointer to another pointer bv: a = b
-        elif self.IsPointerAssignment(node):
-            self.pointerAssignment(node)
-        #check for unassigned variables in bodies
+        elif self.IsVariable(node):
+            self.searchVariable(node)
+        # check for unassigned variables in bodies
         elif self.IsBody(node):
             self.checkBody(node)
-        #check returns
+        # check returns
         elif self.IsReturn(node):
             self.checkReturnType(node)
-        #check printf format
+        # check printf format
         elif self.IsPrintf(node):
             self.checkPrintf(node)
-        #check scanf format
+        # check scanf format
         elif self.IsScanf(node):
             self.checkScanf(node)
-        #scopes
+        # scopes
         elif self.IsScope(node):
             s = SymbolTable(node, self)
             s.loopAST()
-        #functions
+        # functions
         elif self.IsFunction(node):
             self.addFunctionScope(node)
         else:
@@ -104,7 +108,7 @@ class SymbolTable():
             return self
         return self.parent.getUpper()
 
-    def addFunctionScope(self,root):
+    def addFunctionScope(self, root):
         if root.nodes is None:
             exit("Unexpected Error.")
         params = None
@@ -118,7 +122,7 @@ class SymbolTable():
                 params = node
             elif type(node) is ASTScope:
                 scope = node
-        #check if function has been declared before
+        # check if function has been declared before
         functionAlreadyDeclared = self.searchFunction(returnType, functionName, params)
 
         if functionAlreadyDeclared is not None:
@@ -126,11 +130,11 @@ class SymbolTable():
                 functionAlreadyDeclared.addScope(scope)
             return
 
-        s = FunctionSymbolTable(scope,functionName, returnType, self.getUpper(), params)
+        s = FunctionSymbolTable(scope, functionName, returnType, self.getUpper(), params)
         self.addFunctionToUpper(s)
         s.loopAST()
 
-    def addFunctionToUpper(self,function):
+    def addFunctionToUpper(self, function):
         if type(self) is UpperSymbolTable:
             self.functions.append(function)
             return
@@ -156,7 +160,17 @@ class SymbolTable():
             return None
         return self.parent.searchFunction(returnType, name, params)
 
-    def pointerDeclaration(self, node, constness=False):
+    def declaration(self, node, constness=False, arraylength=None):
+        if type(node) is ASTArray:
+            self.declaration(node.nodes[0], constness, int(node.nodes[1].root))
+        elif type(node) is ASTConst:
+            self.declaration(node.nodes[0], True, arraylength)
+        elif self.IsVariableDeclarationSameTypes(node):
+            self.variableDeclaration(node, constness, arraylength)
+        elif self.IsPointerDeclaration(node):
+            self.pointerDeclaration(node, constness, arraylength)
+
+    def pointerDeclaration(self, node, constness, arrayLength):
         objectConstness = False
         pointerType = node.nodes[0].root
         if type(node.getSetObject()) is ASTConst:
@@ -166,45 +180,40 @@ class SymbolTable():
             pointerName = node.getSetObject().getVariableName()
 
         if pointerName in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + ". Redefinition of variable: \'" +
-                node.nodes[0].root + "\'.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Redefinition of variable: \'" +
+                 node.nodes[0].root + "\'.")
 
         object = node.getToObject()
+        self.searchVariable(object)
         pointerObject = None
         if isinstance(object, ASTAdress):
-            self.searchVariable(object)
-            toObject = self.searchVariable(object)
-            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness, toObject)
+            toObject = self.searchVariable(object.nodes[0])
+            if arrayLength is not None:
+                pointerObject = SymbolObjectPointerArray(pointerType, pointerName, constness, objectConstness,
+                                                         arrayLength, toObject)
+            else:
+                pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness, toObject)
         elif isinstance(object, ASTVariable):
             pointerObject = self.searchVariable(object)
         elif object == None:
-            pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness)
+            if arrayLength is not None:
+                pointerObject = SymbolObjectPointerArray(pointerType, pointerName, constness, objectConstness,
+                                                         arrayLength)
+            else:
+                pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, objectConstness)
         else:
-            exit("[Error] line: "+ str(node.line) +", position: "+ str(node.position) +". Variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
 
         self.SymbolList[pointerName] = pointerObject
 
-    def pointerAssignment(self, node):
-        var = node.getSetObject()
-        self.searchVariable(var)
-
-        newValue = node.getToObject()
-
-        pointsToObject = var.getVariableName()
-        if self.searchVariable(newValue) != None and self.searchVariable(newValue).type != self.SymbolList[pointsToObject].type:
-            print("[Warning] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". Implicit conversion from '" + str(self.SymbolList[pointsToObject].getObject().type) + "' to " + str(
-                self.searchVariable(var).type) + ". ")
-
-        var = node.getSetObject()
-        self.searchVariable(var)
-
-
-    def variableDeclaration(self, node, constness=False):
+    def variableDeclaration(self, node, constness, arrayLength):
         variable = node.nodes[0].root
-        #check if variablename exists -> error
+        # check if variablename exists -> error
         if variable in self.SymbolList:
-            exit("[Error] line: " + str(node.line) + ", position: " + str(node.position) + ". Redefinition of variable: \'" + node.nodes[0].root + "\'.")
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Redefinition of variable: \'" + node.nodes[0].root + "\'.")
 
         if isinstance(node.nodes[0], ASTAdress):
             self.searchVariable(node.nodes[1])
@@ -224,37 +233,69 @@ class SymbolTable():
                         bodyType) + " to " + str(
                         node.getType()) + ". ")
                 node.nodes[1].correctDataType(node.root)
-        self.SymbolList[variable] = SymbolObject(node.root,variable,constness)
+        if arrayLength is not None:
+            self.SymbolList[variable] = SymbolObjectArray(node.root, variable, constness, arrayLength)
+        else:
+            self.SymbolList[variable] = SymbolObject(node.root, variable, constness)
+
+    def pointerAssignment(self, node):
+        var = node.getSetObject()
+
+        newValue = node.getToObject()
+
+        self.searchVariable(newValue)
+
+        pointsToName = var.getVariableName()
+
+        pointsToObject = var.nodes[0]
+        self.searchVariable(pointsToObject)
+
+        if self.searchVariable(newValue) != None and self.searchVariable(newValue).type != self.SymbolList[
+            pointsToName].type:
+            print("[Warning] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Implicit conversion from '" + str(
+                self.SymbolList[pointsToName].getObject().type) + "' to " + str(
+                self.searchVariable(var).type) + ". ")
 
     def variableAssignment(self, node):
         variable = self.searchVariable(node)
-        if(variable.constness):
+        if (variable.constness):
             exit("[Error] line: " + str(node.line) + ", position: " + str(
                 node.position) + " variable: \'" + node.root + "\' is of const-type and cannot be changed.")
+        value = node.nodes[0]
 
-        #als het 2 pointers zijn bv: a = b
-        if(type(node.nodes[0]) is ASTVariable and type(variable) == SymbolObjectPointer and type(self.searchVariable(node.nodes[0])) == SymbolObjectPointer):
-            variable.setPointer(self.searchVariable(node.nodes[0]), node)
-        #als er een waarde word gezet bv: *a = 10
-        elif type(node.nodes[0]) is ASTAdress:
-            adress = node.nodes[0]
-            variable.setPointer(self.searchVariable(adress), node)
-        elif type(node.nodes[0]) is ASTVariable:
-            if self.searchVariable(node.nodes[0]).type is not variable.type:
+        # check if variable is array and has correct index
+        if type(variable) is SymbolObjectArray or type(variable) is SymbolObjectPointerArray:
+            if len(node.nodes) == 1:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + " variable \'" + node.root + "\': Array is not assignable.")
+            value = node.nodes[1]
+
+        symbolValue = self.searchVariable(value)
+
+        # als het 2 pointers zijn bv: a = b
+        if (type(value) is ASTVariable and type(variable) == SymbolObjectPointer and type(
+                symbolValue) == SymbolObjectPointer):
+            variable.setPointer(symbolValue, node)
+        # als er een waarde word gezet bv: *a = 10
+        elif type(value) is ASTAdress:
+            value = value.nodes[0]
+            variable.setPointer(self.searchVariable(value), node)
+        elif type(value) is ASTVariable:
+            if symbolValue.type is not variable.type:
                 print("[Warning] line: " + str(node.line) + ", position: " + str(
                     node.position) + ". Implicit conversion from " + str(
-                    self.searchVariable(node.nodes[0]).type) + " to " + str(
+                    symbolValue.type) + " to " + str(
                     variable.type) + ". ")
         else:
-            self.checkBody(node.nodes[0])
-            bodyType = node.nodes[0].findType()
+            self.checkBody(value)
+            bodyType = value.findType()
             if bodyType != variable.type:
                 print("[Warning] line: " + str(node.line) + ", position: " + str(
                     node.position) + ". Implicit conversion from " + str(
                     bodyType) + " to " + str(
                     variable.type) + ". ")
-            node.nodes[0].correctDataType(variable.type)
-
+            value.correctDataType(variable.type)
 
     def checkBody(self, root):
         if type(root) is ASTVariable:
@@ -281,7 +322,7 @@ class SymbolTable():
                 return
             for function in self.functions:
                 if function is not None:
-                    compared = self.compareFunction(function,root)
+                    compared = self.compareFunction(function, root)
                     if compared is True:
                         if function.scope is None:
                             self.addundefinedReferenceToUpper(function.functionName)
@@ -290,7 +331,7 @@ class SymbolTable():
                         exit("[Error] line: " + str(root.line) + ", position: " + str(
                             root.position) + compared)
             exit("[Error] line: " + str(root.line) + ", position: " + str(
-                root.position) + ". function '"+root.root+"' does not exist.")
+                root.position) + ". function '" + root.root + "' does not exist.")
 
     def addundefinedReferenceToUpper(self, functionName):
         if type(self) is UpperSymbolTable:
@@ -299,10 +340,8 @@ class SymbolTable():
         return self.parent.addundefinedReferenceToUpper(functionName)
 
     def checkUndefinedReferences(self):
-       if len(self.undefinedReferences) > 0:
+        if len(self.undefinedReferences) > 0:
             exit("[Error] Undefined reference to '" + self.undefinedReferences[0] + "'.")
-
-
 
     def compareFunction(self, function, functionCall):
         functionCallCount = 0
@@ -311,7 +350,8 @@ class SymbolTable():
         if function.functionName != functionCall.root:
             return False
         elif len(function.parameters) != functionCallCount:
-            errorText = ". Too few/many arguments to function call, expected "+ str(len(function.parameters)) +" have "+ str(functionCallCount) +"."
+            errorText = ". Too few/many arguments to function call, expected " + str(
+                len(function.parameters)) + " have " + str(functionCallCount) + "."
             return errorText
         return True
 
@@ -322,11 +362,11 @@ class SymbolTable():
         if self.returnType == "void":
             if node.nodes is not None:
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
-                    node.position) + ". Void function '"+self.functionName+"' should not return a value.")
+                    node.position) + ". Void function '" + self.functionName + "' should not return a value.")
         else:
             if node.nodes is None:
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
-                    node.position) + ". Void function '"+self.functionName+"' should return a value.")
+                    node.position) + ". Void function '" + self.functionName + "' should return a value.")
             elif type(node.nodes[0]) is ASTVariable:
                 if not self.searchVariable(node.nodes[0]).type is self.returnType:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(
@@ -353,16 +393,23 @@ class SymbolTable():
                 if len(formatText) < i:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
                         root.position) + ". An unkown Error occured.")
-                else:
-                    if formatText[i + 1] == "i" or formatText[i + 1] == "d":
-                        formatList.append(int)
-                    elif formatText[i + 1] == "c":
-                        formatList.append(chr)
-                    elif formatText[i + 1] == "f":
-                        formatList.append(float)
-                    elif formatText[i + 1] == "s":
-                        exit("[Error] line: " + str(root.line) + ", position: " + str(
-                            root.position) + ". Cannot scan a string. strings are not implemented yet.")
+                position = i
+                number = None
+                while len(formatText) >= position:
+                    if formatText[position].isdigit():
+                        number += formatText[position]
+                    else:
+                        break
+                print(number)
+                if formatText[i + 1] == "i" or formatText[i + 1] == "d":
+                    formatList.append(int)
+                elif formatText[i + 1] == "c":
+                    formatList.append(chr)
+                elif formatText[i + 1] == "f":
+                    formatList.append(float)
+                elif formatText[i + 1] == "s":
+                    exit("[Error] line: " + str(root.line) + ", position: " + str(
+                        root.position) + ". Cannot scan a string. strings are not implemented yet.")
         if len(formatList) != len(root.nodes) - 1:
             exit("[Error] line: " + str(root.line) + ", position: " + str(
                 root.position) + ". Too many/few parameters were given in scanf function.")
@@ -370,23 +417,23 @@ class SymbolTable():
             node = root.nodes[i]
             if node is not None:
                 variableType = None
-                #Variable
+                # Variable
                 if type(node) == ASTVariable:
                     variableType = self.searchVariable(node).type
-                #body
+                # body
                 elif type(node) == ASTOperator:
                     self.searchAllvars(node)
                     variableType = node.findType()
-                #pointer
+                # pointer
                 elif type(node) == ASTPointer:
                     variableType = self.searchVariable(node.nodes[0]).type
-                #int
+                # int
                 elif type(node) == ASTInt:
                     variableType = int
-                #char
+                # char
                 elif type(node) == ASTChar:
                     variableType = chr
-                #float
+                # float
                 elif type(node) == ASTFloat:
                     variableType = float
                 elif type(node) == ASTFunctionName:
@@ -415,30 +462,42 @@ class SymbolTable():
                 if len(formatText) < i:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
                         root.position) + ". An unkown Error occured.")
+                #strings
+                if formatText[i + 1].isnumeric():
+                    position = i+1
+                    while len(formatText) >= position:
+                        if formatText[position].isnumeric():
+                            position += 1
+                        elif formatText[i + 1] == "s":
+                            break
+                        else:
+                            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                                root.position) + ". Cannot use field width on non-strings.")
+                        formatList.append(str)
+                if formatText[i + 1] == "i" or formatText[i + 1] == "d":
+                    formatList.append(int)
+                elif formatText[i + 1] == "c":
+                    formatList.append(chr)
+                elif formatText[i + 1] == "f":
+                    formatList.append(float)
                 else:
-                    if formatText[i+1] == "i" or formatText[i+1] == "d":
-                        formatList.append(int)
-                    elif formatText[i+1] == "c":
-                        formatList.append(chr)
-                    elif formatText[i+1] == "f":
-                        formatList.append(float)
-                    elif formatText[i+1] == "s":
-                        exit("[Error] line: " + str(root.line) + ", position: " + str(
-                            root.position) + ". Cannot scan a string. strings are not implemented yet.")
-        if len(formatList) != len(root.nodes)-1:
+                    exit("[Error] line: " + str(root.line) + ", position: " + str(
+                        root.position) + ". Unknown Format Type.")
+
+        if len(formatList) != len(root.nodes) - 1:
             exit("[Error] line: " + str(root.line) + ", position: " + str(
                 root.position) + ". Too many/few parameters were given in scanf function.")
-        for i in range(1,len(root.nodes)):
+        for i in range(1, len(root.nodes)):
             node = root.nodes[i]
             if node is not None:
-                #pointer
+                # pointer
                 if type(node) == ASTVariable:
                     if type(self.searchVariable(node)) is SymbolObjectPointer:
                         variableType = self.searchVariable(node).type
                     else:
                         exit("[Error] line: " + str(node.line) + ", position: " + str(
                             node.position) + ". Variable must be of type Pointer of passed by reference.")
-                #address
+                # address
                 elif type(node) == ASTAdress:
                     if node.nodes is None:
                         exit("[Error] line: " + str(root.line) + ", position: " + str(
@@ -451,8 +510,7 @@ class SymbolTable():
                 if variableType != formatList[i - 1]:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". Scanf format specifies type '" + str(
-                        formatList[i-1]) + "', but the argument type is '" + str(variableType) + "'.")
-
+                        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
@@ -478,8 +536,18 @@ class SymbolTable():
             return None
         varName = node.getVariableName()
         if varName in self.SymbolList:
-            node.type = self.SymbolList[varName].type
-            return self.SymbolList[varName]
+            object = self.SymbolList[varName]
+            node.type = object.type
+            if type(object) is SymbolObjectArray or type(object) is SymbolObjectPointerArray:
+                if node.nodes is None:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + " variable: \'" + node.root + "\' Incompatible conversion with arrays.")
+                if int(node.nodes[0].root) >= object.arrayLength:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + " variable: \'" + node.root + "\' Array index " + node.nodes[
+                             0].root + " is past the end of the array (which contains " + str(
+                        object.arrayLength) + " elements).")
+            return object
         elif self.parent is None:
             exit("[Error] line: " + str(node.line) + ", position: " + str(
                 node.position) + ". Variable: \'" + varName + "\' has not been declared.")
@@ -501,7 +569,8 @@ class SymbolTable():
 
     @staticmethod
     def IsPointerDeclaration(node):
-        return type(node) is ASTPointer and type(node.getSetObject()) is not ASTVariable and type(node.getSetObject()) is not ASTAdress
+        return type(node) is ASTPointer and type(node.getSetObject()) is not ASTVariable and type(
+            node.getSetObject()) is not ASTAdress
 
     @staticmethod
     def IsPointerVariableAssignment(node):
@@ -558,6 +627,7 @@ class UpperSymbolTable(SymbolTable):
         self.undefinedReferences = []
         super().__init__(root)
 
+
 class FunctionSymbolTable(SymbolTable):
     def __init__(self, root, name, returnType, parent, parameters):
         self.scope = root
@@ -567,7 +637,7 @@ class FunctionSymbolTable(SymbolTable):
         self.parameters = []
         self.addParameters(parameters)
 
-    def addScope(self,scope):
+    def addScope(self, scope):
         self.scope = scope
         if self.functionName in self.parent.undefinedReferences:
             self.parent.undefinedReferences.remove(self.functionName)
@@ -582,6 +652,10 @@ class FunctionSymbolTable(SymbolTable):
             datatype = None
             pointer = False
             if node is not None:
+                arrayLength = None
+                if type(node) is ASTArray:
+                    arrayLength = node.nodes[1]
+                    node = node.nodes[0]
                 if type(node) is ASTConst:
                     datatype = node.nodes[0].root
                     if type(node.nodes[0]) is ASTPointer:
@@ -590,19 +664,19 @@ class FunctionSymbolTable(SymbolTable):
                             datatype = node.nodes[0].nodes[0].nodes[0].root
                         else:
                             datatype = node.nodes[0].nodes[0].root
-                        self.pointerDeclaration(node.nodes[0], True)
+                        self.pointerDeclaration(node.nodes[0], True, arrayLength)
                     elif type(node.nodes[0]) is ASTDataType:
-                        self.variableDeclaration(node.nodes[0], True)
+                        self.variableDeclaration(node.nodes[0], True, arrayLength)
                     else:
                         print("error")
                 elif self.IsVariableDeclarationSameTypes(node):
                     datatype = node.root
-                    self.variableDeclaration(node)
+                    self.variableDeclaration(node, False, arrayLength)
                 elif self.IsPointerDeclaration(node):
                     pointer = True
                     if type(node.nodes[0]) is ASTConst:
                         datatype = node.nodes[0].nodes[0].root
                     else:
                         datatype = node.nodes[0].root
-                    self.pointerDeclaration(node)
-            self.parameters.append((datatype,pointer))
+                    self.pointerDeclaration(node, False, arrayLength)
+            self.parameters.append((datatype, pointer))
