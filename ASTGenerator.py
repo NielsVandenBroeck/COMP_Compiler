@@ -190,7 +190,10 @@ class ASTGenerator(grammar1Visitor):
 
         if ctx.array is not None:
             lValue = ASTArray("Array", ctx.start.line, ctx.start.column, [lValue])
-            lValue.addNode(ASTArrayLength(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+            index = ASTArrayLength("length", ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            lValue.addNode(index)
         return lValue
 
     # Visit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
@@ -210,7 +213,10 @@ class ASTGenerator(grammar1Visitor):
                     ASTVariable(declaration.name.text, declaration.start.line, declaration.start.column))
                 if declaration.array is not None:
                     UppernewDataType = ASTArray("Array", declaration.start.line, declaration.start.column, [UppernewDataType])
-                    UppernewDataType.addNode(ASTArrayLength(declaration.array.text, declaration.start.line, declaration.start.column))
+                    index = ASTArrayLength("length", declaration.start.line, declaration.start.column)
+                    body = self.visit(declaration.array)
+                    index.addNode(body)
+                    UppernewDataType.addNode(index)
                 elif declaration.rval is not None:
                     rvalue = self.visit(declaration.rval)
                     UppernewDataType.getFirstNonConst(UppernewDataType).addNode(rvalue)
@@ -245,7 +251,10 @@ class ASTGenerator(grammar1Visitor):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
         if ctx.pointer and ctx.t is None:
             if ctx.array is not None:
-                lValue.addNode(ASTArrayIndex(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+                index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+                body = self.visit(ctx.array)
+                index.addNode(body)
+                lValue.addNode(index)
             lValue = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [lValue])
             return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
 
@@ -253,7 +262,10 @@ class ASTGenerator(grammar1Visitor):
         if ctx.t is None:
             if ctx.array is None:
                 return lValue
-            lValue.addNode(ASTArrayIndex(self.visit(ctx.array),ctx.start.line, ctx.start.column))
+            index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            lValue.addNode(index)
             return lValue
 
         #declaration
@@ -273,7 +285,10 @@ class ASTGenerator(grammar1Visitor):
 
         if ctx.array is not None:
             lValue = ASTArray("Array", ctx.start.line, ctx.start.column, [lValue])
-            lValue.addNode(ASTArrayLength(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+            index = ASTArrayLength("length", ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            lValue.addNode(index)
 
 
         return lValue
@@ -397,7 +412,10 @@ class ASTGenerator(grammar1Visitor):
     def visitVariableExpression(self, ctx):
         variable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
         if ctx.array is not None:
-            variable.addNode(ASTArrayIndex(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+            index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            variable.addNode(index)
         return variable
 
 
@@ -430,7 +448,10 @@ class ASTGenerator(grammar1Visitor):
         address = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column,
                          [variable])
         if ctx.array is not None:
-            variable.addNode(ASTArrayIndex(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+            index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            variable.addNode(index)
         return address
 
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
@@ -438,7 +459,10 @@ class ASTGenerator(grammar1Visitor):
         variable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
         pointer = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [variable])
         if ctx.array is not None:
-            variable.addNode(ASTArrayIndex(self.visit(ctx.array), ctx.start.line, ctx.start.column))
+            index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            variable.addNode(index)
         return pointer
 
 

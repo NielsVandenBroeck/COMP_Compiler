@@ -1,0 +1,142 @@
+testFiles/fouteTestFiles/incompatibleTypes2.c
+
+
+arrayAccessTypeMismatch.c
+    OK (error in taal)
+
+arrayAccessTypeMismatch2.c
+    warning moet gefixed worden naar error
+
+arrayCompareError.c
+    OK
+
+arraySizeTypeMismatch.c
+    OK (error in taal)
+
+declarationDeclarationMismatch1.c
+    NIET OK
+
+declarationDeclarationMismatch2.c
+    NIET OK
+
+declarationDeclarationMismatch3.c
+    NIET OK
+
+declarationDefinitionMismatch1.c
+    NIET OK
+
+declarationDefinitionMismatch2.c
+    NIET OK
+
+declarationDefinitionMismatch3.c
+    NIET OK
+
+definitionInLocalScope.c
+    OK
+
+dereferenceTypeMismatch1.c
+    OK (error in taal)
+
+dereferenceTypeMismatch2.c
+    NIET OK
+
+functionCallargumentMismatch1.c
+    OK
+
+functionCallargumentMismatch2.c
+    OK
+
+functionCallargumentMismatch3.c
+    OK
+
+functionCallargumentMismatch4.c
+    OK
+
+functionRedefinition1.c
+    OK
+
+functionRedefinition2.c
+    NIET OK
+
+functionRedefinition3.c
+    OK
+
+incompatibleTypes1.c
+    OK (geeft geen error want type wordt omgezet)
+
+incompatibleTypes2.c
+    NIET OK IN LLVM
+
+incompatibleTypes3.c
+    OK
+
+incompatibleTypes4.c
+
+
+incompatibleTypes5.c
+
+
+incompatibleTypes6.c
+
+
+incompatibleTypes7.c
+
+
+invalidIncludeError.c
+
+
+invalidLoopControlStatement.c
+
+
+invalidUnaryOperation.c
+
+
+mainNotFound.c
+
+
+parameterRedefinition1.c
+
+
+parameterRedefinition2.c
+
+
+parameterRedefinition3.c
+
+
+pointerOperationError.c
+
+
+returnOutsideFunction.c
+
+
+returnTypeMismatch.c
+
+
+undeclaredFunction.c
+
+
+undeclaredVariable1.c
+
+
+undeclaredVariable2.c
+
+
+undeclaredVariable3.c
+
+
+variableRedefinition1.c
+
+
+variableRedefinition2.c
+
+
+variableRedefinition3.c
+
+
+variableRedefinition4.c
+
+
+variableRedefinition5.c
+
+
+variableRedefinition6.c

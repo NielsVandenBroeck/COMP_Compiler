@@ -50,8 +50,8 @@ def main(argv):
         with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
             myFile.write(ast.getDot())
 
-        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
-        llvm.write()
+        #llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        #llvm.write()
 
         print("Compiling complete")
 
@@ -60,11 +60,11 @@ def main(argv):
         print("\nRunning complete")
         os.system("lli-9 " + " OutputFiles/code.ll")
     else:
-        for filename in os.listdir("testFiles"):
+        for filename in os.listdir("testFiles/fouteTestFiles"):
             print("\n---------------")
             try:
                 print(filename + ":")
-                input_stream = FileStream("testFiles/" + filename)
+                input_stream = FileStream("testFiles/fouteTestFiles/" + filename)
                 if(len(argv) > 1):
                     input_stream = FileStream(argv[1])
                 lexer = grammar1Lexer(input_stream)
@@ -82,8 +82,8 @@ def main(argv):
                 with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
                     myFile.write(ast.getDot())
 
-                llvm = LLVMGenerator("OutputFiles/" + filename.split(".")[0] + ".ll", ast)
-                llvm.write()
+                #llvm = LLVMGenerator("OutputFiles/" + filename.split(".")[0] + ".ll", ast)
+                #llvm.write()
 
                 print("Compiling complete")
 
