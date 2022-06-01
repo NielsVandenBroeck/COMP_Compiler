@@ -520,6 +520,8 @@ class ASTReturn(AST):
         super().__init__(value, line, position, childNodes)
 
     def getReturnValue(self):
+        if self.nodes == None:
+            return None
         return self.nodes[0]
 
 class ASTMultiDeclaration(AST):

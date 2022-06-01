@@ -39,7 +39,7 @@ class LLVMProgram:
         varible = LLVMArray(name, type, length, align)
         self.setVariable(name, varible)
         if addLine:
-            self._addLine(varible.getLLVMDecString())
+            self._addLine(varible.getGlobalLLVMDecString())
 
     def newSmartArray(self, name, type, length, addline = True):
         if type == int or type == "i32":
@@ -85,6 +85,7 @@ class LLVMProgram:
         if index == None:
             self._addLine(varible.getLLVMIniString(value))
         else:
+
             self._addLine(varible.getLLVMIniString(value, index))
 
     def convert(self, toName, fromName, toType, fromType):
@@ -99,7 +100,7 @@ class LLVMProgram:
 
     def createUniqueRegister(self, addName = ""):
         self.adressCounter = self.adressCounter + 1
-        return "uniq" + str(addName) + self.functionName + str(self.adressCounter)
+        return "uniq" + str(addName).replace("@", "") + self.functionName + str(self.adressCounter)
 
     def setVariable(self, name, varible):
         self.VaribleList[name] = varible
@@ -154,6 +155,12 @@ class LLVMFunction(LLVMProgram):
         if addLine:
             self._addLine(varible.getLLVMDecString())
 
+    def newArray(self, name, length, type = "i32", align = 4, addLine = True):
+        varible = LLVMArray(name, type, length, align)
+        self.setVariable(name, varible)
+        if addLine:
+            self._addLine(varible.getLLVMDecString())
+
     def addPrintString(self, name, printString):
         self.parantFunction.addPrintString(name, printString)
 
@@ -190,7 +197,6 @@ class LLVMFunction(LLVMProgram):
             self._addLine(self.getVariable(parameter.getVariableName()).getLLVMIniString("%parameter" + parameter.getVariableName()))
 
     def functionCall(self, functionName, parameters, toVarible = None):
-        print("test")
         returnType = self.getFunctionType(functionName)
         callTypeList = self.getFunctionCallTypes(functionName)
 
@@ -240,7 +246,7 @@ class LLVMFunction(LLVMProgram):
         else:
             returnItem = str(value)
 
-        if returnItem == "void":
+        if returnItem == "void" or returntype == "void":
             self._addLine("ret void")
         else:
             self._addLine("ret " + returntype + " " + returnItem)
@@ -506,6 +512,9 @@ class LLVMArray(LLVMVarible):
     def getLLVMDecString(self):
         return "%" + self.LLVMname + " = alloca [" + self.length + " x " + self.type + "], align " + str(self.align)
 
+    def getGlobalLLVMDecString(self, iniValue = "zeroinitializer"):
+        return self.llvmChar + self.LLVMname + " = dso_local global [" + self.length + " x " + self.type  + "] " + str(iniValue) + ", align " + str(self.align)
+
     def getLLVMIniString(self, value, index):
         isRegister = False
         try:
@@ -522,14 +531,14 @@ class LLVMArray(LLVMVarible):
 
         tempRegName = "temp" + str(self.tempRegCounter) + str(self.LLVMname)
         pointerToArrayPlace = self.getPointerToIndex(tempRegName, index)
-        storeInArrayPlace = "store " + self.type + " " + str(value) + ", " + self.type + "* " + self.llvmChar + tempRegName + ", align " + str(self.align)
+        storeInArrayPlace = "store " + self.type + " " + str(value) + ", " + self.type + "* %" + tempRegName + ", align " + str(self.align)
         self.tempRegCounter+=1;
         return pointerToArrayPlace + "\n" + storeInArrayPlace
 
     def getLLVMLoadString(self, loadAdress, index):
         tempRegName = "temp" + str(self.tempRegCounter) + str(self.LLVMname)
         pointerToArrayPlace = self.getPointerToIndex(tempRegName, index)
-        load = "%" + loadAdress + " = load " + self.type + ", " + self.type + "* " + self.llvmChar + tempRegName + ", align " + str(self.align)
+        load = "%" + loadAdress + " = load " + self.type + ", " + self.type + "* %" + tempRegName + ", align " + str(self.align)
         self.tempRegCounter += 1;
         return pointerToArrayPlace + "\n" + load
 

@@ -23,7 +23,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME ('[' array=INTINPUT ']')?
+    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 scope
@@ -72,11 +72,11 @@ multideclarations
     ;
 
 multideclaration
-    : name=NAME (('[' array=INTINPUT ']')|(IS rval=rvalue))?
+    : name=NAME (('[' array=body ']')|(IS rval=rvalue))?
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME ('[' array=INTINPUT ']')?
+    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 rvalue
@@ -85,7 +85,7 @@ rvalue
     ;
 
 variableAdress
-    : ('&')?name=NAME ('[' array=INTINPUT ']')?;
+    : ('&')?name=NAME ('[' array=body ']')?;
 
 dataType
     : INT
@@ -137,8 +137,8 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | '*'value=NAME ('[' array=INTINPUT ']')?                                           #PointerValueExpression
-    | value=NAME ('[' array=INTINPUT ']')?                                              #VariableExpression
+    | '*'value=NAME ('[' array=body ']')?                                           #PointerValueExpression
+    | value=NAME ('[' array=body ']')?                                              #VariableExpression
     ;
 
     //++ and --

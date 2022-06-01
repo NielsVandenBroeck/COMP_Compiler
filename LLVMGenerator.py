@@ -1,6 +1,6 @@
 from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition, ASTIfElse, \
     ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue, ASTAdress, ASTScanf, \
-    ASTArray
+    ASTArray, ASTForwardDeclaration
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
 
 class LLVMGenerator:
@@ -16,6 +16,8 @@ class LLVMGenerator:
         self.preOrderTraverse(ast)
 
     def isOperationNode(self, node):
+        if type(node) == ASTForwardDeclaration:
+            return True
         if type(node) == ASTDataType:
             self._createAstDataTyeLLVm(node)
             return True
@@ -48,7 +50,6 @@ class LLVMGenerator:
             tempName = self.currentFunction.createUniqueRegister("whileLoopCondition")
             whileLoopCondition = node.nodes[0]
             if type(whileLoopCondition) == ASTValue:
-                print(node)
                 self.currentFunction.newSmartVarible(tempName, whileLoopCondition.getType())
                 self.currentFunction.setVaribleValue(tempName,whileLoopCondition.getValue(), node.getIndex())
                 self.currentFunction.setConditionVarable(tempName)
@@ -164,7 +165,6 @@ class LLVMGenerator:
                 printArgs.append(tempVarName)
             else:
                 printArgs.append(printArg.root)
-        print(printArgs)
         self.currentFunction.print(node.getPrintString(), printArgs)
 
     def _createAstScanfLLVM(self, node):

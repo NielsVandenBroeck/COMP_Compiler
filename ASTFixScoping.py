@@ -55,10 +55,8 @@ class ASTFixScoping:
     def preOrderTraverse(self, ast):
         if not type(ast) == ASTScope and not type(ast) == ASTFunction and not type(ast) == ASTVariable and not (type(ast) == ASTDataType) and ast.nodes != None:
             for node in ast.nodes:
-                print(node)
                 self.preOrderTraverse(node)
         elif type(ast) == ASTScope or type(ast) == ASTFunction:
-            print(ast)
             ASTFixScoping(ast, self)
         elif type(ast) == ASTVariable:
             self.checkAndReplaceVariable(ast)

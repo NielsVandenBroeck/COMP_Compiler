@@ -27,6 +27,7 @@ def main(argv):
     # goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
     workingCounter = 0
     brokenCounter = 0
+    brokenFiles = []
 
 
     if (len(argv) > 1):
@@ -76,6 +77,8 @@ def main(argv):
 
                 ast.constantFold()
 
+                ASTFixScoping(ast)
+
                 with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
                     myFile.write(ast.getDot())
 
@@ -93,10 +96,11 @@ def main(argv):
             except:
                 print("Failed")
                 brokenCounter += 1
+                brokenFiles.append(filename)
             print()
 
     print("aantal werkende files:", workingCounter)
-    print("aantal niet werkende files:", brokenCounter)
+    print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
     return 0
 
