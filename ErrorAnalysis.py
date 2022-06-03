@@ -18,7 +18,8 @@ class ErrorAnalysis:
                     self.variables[node.root] = self.variables.get(node.root,0) + 1
                 self.loopAST(node)
 
-    def checkFunctions(self, root, foundMain=False):
+    def checkFunctions(self, root):
+        foundMain = False
         functionNames = []
         if root.nodes is None:
             return

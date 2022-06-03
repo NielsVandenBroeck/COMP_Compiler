@@ -1,11 +1,11 @@
-testFiles/fouteTestFiles/incompatibleTypes2.c
+testFiles/fouteTestFiles/arrayAccessTypeMismatch2.c
 
 
 arrayAccessTypeMismatch.c
     OK (error in taal)
 
 arrayAccessTypeMismatch2.c
-    warning moet gefixed worden naar error
+    OK
 
 arrayCompareError.c
     OK
@@ -14,22 +14,22 @@ arraySizeTypeMismatch.c
     OK (error in taal)
 
 declarationDeclarationMismatch1.c
-    NIET OK
+    OK
 
 declarationDeclarationMismatch2.c
-    NIET OK
+    OK
 
 declarationDeclarationMismatch3.c
-    NIET OK
+    OK
 
 declarationDefinitionMismatch1.c
-    NIET OK
+    OK
 
 declarationDefinitionMismatch2.c
-    NIET OK
+    OK
 
 declarationDefinitionMismatch3.c
-    NIET OK
+    OK
 
 definitionInLocalScope.c
     OK
@@ -38,7 +38,7 @@ dereferenceTypeMismatch1.c
     OK (error in taal)
 
 dereferenceTypeMismatch2.c
-    NIET OK
+    OK (error in taal)
 
 functionCallargumentMismatch1.c
     OK
@@ -56,7 +56,7 @@ functionRedefinition1.c
     OK
 
 functionRedefinition2.c
-    NIET OK
+    OK
 
 functionRedefinition3.c
     OK
@@ -65,78 +65,79 @@ incompatibleTypes1.c
     OK (geeft geen error want type wordt omgezet)
 
 incompatibleTypes2.c
-    NIET OK IN LLVM
+    NIET OK (IN LLVM)
 
 incompatibleTypes3.c
     OK
 
 incompatibleTypes4.c
-
+    OK (error in taal)
 
 incompatibleTypes5.c
-
+    OK (error in taal)
 
 incompatibleTypes6.c
-
+    NIET OK (Moet error in llvm geven)
 
 incompatibleTypes7.c
-
+    NIET OK (moet warning geven)
 
 invalidIncludeError.c
-
+    Includes nog niet geimplementeerd (OK?)
 
 invalidLoopControlStatement.c
-
+    OK
 
 invalidUnaryOperation.c
-
+    ++ and -- niet geimplementeerd
 
 mainNotFound.c
-
+    OK
 
 parameterRedefinition1.c
-
+    OK
 
 parameterRedefinition2.c
-
+    OK
 
 parameterRedefinition3.c
-
+    OK
 
 pointerOperationError.c
-
+    OK (error in taal)
 
 returnOutsideFunction.c
-
+    OK
 
 returnTypeMismatch.c
-
+    OK
 
 undeclaredFunction.c
-
+    OK
 
 undeclaredVariable1.c
-
+    OK
 
 undeclaredVariable2.c
-
+    OK
 
 undeclaredVariable3.c
-
+    OK
 
 variableRedefinition1.c
-
+    OK
 
 variableRedefinition2.c
-
+    OK
 
 variableRedefinition3.c
-
+    OK
 
 variableRedefinition4.c
-
+    OK
 
 variableRedefinition5.c
-
+    OK
 
 variableRedefinition6.c
+    OK
