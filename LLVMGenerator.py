@@ -1,6 +1,6 @@
 from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition, ASTIfElse, \
     ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue, ASTAdress, ASTScanf, \
-    ASTArray, ASTForwardDeclaration
+    ASTArray, ASTForwardDeclaration, ASTInt
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
 
 class LLVMGenerator:
@@ -51,7 +51,7 @@ class LLVMGenerator:
             whileLoopCondition = node.nodes[0]
             if type(whileLoopCondition) == ASTValue:
                 self.currentFunction.newSmartVarible(tempName, whileLoopCondition.getType())
-                self.currentFunction.setVaribleValue(tempName,whileLoopCondition.getValue(), node.getIndex())
+                self.currentFunction.setVaribleValue(tempName,whileLoopCondition.getValue(), self.getArrayIndex(node))
                 self.currentFunction.setConditionVarable(tempName)
             else:
                 self.currentFunction.newVarible(tempName, "i32", 4)
@@ -138,7 +138,7 @@ class LLVMGenerator:
                     valueName = self.currentFunction.createUniqueRegister(printArg.getVariableName() + "pointerToValue")
                     self.currentFunction.newSmartVarible(valueName, printArg.getType(), False)
                     self.currentFunction._addLine(
-                        self.currentFunction.getVariable(printArg.getVariableName()).getPointerToIndex(valueName, printArg.getIndex()))
+                        self.currentFunction.getVariable(printArg.getVariableName()).getPointerToIndex(valueName, self.getArrayIndex(printArg)))
                     printArgs.append(valueName)
                 else:
                     printArgs.append(printArg.root)
@@ -147,7 +147,7 @@ class LLVMGenerator:
                 valueName = self.currentFunction.createUniqueRegister(printArg.getVariableName() + "pointerToValue")
                 self.currentFunction._addLine(self.currentFunction.getVariable(printArg.getVariableName()).loadPointerValueString(pointerTOValueName))
                 self.currentFunction.newSmartVarible(valueName, printArg.getType())
-                self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, node.getIndex())
+                self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, self.getArrayIndex(node))
                 printArgs.append(valueName)
             elif type(printArg) == ASTOperator or type(printArg) == ASTFunctionName:
                 tempVarible = self.currentFunction.createUniqueRegister("returnValue")
@@ -161,7 +161,7 @@ class LLVMGenerator:
             elif isinstance(printArg, ASTValue):
                 tempVarName = self.currentFunction.createUniqueRegister("printTemp")
                 self.currentFunction.newSmartVarible(tempVarName, printArg.getType())
-                self.currentFunction.setVaribleValue(tempVarName, printArg.root, node.getIndex())
+                self.currentFunction.setVaribleValue(tempVarName, printArg.root, self.getArrayIndex(node))
                 printArgs.append(tempVarName)
             else:
                 printArgs.append(printArg.root)
@@ -179,7 +179,7 @@ class LLVMGenerator:
 
     def _createAstOperatorLLVM(self, toVarible, node, toIndex = None):
         if node.nodes == None and type(node) != ASTFunctionName:
-            self.currentFunction.setVaribleValue(toVarible, node.getValue(), node.getIndex())
+            self.currentFunction.setVaribleValue(toVarible, node.getValue(), self.getArrayIndex(node))
             return
 
         elif type(node) == ASTFunctionName:
@@ -213,7 +213,7 @@ class LLVMGenerator:
             else:
                 tempName = self.currentFunction.createUniqueRegister()
                 self.currentFunction.newSmartVarible(tempName, node.getLeftValue().getType())
-                self.currentFunction.setVaribleValue(tempName, node.getLeftValue().getValue(), node.getIndex())
+                self.currentFunction.setVaribleValue(tempName, node.getLeftValue().getValue(), self.getArrayIndex(node))
                 node.nodes[0] = ASTVariable(tempName, 0, 0)
         elif type(node.getLeftValue()) == ASTFunctionName:
             tempName = self.currentFunction.createUniqueRegister()
@@ -226,7 +226,7 @@ class LLVMGenerator:
             valueName = self.currentFunction.createUniqueRegister(node.getLeftValue().getVariableName() + "pointerToValue")
             self.currentFunction._addLine(self.currentFunction.getVariable(node.getLeftValue().getVariableName()).loadPointerValueString(pointerTOValueName))
             self.currentFunction.newSmartVarible(valueName, node.getLeftValue().getType())
-            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, node.getIndex())
+            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, self.getArrayIndex(node))
             node.nodes[0] = ASTVariable(valueName, 0, 0, None, node.getLeftValue().getType())
 
         if isinstance(node.getRightValue(), ASTValue):
@@ -235,7 +235,7 @@ class LLVMGenerator:
             else:
                 tempName = self.currentFunction.createUniqueRegister()
                 self.currentFunction.newSmartVarible(tempName, node.getRightValue().getType())
-                self.currentFunction.setVaribleValue(tempName, node.getRightValue().getValue(), node.getIndex())
+                self.currentFunction.setVaribleValue(tempName, node.getRightValue().getValue(), self.getArrayIndex(node))
                 node.nodes[1] = ASTVariable(tempName, 0, 0, None, node.getRightValue().getType())
         elif type(node.getRightValue()) == ASTFunctionName:
             tempName = self.currentFunction.createUniqueRegister()
@@ -248,11 +248,11 @@ class LLVMGenerator:
             valueName = self.currentFunction.createUniqueRegister(node.getRightValue().getVariableName() + "pointerToValue")
             self.currentFunction._addLine(self.currentFunction.getVariable(node.getRightValue().getVariableName()).loadPointerValueString(pointerTOValueName))
             self.currentFunction.newSmartVarible(valueName, node.getRightValue().getType())
-            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, node.getIndex())
+            self.currentFunction.setVaribleValue(valueName, "%" + pointerTOValueName, self.getArrayIndex(node))
             node.nodes[1] = ASTVariable(valueName, 0, 0, None, node.getRightValue().getType())
 
         if type(node.getLeftValue()) == ASTVariable and type(node.getRightValue()) == ASTVariable:
-            self.currentFunction.operationOnVarible(toVarible,node.getLeftValue().root, node.getRightValue().root, node.root,toIndex ,node.getLeftValue().getIndex(), node.getRightValue().getIndex())
+            self.currentFunction.operationOnVarible(toVarible,node.getLeftValue().root, node.getRightValue().root, node.root,toIndex , self.getArrayIndex(node.getLeftValue()), self.getArrayIndex(node.getRightValue()))
 
     def _createSetAstVariableLLVM(self, node):
         #by declaretion
@@ -266,18 +266,18 @@ class LLVMGenerator:
 
         #if operation
         if type(value) == ASTOperator or type(value) == ASTFunctionName:
-            self._createAstOperatorLLVM(node.getVariableName(), value, node.getIndex())
+            self._createAstOperatorLLVM(node.getVariableName(), value, self.getArrayIndex(node))
         elif type(value) == ASTVariable and not value.isArrayItem():
-            self.currentFunction.setVaribleValue(node.getVariableName(), value, node.getIndex())
+            self.currentFunction.setVaribleValue(node.getVariableName(), value, self.getArrayIndex(node))
         elif type(value) == ASTVariable and value.isArrayItem():
-            parameterAdress = self.currentFunction.createUniqueRegister(value.getVariableName() + "index" + str(value.getIndex()))
-            self.currentFunction._getLLVMVariableLoadString(self.currentFunction.getVariable(value.getVariableName()), parameterAdress, value.getIndex())
-            self.currentFunction.setVaribleValue(node.getVariableName(), "%" + parameterAdress, node.getIndex())
+            parameterAdress = self.currentFunction.createUniqueRegister(value.getVariableName() + "index")
+            self.currentFunction._getLLVMVariableLoadString(self.currentFunction.getVariable(value.getVariableName()), parameterAdress, self.getArrayIndex(value))
+            self.currentFunction.setVaribleValue(node.getVariableName(), "%" + parameterAdress, self.getArrayIndex(node))
         elif type(value) == ASTAdress and type(node) == ASTPointer:
-            self.currentFunction.setVaribleValue(node.getSetObject().getVariableName(), "%" + value.getVariableName(), node.getIndex())
+            self.currentFunction.setVaribleValue(node.getSetObject().getVariableName(), "%" + value.getVariableName(), self.getArrayIndex(node))
         elif value != None:
             value = value.getValue()
-            self.currentFunction.setVaribleValue(node.getVariableName(), value, node.getIndex())
+            self.currentFunction.setVaribleValue(node.getVariableName(), value, self.getArrayIndex(node))
 
     def preOrderTraverse(self, ast):
         if not self.isOperationNode(ast) and ast.nodes is not None:
@@ -289,3 +289,20 @@ class LLVMGenerator:
         with open(self.file_name, 'w') as myFile:
             myFile.write(self.program.output())
             myFile.close()
+
+    def getArrayIndex(self, arrayNode):
+        if arrayNode == None:
+            return None
+        if type(arrayNode.getIndexItem()) == ASTVariable:
+            result = self.currentFunction.createUniqueRegister("index")
+            self.currentFunction._getLLVMVariableLoadString(self.currentFunction.getVariable(arrayNode.getIndex()), result)
+            return "%" + result
+        if type(arrayNode.getIndexItem()) != ASTValue and type(arrayNode) != ASTDataType and type(arrayNode) != ASTValue and type(arrayNode) != ASTInt and arrayNode.getIndexItem() != None:
+            tempName = self.currentFunction.createUniqueRegister("index")
+            self.currentFunction.newSmartVarible(tempName, int)
+            self._createAstOperatorLLVM(tempName, arrayNode.getIndexItem())
+
+            result = self.currentFunction.createUniqueRegister("index")
+            self.currentFunction._getLLVMVariableLoadString(self.currentFunction.getVariable(tempName), result)
+            return "%" + result
+        return arrayNode.getIndex()

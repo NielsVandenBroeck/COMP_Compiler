@@ -233,6 +233,9 @@ class AST():
     def getIndex(self):#TODO
         return None
 
+    def getIndexItem(self):
+        return None
+
 
 
     def getPointerDept(self):
@@ -281,7 +284,12 @@ class ASTVariable(AST):
 
     def getIndex(self):
         if self.nodes != None and type(self.nodes[0]) == ASTArrayIndex:
-            return self.nodes[0].root
+            return self.nodes[0].nodes[0].root
+        return None
+
+    def getIndexItem(self):
+        if self.nodes != None and type(self.nodes[0]) == ASTArrayIndex:
+            return self.nodes[0].nodes[0]
         return None
 
     def isArrayItem(self):
@@ -537,7 +545,7 @@ class ASTArray(AST):
 
     def getLength(self):
         if len(self.nodes) > 1:
-            return self.nodes[1].root
+            return self.nodes[1].nodes[0].root
         return None
 
     def getType(self):

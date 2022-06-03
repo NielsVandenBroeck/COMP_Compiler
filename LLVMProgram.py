@@ -5,7 +5,7 @@ from AST import ASTVoid, ASTVariable, AST, ASTPointer
 class LLVMProgram:
     adressCounter = 0
     programArray = []
-    convertScore = {float: 2, int: 0, chr: 1}
+    convertScore = {float: 2, int: 1, chr: 0}
     VaribleList = {}
     functionReturnTypeDict = {}
     def __init__(self):
@@ -91,9 +91,10 @@ class LLVMProgram:
     def convert(self, toName, fromName, toType, fromType):
         toType = self.typeToLLVMType(toType)
         fromType = self.typeToLLVMType(fromType)
-        typeArray = {"i32": "si", "float": "fp"}
-        typeArray1 = {"i32": "i32", "float": "float", "i8": "i8"}
-        if toType == chr and fromType == float:
+        typeArray = {"i32": "si", "float": "fp", "i64": "i64"}
+        typeArray1 = {"i32": "i32", "float": "float", "i8": "i8", "i64": "i64"}
+        print(fromType, toType)
+        if (toType == chr and fromType == float) or (toType == "i8" and fromType == "float") or (toType == int and fromType == chr) or (toType == "i32" and fromType == "i8")  or (toType == "i64" and fromType == "i32"):
             self._addLine("%" + toName + " = sext " + typeArray1[fromType] + " %" + fromName +" to " + typeArray1[toType])
         else:
             self._addLine("%" + toName + " = " + typeArray[fromType] + "to" + typeArray[toType] + " " + typeArray1[fromType] + " %" + fromName + " to " + typeArray1[toType])
@@ -510,10 +511,10 @@ class LLVMArray(LLVMVarible):
         super().__init__(name,type,align)
 
     def getLLVMDecString(self):
-        return "%" + self.LLVMname + " = alloca [" + self.length + " x " + self.type + "], align " + str(self.align)
+        return "%" + self.LLVMname + " = alloca [" + str(self.length) + " x " + self.type + "], align " + str(self.align)
 
     def getGlobalLLVMDecString(self, iniValue = "zeroinitializer"):
-        return self.llvmChar + self.LLVMname + " = dso_local global [" + self.length + " x " + self.type  + "] " + str(iniValue) + ", align " + str(self.align)
+        return self.llvmChar + self.LLVMname + " = dso_local global [" + str(self.length) + " x " + self.type  + "] " + str(iniValue) + ", align " + str(self.align)
 
     def getLLVMIniString(self, value, index):
         isRegister = False
@@ -543,4 +544,4 @@ class LLVMArray(LLVMVarible):
         return pointerToArrayPlace + "\n" + load
 
     def getPointerToIndex(self,regName, index):
-        return "%" + regName + "= getelementptr inbounds [" + self.length + " x " + self.type + "], [" + self.length + " x " + self.type + "]* " + self.llvmChar + self.LLVMname + ", i64 0, i64 " + str(index)
+        return "%" + regName + "= getelementptr inbounds [" + str(self.length) + " x " + self.type + "], [" + str(self.length) + " x " + self.type + "]* " + self.llvmChar + self.LLVMname + ", i64 0, i32 " + str(index)

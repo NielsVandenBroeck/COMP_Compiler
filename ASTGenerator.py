@@ -35,9 +35,9 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        symbolTable = UpperSymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
-        symbolTable.loopAST()
+        #symbolTable = UpperSymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
+        #symbolTable.loopAST()
         ErrorAnalysis(program)
 
         return program

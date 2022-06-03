@@ -60,11 +60,11 @@ def main(argv):
         print("\nRunning complete")
         os.system("lli-9 " + " OutputFiles/code.ll")
     else:
-        for filename in os.listdir("testFiles/fouteTestFiles"):
+        for filename in os.listdir("testFiles/juisteTestFiles"):
             print("\n---------------")
             try:
                 print(filename + ":")
-                input_stream = FileStream("testFiles/fouteTestFiles/" + filename)
+                input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
                 if(len(argv) > 1):
                     input_stream = FileStream(argv[1])
                 lexer = grammar1Lexer(input_stream)
