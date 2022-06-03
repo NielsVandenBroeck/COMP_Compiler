@@ -379,6 +379,9 @@ class ASTAdress(AST):
     def getVariableName(self):
         return self.nodes[0].root
 
+    def getType(self):
+        return self.nodes[0].getType()
+
 class ASTPrintf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

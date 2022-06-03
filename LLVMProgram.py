@@ -120,7 +120,7 @@ class LLVMProgram:
         return type
 
     def getFunctionType(self, functionName):
-        return self.functionReturnTypeDict[functionName].returnType
+        return self.functionReturnTypeDict[functionName].getReturnType()
 
     def getFunctionCallTypes(self, functionName):
         return self.functionReturnTypeDict[functionName].parameterTypeList
@@ -147,6 +147,9 @@ class LLVMFunction(LLVMProgram):
         self.programArray.append("}")
         self._initializeParameter(parameters)
         self.parameterTypeList = self._getCallParameterTypes(parameters)
+
+    def getReturnType(self):
+        return self.returnType
 
     def newVarible(self, name, type = "i32", align = 4, addLine = True, iniValue = None):
         if iniValue != None:
@@ -230,16 +233,22 @@ class LLVMFunction(LLVMProgram):
 
     def setReturnValue(self, value = ""):
         self.returnItemSet = True
-        returntype = self.getFunctionType(self.functionName)
+
+        function = self
+        while not function.functionName in self.functionReturnTypeDict:
+            function = function.parantFunction
+
+        returntype = self.getFunctionType(function.functionName)
 
         returnItem= ""
         if type(value) == ASTVariable:
             returnVar = self.getVariable(value.root)
-            self._getLLVMVariableLoadString(returnVar, "returnItem")
-            returnItem = "returnItem"
-            if self.returnType != self.typeToLLVMType(returnVar.getType()):
-                returnItem1 = self.createUniqueRegister("returnItem")
-                self.convert(returnItem1, returnItem,self.returnType, self.typeToLLVMType(returnVar.getType()))
+            returnItemName = self.createUniqueRegister("returnItem")
+            self._getLLVMVariableLoadString(returnVar, returnItemName)
+            returnItem = returnItemName
+            if function.getReturnType() != self.typeToLLVMType(returnVar.getType()):
+                returnItem1 = self.createUniqueRegister(returnItemName)
+                self.convert(returnItem1, returnItem,self.getReturnType(), self.typeToLLVMType(returnVar.getType()))
                 returnItem = returnItem1
             returnItem = "%" + returnItem
         elif isinstance(value, AST):
@@ -376,6 +385,10 @@ class LLVMWhile(LLVMFunction):
             #hier komt de
 
         #hier
+
+    def getReturnType(self):
+        return self.parantFunction.getReturnType()
+
     def setConditionVarable(self, varibleName):
         self.conditionVarible = varibleName
 
@@ -413,6 +426,8 @@ class LLVMIfElse(LLVMFunction):
         self.parantFunction = parantFunction
         self.functionName = uniqueName
 
+    def getReturnType(self):
+        return self.parantFunction.getReturnType()
         #hier
     def setConditionVarable(self, varibleName):
         self.conditionVarible = varibleName

@@ -5,7 +5,7 @@ binaryOperations2.c:
     lijn 5 -->  2*(2+3) is niet 7!!!
 
 breakAndContinue.c:
-    OK
+    OK (met aanpassing van unary operation)
 
 comparisons1.c:
     OK
@@ -65,7 +65,7 @@ scoping.c:
     OK
 
 unaryOperations.c:
-    FOUT arrays
+    ++ en -- zijn optioneel
 
 variables1.c:
     OK
@@ -74,7 +74,7 @@ variables2.c:
     OK
 
 variables3.c:
-    FOUT arrays
+    OK
 
 variables4.c:
     OK
@@ -86,10 +86,10 @@ variables6.c:
     FOUT Dubbele pointers!  (Niels)
 
 variables7.c:
-    FOUT arrays
+    OK
 
 variables8.c:
-    FOUT arrays
+    OK
 
 while.c:
     OK
