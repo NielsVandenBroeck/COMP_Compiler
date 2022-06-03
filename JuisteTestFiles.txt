@@ -41,7 +41,7 @@ modulo.c:
     OK
 
 pointerArgument.c:
-    FOUT in taal                        (Niels)
+     ++ not working + FOUT in taal
 
 prime.c
     OK
@@ -59,7 +59,7 @@ scanf1.c:
     OK
 
 scanf2.c:
-    FOUT arrays
+    OK
 
 scoping.c:
     OK
