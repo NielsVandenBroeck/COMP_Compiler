@@ -359,10 +359,10 @@ class ASTGenerator(grammar1Visitor):
     def visitOperationExpression(self, ctx):
         dict1 = {'||': 0, '&&': 1, '<': 2, '>': 2, '==': 2, '<=': 2, '>=': 2, '!=': 2, '+': 3, '-': 3, '*': 4, '/': 4,
                  '%': 4}
+        node2Priority = self.visit(ctx.rValue).isPriority()
         node1 = self.visit(ctx.lValue).removePriority()
         node2 = self.visit(ctx.rValue).removePriority()
 
-        node2Priority = node2.isPriority()
         node2.removePriority()
 
         rootnode = self.visit(ctx.op)  # gaat naar visitOperation

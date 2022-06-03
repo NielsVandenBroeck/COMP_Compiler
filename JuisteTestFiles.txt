@@ -2,7 +2,7 @@ binaryOperations1.c:
     OK
 
 binaryOperations2.c:
-    lijn 5 -->  2*(2+3) is niet 7!!!
+   OK
 
 breakAndContinue.c:
     OK (met aanpassing van unary operation)
