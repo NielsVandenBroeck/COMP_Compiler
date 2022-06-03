@@ -262,7 +262,7 @@ class LLVMFunction(LLVMProgram):
             self._addLine("ret " + returntype + " " + returnItem)
 
     def operationOnVarible(self, toName, nameItem1, nameItem2, operation, toIndex=None, index1 = None, index2 = None):
-        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "mod", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge", "&&": "and", "||": "or"}
+        operations = {"+": "add", "-": "sub", "*": "mul", "/": "sdiv", "%": "srem", "<": "icmp slt", ">": "icmp sgt", "==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle",  ">=": "icmp sge", "&&": "and", "||": "or"}
 
         toVarible = self.getVariable(toName)
         varible1 = self.getVariable(nameItem1)
