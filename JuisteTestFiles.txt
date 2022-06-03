@@ -44,7 +44,7 @@ pointerArgument.c:
      ++ not working + FOUT in taal
 
 prime.c
-    OK
+    FOUT mod werkt niet
 
 printf1.c:
     OK
