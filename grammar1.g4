@@ -15,7 +15,7 @@ programLine
     ;
 
 function
-    : ((t=dataType pointer=POINTERS?)|'void') name=NAME '(' (p=params)? ')' s=scope
+    : ((t=dataType (pointer=TIMES+)?)|'void') name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params
@@ -23,7 +23,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType pointer=POINTERS? constnessA=CONST? name=NAME ('[' array=body ']')?
+    : constnessB=CONST? t=dataType (pointer=TIMES+)? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 scope
@@ -40,11 +40,11 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | Print'('f=STRING pb=printBodies')'                                                        #Printf
+    | Print'('f=STRING pb=printBodies ')'                                                        #Printf
     | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
-    | ((t=dataType pointer=POINTERS?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
+    | ((t=dataType (pointer=TIMES+)?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
 printBodies
@@ -64,7 +64,7 @@ scanVariable
     ;
 
 multiAssignmentsDeclarations
-    : constnessB=CONST? t=dataType pointer=POINTERS? constnessA=CONST? multidecl=multideclarations
+    : constnessB=CONST? t=dataType (pointer=TIMES+)? constnessA=CONST? multidecl=multideclarations
     ;
 
 multideclarations
@@ -76,11 +76,7 @@ multideclaration
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer=POINTERS? constnessA=CONST? name=NAME ('[' array=body ']')?
-    ;
-
-POINTERS
-    : '*'+
+    : constnessB=CONST? t=dataType? (pointer=TIMES+)? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 rvalue
@@ -141,7 +137,7 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | POINTERS value=NAME ('[' array=body ']')?                                           #PointerValueExpression
+    | TIMES* value=NAME ('[' array=body ']')?                                           #PointerValueExpression
     | value=NAME ('[' array=body ']')?                                              #VariableExpression
     ;
 
@@ -312,6 +308,7 @@ MultiLineComment
 IncludeStdio
     : '#include <stdio.h>'
     ;
+
 WS
     : [ \n\t\r]+ -> skip
     ;
