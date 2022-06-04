@@ -137,7 +137,7 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | TIMES* value=NAME ('[' array=body ']')?                                           #PointerValueExpression
+    | TIMES+ value=NAME ('[' array=body ']')?                                           #PointerValueExpression
     | value=NAME ('[' array=body ']')?                                              #VariableExpression
     ;
 
