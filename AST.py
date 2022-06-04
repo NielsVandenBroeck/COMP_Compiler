@@ -153,8 +153,8 @@ class AST():
                 #cannot do || and && on floats or chars.
                 if self.root == '||' or self.root == '&&':
                     resulttype = int
-                    value1 = int(value1)
-                    value2 = int(value2)
+                    value1 = int(value1+0.5)
+                    value2 = int(value2+0.5)
                     if value1 != 0:
                         value1 = 1
                     if value2 != 0:

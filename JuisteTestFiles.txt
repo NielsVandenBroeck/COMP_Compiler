@@ -8,7 +8,7 @@ breakAndContinue.c:
     OK (met aanpassing van unary operation)
 
 comparisons1.c:
-    NIET OK geeft 0 terwijl 1 moet zijn voorlaatste print
+    OK
 
 comparisons2.c:
     OK
