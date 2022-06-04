@@ -364,20 +364,19 @@ class SymbolTable():
     def checkPrintf(self, root):
         if root.nodes is None:
             return
+        if type(root.nodes[0]) is not ASTText:
+            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                root.position) + ". No format string found in printf function.")
+        if len(root.nodes) == 1:
+            return
         formatText = root.nodes[0].root
         formatList = []
         for i in range(len(formatText)):
             if formatText[i] == '%':
-                if len(formatText) < i:
+                if len(formatText) == i+1:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
-                        root.position) + ". An unkown Error occured.")
-                position = i
-                number = None
-                while len(formatText) >= position:
-                    if formatText[position].isdigit():
-                        number += formatText[position]
-                    else:
-                        break
+                        root.position) + ". Incomplete format specifier.")
+                    break
                 if formatText[i + 1] == "i" or formatText[i + 1] == "d":
                     formatList.append(int)
                 elif formatText[i + 1] == "c":
@@ -385,41 +384,51 @@ class SymbolTable():
                 elif formatText[i + 1] == "f":
                     formatList.append(float)
                 elif formatText[i + 1] == "s":
+                    formatList.append(str)
+                else:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
-                        root.position) + ". Cannot scan a string. strings are not implemented yet.")
+                        root.position) + ". Unknown Format Type.")
         if len(formatList) != len(root.nodes) - 1:
             exit("[Error] line: " + str(root.line) + ", position: " + str(
                 root.position) + ". Too many/few parameters were given in scanf function.")
         for i in range(1, len(root.nodes)):
             node = root.nodes[i]
-            if node is not None:
-                variableType = None
-                # Variable
-                if type(node) == ASTVariable:
-                    variableType = self.searchVariable(node).type
-                # body
-                elif type(node) == ASTOperator:
-                    self.searchAllvars(node)
-                    variableType = node.findType()
-                # pointer
-                elif type(node) == ASTPointer:
-                    variableType = self.searchVariable(node.nodes[0]).type
-                # int
-                elif type(node) == ASTInt:
-                    variableType = int
-                # char
-                elif type(node) == ASTChar:
-                    variableType = chr
-                # float
-                elif type(node) == ASTFloat:
-                    variableType = float
-                elif type(node) == ASTFunctionName:
-                    self.checkFunctionCall(node)
-                    variableType = self.findReturnTypeOfFunction(node.root)
-                if variableType != formatList[i - 1]:
-                    exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Printf format specifies type '" + str(
-                        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
+            variableType = None
+            array = False
+            # Variable
+            if type(node) == ASTVariable:
+                variableType = self.searchVariable(node,True).type
+                array = self.searchVariable(node,True).array
+            # body
+            elif type(node) == ASTOperator:
+                self.searchAllvars(node)
+                variableType = node.findType()
+            # pointer
+            elif type(node) == ASTPointer:
+                variableType = self.searchVariable(node.nodes[0], True).type
+                array =  self.searchVariable(node.nodes[0], True).array
+            # int
+            elif type(node) == ASTInt:
+                variableType = int
+            # char
+            elif type(node) == ASTChar:
+                variableType = chr
+            # float
+            elif type(node) == ASTFloat:
+                variableType = float
+            # functionCall
+            elif type(node) == ASTFunctionName:
+                self.checkFunctionCall(node)
+                variableType = self.findReturnTypeOfFunction(node.root)
+            # string
+            elif type(node) == ASTText:
+                variableType = str
+            if array and variableType is chr and formatList[i - 1] is str:
+                continue
+            if variableType != formatList[i - 1]:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Printf format specifies type '" + str(
+                    formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def findReturnTypeOfFunction(self, functionName):
         if self.parent is not None:
@@ -431,63 +440,56 @@ class SymbolTable():
 
     def checkScanf(self, root):
         if root.nodes is None:
-            return
+            exit("[Error] line: " + str(root.line) + ", position: " + str(
+                root.position) + ". No Format string found in scanf function.")
         formatText = root.nodes[0].root
         formatList = []
         for i in range(len(formatText)):
             if formatText[i] == '%':
-                if len(formatText) < i:
+                if len(formatText) == i+1:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
-                        root.position) + ". An unkown Error occured.")
-                #strings
-                if formatText[i + 1].isnumeric():
-                    position = i+1
-                    while len(formatText) >= position:
-                        if formatText[position].isnumeric():
-                            position += 1
-                        elif formatText[i + 1] == "s":
-                            break
-                        else:
-                            exit("[Error] line: " + str(root.line) + ", position: " + str(
-                                root.position) + ". Cannot use field width on non-strings.")
-                        formatList.append(str)
+                        root.position) + ". Incomplete format specifier.")
+
+                while formatText[i+1].isdigit():
+                    i += 1
                 if formatText[i + 1] == "i" or formatText[i + 1] == "d":
                     formatList.append(int)
                 elif formatText[i + 1] == "c":
                     formatList.append(chr)
                 elif formatText[i + 1] == "f":
                     formatList.append(float)
+                elif formatText[i + 1] == "s":
+                    formatList.append(str)
                 else:
                     exit("[Error] line: " + str(root.line) + ", position: " + str(
                         root.position) + ". Unknown Format Type.")
-
         if len(formatList) != len(root.nodes) - 1:
             exit("[Error] line: " + str(root.line) + ", position: " + str(
                 root.position) + ". Too many/few parameters were given in scanf function.")
         for i in range(1, len(root.nodes)):
             node = root.nodes[i]
-            if node is not None:
-                # pointer
-                if type(node) == ASTVariable:
-                    if type(self.searchVariable(node)) is SymbolObjectPointer:
-                        variableType = self.searchVariable(node).type
-                    else:
-                        exit("[Error] line: " + str(node.line) + ", position: " + str(
-                            node.position) + ". Variable must be of type Pointer of passed by reference.")
-                # address
-                elif type(node) == ASTAdress:
-                    if node.nodes is None:
-                        exit("[Error] line: " + str(root.line) + ", position: " + str(
-                            root.position) + ". An unkown Error occured.")
-                    else:
-                        variableType = self.searchVariable(node.nodes[0]).type
+            # pointer
+            if type(node) == ASTVariable:
+                variable = self.searchVariable(node, True)
+                if type(variable) is not SymbolObjectPointer:
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Variable must be of type Pointer or passed by reference.")
+            # address
+            elif type(node) == ASTAdress:
+                if node.nodes is None:
+                    exit("[Error] line: " + str(root.line) + ", position: " + str(
+                        root.position) + ". An unkown Error occured.")
                 else:
-                    exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Variable must be of type Pointer of passed by reference.")
-                if variableType != formatList[i - 1]:
-                    exit("[Error] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Scanf format specifies type '" + str(
-                        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
+                    variable = self.searchVariable(node.nodes[0], True)
+            else:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Variable must be of type Pointer or passed by reference.")
+            if variable.array and variable.type is chr and formatList[i - 1] is str:
+                continue
+            if variable.type != formatList[i - 1]:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Scanf format specifies type '" + str(
+                    formatList[i - 1]) + "', but the argument type is '" + str(variable.type) + "'.")
 
     def checkForwardDeclaration(self, root):
         self.addFunctionScope(root)
@@ -508,7 +510,7 @@ class SymbolTable():
             for node in root.nodes:
                 self.searchAllvars(node)
 
-    def searchVariable(self, node):
+    def searchVariable(self, node, scanf=False):
         if type(node) is not ASTVariable:
             return None
         varName = node.getVariableName()
@@ -516,7 +518,7 @@ class SymbolTable():
             object = self.SymbolList[varName]
             node.type = object.type
             if object.array == True:
-                if node.nodes is None:
+                if node.nodes is None and not scanf:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + " variable: \'" + node.root + "\' Incompatible conversion with arrays.")
                 # if int(node.nodes[0].root) >= object.arrayLength:
@@ -530,7 +532,7 @@ class SymbolTable():
                 node.position) + ". Variable: \'" + varName + "\' has not been declared.")
             return None
         else:
-            return self.parent.searchVariable(node)
+            return self.parent.searchVariable(node, scanf)
 
     @staticmethod
     def IsVariableDeclarationSameTypes(node):

@@ -50,7 +50,7 @@ printf1.c:
     OK
 
 printf2.c:
-    Strings werken nog niet
+    Error in LLvm
 
 printf3.c:
     OK

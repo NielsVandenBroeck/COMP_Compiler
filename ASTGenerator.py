@@ -35,9 +35,9 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        #symbolTable = UpperSymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
-        #symbolTable.loopAST()
+        symbolTable = UpperSymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
         ErrorAnalysis(program)
 
         return program
@@ -307,6 +307,8 @@ class ASTGenerator(grammar1Visitor):
         for body in ctx.pb.getChildren():
             if body.b is not None:
                 root.addNode(self.visit(body.b))
+            elif body.s is not None:
+                root.addNode(ASTText(body.s.text.replace('"', ''), ctx.start.line, ctx.start.column))
         return root
 
     # Visit a parse tree produced by grammar1Parser#Scanf.

@@ -170,7 +170,7 @@ class grammar1Lexer(Lexer):
     T__11 = 12
     OneTokenStatement = 13
     Print = 14
-    Format = 15
+    STRING = 15
     Scan = 16
     INT = 17
     FLOAT = 18
@@ -216,7 +216,7 @@ class grammar1Lexer(Lexer):
             u"'='", u"'#include <stdio.h>'" ]
 
     symbolicNames = [ u"<INVALID>",
-            u"OneTokenStatement", u"Print", u"Format", u"Scan", u"INT", 
+            u"OneTokenStatement", u"Print", u"STRING", u"Scan", u"INT", 
             u"FLOAT", u"CHAR", u"NAME", u"PLUS", u"MINUS", u"TIMES", u"DIV", 
             u"GT", u"LT", u"EQ", u"GTE", u"LTE", u"NEQ", u"MOD", u"AND", 
             u"OR", u"SEMICOLON", u"LPAREN", u"RPAREN", u"INTINPUT", u"FLOATINPUT", 
@@ -225,7 +225,7 @@ class grammar1Lexer(Lexer):
 
     ruleNames = [ u"T__0", u"T__1", u"T__2", u"T__3", u"T__4", u"T__5", 
                   u"T__6", u"T__7", u"T__8", u"T__9", u"T__10", u"T__11", 
-                  u"OneTokenStatement", u"Print", u"Format", u"Scan", u"INT", 
+                  u"OneTokenStatement", u"Print", u"STRING", u"Scan", u"INT", 
                   u"FLOAT", u"CHAR", u"NAME", u"PLUS", u"MINUS", u"TIMES", 
                   u"DIV", u"GT", u"LT", u"EQ", u"GTE", u"LTE", u"NEQ", u"MOD", 
                   u"AND", u"OR", u"SEMICOLON", u"LPAREN", u"RPAREN", u"INTINPUT", 

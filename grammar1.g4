@@ -40,8 +40,8 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | Print'('f=Format pb=printBodies')'                                                        #Printf
-    | Scan'('f=Format  sv=scanVariables ')'                                                     #Scanf
+    | Print'('f=STRING pb=printBodies')'                                                        #Printf
+    | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
     | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
@@ -52,7 +52,7 @@ printBodies
     ;
 
 printBody
-    : ',' b=body
+    : ',' (b=body|s=STRING)
     ;
 
 scanVariables
@@ -183,7 +183,7 @@ Print
     : 'printf'
     ;
 
-Format
+STRING
     : '"'((~('"'))*)'"'
     ;
 

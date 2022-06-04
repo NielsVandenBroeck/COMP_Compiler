@@ -63,7 +63,7 @@ null
 null
 OneTokenStatement
 Print
-Format
+STRING
 Scan
 INT
 FLOAT
@@ -111,7 +111,7 @@ T__10
 T__11
 OneTokenStatement
 Print
-Format
+STRING
 Scan
 INT
 FLOAT
