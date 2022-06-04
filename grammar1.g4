@@ -103,7 +103,7 @@ body
     ;
 
 functionCall
-    : name=NAME '(' body? (',' body)* ')'
+    : name=NAME '(' (variableAdress|body)? (',' (variableAdress|body))* ')'
     ;
 
 leftOperationBody

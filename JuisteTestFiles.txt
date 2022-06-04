@@ -41,10 +41,10 @@ modulo.c:
     OK
 
 pointerArgument.c:
-     ++ not working + FOUT in taal
+     ++ not working + FOUT in LLVM
 
 prime.c
-    FOUT mod werkt niet
+    OK
 
 printf1.c:
     OK
