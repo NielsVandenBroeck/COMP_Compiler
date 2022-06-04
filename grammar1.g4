@@ -15,7 +15,7 @@ programLine
     ;
 
 function
-    : ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')' s=scope
+    : ((t=dataType pointer=POINTERS?)|'void') name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params
@@ -23,7 +23,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME ('[' array=body ']')?
+    : constnessB=CONST? t=dataType pointer=POINTERS? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 scope
@@ -44,7 +44,7 @@ newline
     | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
-    | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
+    | ((t=dataType pointer=POINTERS?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
 printBodies
@@ -64,7 +64,7 @@ scanVariable
     ;
 
 multiAssignmentsDeclarations
-    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? multidecl=multideclarations
+    : constnessB=CONST? t=dataType pointer=POINTERS? constnessA=CONST? multidecl=multideclarations
     ;
 
 multideclarations
@@ -76,7 +76,11 @@ multideclaration
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME ('[' array=body ']')?
+    : constnessB=CONST? t=dataType? pointer=POINTERS? constnessA=CONST? name=NAME ('[' array=body ']')?
+    ;
+
+POINTERS
+    : '*'+
     ;
 
 rvalue
@@ -85,7 +89,7 @@ rvalue
     ;
 
 variableAdress
-    : ('&')?name=NAME ('[' array=body ']')?;
+    : '&'name=NAME ('[' array=body ']')?;
 
 dataType
     : INT
@@ -137,7 +141,7 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | '*'value=NAME ('[' array=body ']')?                                           #PointerValueExpression
+    | POINTERS value=NAME ('[' array=body ']')?                                           #PointerValueExpression
     | value=NAME ('[' array=body ']')?                                              #VariableExpression
     ;
 

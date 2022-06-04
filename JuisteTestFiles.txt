@@ -41,7 +41,7 @@ modulo.c:
     OK
 
 pointerArgument.c:
-     ++ not working + FOUT in LLVM
+     FOUT in LLVM
 
 prime.c
     OK
