@@ -2,10 +2,10 @@ binaryOperations1.c:
     OK
 
 binaryOperations2.c:
-   OK
+    OK
 
 breakAndContinue.c:
-    OK (met aanpassing van unary operation)
+    OK
 
 comparisons1.c:
     OK
@@ -41,7 +41,7 @@ modulo.c:
     OK
 
 pointerArgument.c:
-     FOUT in LLVM
+     TODO FOUT in LLVM
 
 prime.c
     OK
@@ -50,7 +50,7 @@ printf1.c:
     OK
 
 printf2.c:
-    Error in LLVM
+    TODO Error in LLVM
 
 printf3.c:
     OK
@@ -59,13 +59,13 @@ scanf1.c:
     OK
 
 scanf2.c:
-    OK Error in LLVM
+    OK  TODO Error in LLVM
 
 scoping.c:
     OK
 
 unaryOperations.c:
-    ++ en -- zijn optioneel
+    TODO ++ en -- zijn optioneel
 
 variables1.c:
     OK
@@ -83,7 +83,7 @@ variables5.c:
     OK
 
 variables6.c:
-    FOUT Dubbele pointers!  (Niels)
+    OK TODO: SymbolTable + llvm
 
 variables7.c:
     OK
