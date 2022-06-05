@@ -41,7 +41,7 @@ modulo.c:
     OK
 
 pointerArgument.c:
-     TODO FOUT in LLVM
+     OK
 
 prime.c
     OK
@@ -50,7 +50,7 @@ printf1.c:
     OK
 
 printf2.c:
-    TODO Error in LLVM
+    OK
 
 printf3.c:
     OK
@@ -59,7 +59,7 @@ scanf1.c:
     OK
 
 scanf2.c:
-    OK  TODO Error in LLVM
+    OK
 
 scoping.c:
     OK

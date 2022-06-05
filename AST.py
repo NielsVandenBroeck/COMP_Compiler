@@ -408,6 +408,9 @@ class ASTText(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+    def getString(self):
+        return self.root
+
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)

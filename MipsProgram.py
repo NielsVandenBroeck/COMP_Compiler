@@ -1,9 +1,8 @@
 import struct
 
-from AST import ASTVoid, ASTVariable, AST, ASTPointer, ASTAdress
+from AST import ASTVoid, ASTVariable, AST, ASTPointer
 
-
-class LLVMProgram:
+class MipsProgram:
     adressCounter = 0
     programArray = []
     convertScore = {float: 2, int: 1, chr: 0}
@@ -90,18 +89,15 @@ class LLVMProgram:
             self._addLine(varible.getLLVMIniString(value, index))
 
     def convert(self, toName, fromName, toType, fromType):
-        try:
-            toType = self.typeToLLVMType(toType)
-            fromType = self.typeToLLVMType(fromType)
-            typeArray = {"i32": "si", "float": "fp", "i64": "i64"}
-            typeArray1 = {"i32": "i32", "float": "float", "i8": "i8", "i64": "i64"}
-            print(fromType, toType)
-            if (toType == chr and fromType == float) or (toType == "i8" and fromType == "float") or (toType == int and fromType == chr) or (toType == "i32" and fromType == "i8")  or (toType == "i64" and fromType == "i32"):
-                self._addLine("%" + toName + " = sext " + typeArray1[fromType] + " %" + fromName +" to " + typeArray1[toType])
-            else:
-                self._addLine("%" + toName + " = " + typeArray[fromType] + "to" + typeArray[toType] + " " + typeArray1[fromType] + " %" + fromName + " to " + typeArray1[toType])
-        except:
-            pass
+        toType = self.typeToLLVMType(toType)
+        fromType = self.typeToLLVMType(fromType)
+        typeArray = {"i32": "si", "float": "fp", "i64": "i64"}
+        typeArray1 = {"i32": "i32", "float": "float", "i8": "i8", "i64": "i64"}
+        print(fromType, toType)
+        if (toType == chr and fromType == float) or (toType == "i8" and fromType == "float") or (toType == int and fromType == chr) or (toType == "i32" and fromType == "i8")  or (toType == "i64" and fromType == "i32"):
+            self._addLine("%" + toName + " = sext " + typeArray1[fromType] + " %" + fromName +" to " + typeArray1[toType])
+        else:
+            self._addLine("%" + toName + " = " + typeArray[fromType] + "to" + typeArray[toType] + " " + typeArray1[fromType] + " %" + fromName + " to " + typeArray1[toType])
 
     def createUniqueRegister(self, addName = ""):
         self.adressCounter = self.adressCounter + 1
@@ -133,7 +129,6 @@ class LLVMProgram:
         charCount = len(printString) + 1
         printStringLLVM = "@." + name + " = private unnamed_addr constant [" + str(charCount) +" x i8] c\"" + printString + "\\00\", align 1"
         self.programArray.insert(0, printStringLLVM)
-        self.VaribleList[name] = GlobalPrintString(name, "[" + str(charCount) +" x i8]*")
 
     def _getLLVMVariableLoadString(self, varible, loadRegister, index= None):
         if type(varible) == LLVMArray:
@@ -141,7 +136,7 @@ class LLVMProgram:
             return
         self._addLine(varible.getLLVMLoadString(loadRegister))
 
-class LLVMFunction(LLVMProgram):
+class MipsFunction(MipsProgram):
     def __init__(self, functionName, parantFunction = None, returnType = "i32", parameters = None):
         self.parantFunction = parantFunction
         self.returnType = self.typeToLLVMType(returnType)
@@ -224,8 +219,6 @@ class LLVMFunction(LLVMProgram):
                     parameterAdress = parameterAdress1
 
                 value = "%" + parameterAdress
-            elif type(parameters[i]) == ASTAdress:
-                value = "%" + parameters[i].getVariableName()
             elif isinstance(parameters[i], AST):
                 value = parameters[i].root
             parameterString += callTypeList[i] + " " + str(value) + ", "
@@ -315,22 +308,15 @@ class LLVMFunction(LLVMProgram):
         argsPrintString = ""
         for item in vars:
             varible0 = self.getVariable(item)
-            if type(varible0) == GlobalPrintString:
-                valueVariable0 = "@." + varible0.name
-                type1 = varible0.type
-            else:
-                valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
-                self._getLLVMVariableLoadString(varible0, valueVariable0)
-                valueVariable0 = "%" + valueVariable0
-                type1 = varible0.type
+            valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
+            self._getLLVMVariableLoadString(varible0, valueVariable0)
+            type = varible0.type
             if varible0.getType() == float:
                 uniqueReg = self.createUniqueRegister()
-                self._addLine("%" + uniqueReg + " = fpext float " + valueVariable0 + " to double")
-                valueVariable0 =  "%" + uniqueReg
-                type1 = "double"
-            elif type(varible0) == LLVMArray:
-                type1 = type1 + "*"
-            argsPrintString += type1 + " " + valueVariable0 + ", "
+                self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
+                valueVariable0 = uniqueReg
+                type = "double"
+            argsPrintString += type + " %" + valueVariable0 + ", "
         argsPrintString = argsPrintString[:-2]
         if argsPrintString != "":
             argsPrintString = ", " + argsPrintString;
@@ -344,17 +330,19 @@ class LLVMFunction(LLVMProgram):
         argsPrintString = ""
         for itemType in vars:
             item = itemType[0]
-            nodeType = itemType[1]
+            type = itemType[1]
             varible0 = self.getVariable(item)
-            type1 = varible0.type
-            if type(varible0) == LLVMArray:
-                valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
-                self._getLLVMVariableLoadString(varible0, valueVariable0)
-                item = valueVariable0
-            if type1 == ASTPointer:
-                argsPrintString += type1 + "* %" + item + ", "
+            valueVariable0 = self.createUniqueRegister(varible0.LLVMname)
+            self._getLLVMVariableLoadString(varible0, valueVariable0)
+            type = varible0.type
+            if varible0.getType() == float:
+                uniqueReg = self.createUniqueRegister()
+                self._addLine("%" + uniqueReg + " = fpext float %" + valueVariable0 + " to double")
+                valueVariable0 = uniqueReg
+            if type == ASTPointer:
+                argsPrintString += type + "* %" + item + ", "
             else:
-                argsPrintString += type1 + "* %" + item + ", "
+                argsPrintString += type + "* %" + item + ", "
         argsPrintString = argsPrintString[:-2]
         self._addLine("call i32 (i8*, ...) @__isoc99_scanf(i8* getelementptr inbounds ([" + str(charCount) + " x i8], [" + str(charCount) + " x i8]* @." + printStringName + ", i64 0, i64 0), " + argsPrintString + ")")
 
@@ -386,7 +374,7 @@ class LLVMFunction(LLVMProgram):
         if not self.returnItemSet:
             self.setReturnValue(defaultReturnItemDict[self.getFunctionType(self.functionName)])
 
-class LLVMWhile(LLVMFunction):
+class MipsWhile(MipsFunction):
     def __init__(self, uniqueName, parantFunction):
         self.loop = False
         self.parantFunction = parantFunction
@@ -432,7 +420,7 @@ class LLVMWhile(LLVMFunction):
     def continueLoop(self):
         self._addLine("br label %" + "whileCondition_" + self.functionName)  # ga naar de condition of while loop
 
-class LLVMIfElse(LLVMFunction):
+class MipsIfElse(MipsFunction):
     def __init__(self, uniqueName, parantFunction):
         self.condition = True
         self.parantFunction = parantFunction
@@ -474,8 +462,7 @@ class LLVMIfElse(LLVMFunction):
         self._addLine("br label %" + "endIfElseStatement_" + self.functionName)  #ga naar de condition of while loop
         self._addLineToFunctionNoTab("\n" + "endIfElseStatement_" + self.functionName + ":")  # end while loop
 
-
-class LLVMVarible:
+class MipsVarible:
     def __init__(self, name, type, align = 4):
         self.llvmChar = "%"
         self.name = name
@@ -531,7 +518,7 @@ class LLVMVarible:
         loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* " + self.llvmChar + loadAdress + str(counter) + ", align " + str(self.align)
         return loadString
 
-class LLVMArray(LLVMVarible):
+class MipsArray(MipsVarible):
     def __init__(self, name, type,length, align = 4):
         self.length = length
         self.tempRegCounter = 0
@@ -564,9 +551,6 @@ class LLVMArray(LLVMVarible):
         return pointerToArrayPlace + "\n" + storeInArrayPlace
 
     def getLLVMLoadString(self, loadAdress, index):
-        if index == None:
-            pointerToArrayPlace = self.getPointerToIndex(loadAdress, index)
-            return pointerToArrayPlace
         tempRegName = "temp" + str(self.tempRegCounter) + str(self.LLVMname)
         pointerToArrayPlace = self.getPointerToIndex(tempRegName, index)
         load = "%" + loadAdress + " = load " + self.type + ", " + self.type + "* %" + tempRegName + ", align " + str(self.align)
@@ -574,14 +558,4 @@ class LLVMArray(LLVMVarible):
         return pointerToArrayPlace + "\n" + load
 
     def getPointerToIndex(self,regName, index):
-        if index == None:
-            index = 0
         return "%" + regName + "= getelementptr inbounds [" + str(self.length) + " x " + self.type + "], [" + str(self.length) + " x " + self.type + "]* " + self.llvmChar + self.LLVMname + ", i64 0, i32 " + str(index)
-
-class GlobalPrintString(LLVMVarible):
-    def __init__(self, name, type):
-        self.name = name
-        self.type = type
-
-    def getType(self):
-        return None
