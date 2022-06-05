@@ -349,7 +349,8 @@ class ASTConst(AST):
         super().__init__(value, line, position, childNodes)
 
 class ASTPointer(AST):
-    def __init__(self, value, line, position, childNodes=None):
+    def __init__(self, value, line, position, childNodes=None, depth=1):
+        self.depth = depth
         super().__init__(value, line, position, childNodes)
 
     def getSetObject(self):
@@ -560,7 +561,6 @@ class ASTArray(AST):
 class ASTArrayLength(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
-
 
 class ASTArrayIndex(AST):
     def __init__(self, value, line, position, childNodes=None):

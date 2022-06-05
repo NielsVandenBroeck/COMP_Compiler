@@ -47,18 +47,18 @@ def main(argv):
 
         ASTFixScoping(ast)
 
-        with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+        with open("OutputFiles/LLVM/dotVisualization.dot", 'w') as myFile:
             myFile.write(ast.getDot())
 
-        llvm = LLVMGenerator("OutputFiles/code.ll", ast)
+        llvm = LLVMGenerator("OutputFiles/LLVM/code.ll", ast)
         llvm.write()
 
         print("Compiling complete")
 
         print()
-        os.system("lli-9 " + "OutputFiles/code.ll")
+        os.system("lli-9 " + "OutputFiles/LLVM/code.ll")
         print("\nRunning complete")
-        os.system("lli-9 " + " OutputFiles/code.ll")
+        os.system("lli-9 " + " OutputFiles/LLVM/code.ll")
     else:
         for filename in os.listdir("testFiles/juisteTestFiles"):
             print("\n---------------")
@@ -79,16 +79,16 @@ def main(argv):
 
                 ASTFixScoping(ast)
 
-                with open("OutputFiles/dotVisualization.dot", 'w') as myFile:
+                with open("OutputFiles/LLVM/dotVisualization.dot", 'w') as myFile:
                     myFile.write(ast.getDot())
 
-                llvm = LLVMGenerator("OutputFiles/" + filename.split(".")[0] + ".ll", ast)
+                llvm = LLVMGenerator("OutputFiles/LLVM/" + filename.split(".")[0] + ".ll", ast)
                 llvm.write()
 
                 print("Compiling complete")
 
                 print()
-                os.system("lli-9 " + " OutputFiles/" + filename.split(".")[0] + ".ll")
+                os.system("lli-9 " + " OutputFiles/LLVM/" + filename.split(".")[0] + ".ll")
                 workingCounter += 1
                 print("\nRunning complete")
                 #if (workingCounter == 7):
