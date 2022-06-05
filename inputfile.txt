@@ -1,8 +1,7 @@
 #include <stdio.h>
 
+int a = 50;
 int main(){
-	char a[5] = "hallo";
-    printf("Enter a 5-character string:");
-	printf("%s", a);
-	return 1;
+	int i = 10;
+	printf("%i, %i", i, a);
 }

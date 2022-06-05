@@ -8,6 +8,7 @@ from antlr4 import *
 
 from ASTFixScoping import ASTFixScoping
 from LLVMProgram import LLVMProgram, LLVMFunction
+from MipsProgram import MipsProgram
 from grammar1Lexer import grammar1Lexer
 from grammar1Parser import grammar1Parser
 from antlr4.tree.Trees import Trees
@@ -84,7 +85,24 @@ def runMutipleLLVM():
     print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
 def runOneMips(path):
-    pass
+    print(path + ":")
+    input_stream = FileStream(path)
+    lexer = grammar1Lexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = grammar1Parser(stream)
+    tree = parser.start()
+
+    visistor = ASTGenerator()
+    ast = visistor.visit(tree)
+
+    ast.constantFold()
+
+    ASTFixScoping(ast)
+
+    with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
+        myFile.write(ast.getDot())
+
+    MipsProgram(ast)
 
 def runMultipleMips():
     pass

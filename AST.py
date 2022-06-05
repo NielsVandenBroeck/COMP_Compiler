@@ -1,7 +1,7 @@
 import operator
 from typing import Any
 from pydoc import locate
-
+from MipsProgram import MipsProgram
 import graphviz
 
 class AST():
@@ -236,10 +236,90 @@ class AST():
     def getIndexItem(self):
         return None
 
-
-
+    def CreateMipsCode(self):
+        MipsProgram.addLineToProgramArray(".text")
+        if self.nodes != None:
+            for node in self.nodes:
+                node.CreateMipsCode()
     def getPointerDept(self):
         return 0
+
+class ASTFunction(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def getReturnType(self):
+        return self.nodes[0].root
+
+    def getType(self):
+        return self.nodes[0].root
+
+    def getFunctionName(self):
+        return self.nodes[1].root
+
+    def getParameters(self):
+        if len(self.nodes) == 4:
+            return self.nodes[2]
+        return []
+
+    def getScope(self):
+        if len(self.nodes) == 4:
+            return self.nodes[3]
+        return self.nodes[2]
+
+    def CreateMipsCode(self):
+        MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
+        # for node in self.nodes:
+        # node.getMipsCode()
+
+class ASTFunctionName(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        self.type = None
+        super().__init__(value, line, position, childNodes)
+
+    def getFunctionName(self):
+        return self.root
+
+    def getFunctionParameters(self):
+        if self.nodes == None:
+            return []
+        return self.nodes[0].nodes
+
+    def getType(self):
+        return self.type
+
+class ASTDataType(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        if value == "char":
+            value = "chr"
+        super().__init__(locate(value), line, position, childNodes)
+
+    def getVariableName(self):
+        return self.nodes[0].root
+
+    def getValue(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1].root
+        return None
+
+    def getValueObject(self):
+        if len(self.nodes) > 1:
+            return self.nodes[1]
+        return None
+
+    def getType(self):
+        return self.root
+
+    def getMipsType(self):
+        return self.root
+
+    def CreateMipsCode(self):
+        if self.getVariableName()[0] == "@":    #globaal gedefinnerd
+            MipsProgram.addLineToDataArray("\t" + self.getVariableName() + ":	" + self.getMipsType() + " " + self.getValue())
+        else:
+            exit("TODO")
+        # for node in self.nodes:
+        # node.getMipsCode()
 
 class ASTValue(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
@@ -301,44 +381,6 @@ class ASTVariable(AST):
         if self.type == None:
             return int
         return self.type
-
-class ASTFunctionName(AST):
-    def __init__(self, value, line, position, childNodes=None):
-        self.type = None
-        super().__init__(value, line, position, childNodes)
-
-    def getFunctionName(self):
-        return self.root
-
-    def getFunctionParameters(self):
-        if self.nodes == None:
-            return []
-        return self.nodes[0].nodes
-
-    def getType(self):
-        return self.type
-
-class ASTDataType(AST):
-    def __init__(self, value, line, position, childNodes=None):
-        if value == "char":
-            value = "chr"
-        super().__init__(locate(value), line, position, childNodes)
-
-    def getVariableName(self):
-        return self.nodes[0].root
-
-    def getValue(self):
-        if len(self.nodes) > 1:
-            return self.nodes[1].root
-        return None
-
-    def getValueObject(self):
-        if len(self.nodes) > 1:
-            return self.nodes[1]
-        return None
-
-    def getType(self):
-        return self.root
 
 class ASTVoid(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -463,29 +505,6 @@ class ASTIfElse(AST):
     def getElseScope(self):
         if self.containsElseScope():
             return self.nodes[2]
-
-class ASTFunction(AST):
-    def __init__(self, value, line, position, childNodes=None):
-        super().__init__(value, line, position, childNodes)
-
-    def getReturnType(self):
-        return self.nodes[0].root
-
-    def getType(self):
-        return self.nodes[0].root
-
-    def getFunctionName(self):
-        return self.nodes[1].root
-
-    def getParameters(self):
-        if len(self.nodes) == 4:
-            return self.nodes[2]
-        return []
-
-    def getScope(self):
-        if len(self.nodes) == 4:
-            return self.nodes[3]
-        return self.nodes[2]
 
 class ASTForwardDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
