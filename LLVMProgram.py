@@ -474,7 +474,6 @@ class LLVMIfElse(LLVMFunction):
         self._addLine("br label %" + "endIfElseStatement_" + self.functionName)  #ga naar de condition of while loop
         self._addLineToFunctionNoTab("\n" + "endIfElseStatement_" + self.functionName + ":")  # end while loop
 
-
 class LLVMVarible:
     def __init__(self, name, type, align = 4):
         self.llvmChar = "%"

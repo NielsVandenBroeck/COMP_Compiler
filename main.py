@@ -17,91 +17,87 @@ from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
 import subprocess
 
+def runOneLLVM(path):
+    print(path + ":")
+    input_stream = FileStream(path)
+    lexer = grammar1Lexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = grammar1Parser(stream)
+    tree = parser.start()
 
-def main(argv):
-    # f = 8.3
-    # exit(8.3.hex())
+    visistor = ASTGenerator()
+    ast = visistor.visit(tree)
 
-    # hexString = "40209999A0000000"
-    # exit(8.3.hex())
-    # goeie website: https://faun.pub/introduction-to-antlr-python-af8a3c603d23
+    ast.constantFold()
+
+    ASTFixScoping(ast)
+
+    with open("OutputFiles/LLVM/OneFile/dotVisualization.dot", 'w') as myFile:
+        myFile.write(ast.getDot())
+
+    llvm = LLVMGenerator("OutputFiles/LLVM/OneFile/code.ll", ast)
+    llvm.write()
+
+    print("Compiling complete")
+    print()
+    os.system("lli-9 " + "OutputFiles/LLVM/OneFile/code.ll")
+
+def runMutipleLLVM():
     workingCounter = 0
     brokenCounter = 0
     brokenFiles = []
+    for filename in os.listdir("testFiles/juisteTestFiles"):
+        print("\n---------------")
+        try:
+            print(filename + ":")
+            input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
+            lexer = grammar1Lexer(input_stream)
+            stream = CommonTokenStream(lexer)
+            parser = grammar1Parser(stream)
+            tree = parser.start()
 
+            visistor = ASTGenerator()
+            ast = visistor.visit(tree)
 
-    if (len(argv) > 1):
-        print(argv[1] + ":")
-        input_stream = FileStream(argv[1])
-        if(len(argv) > 1):
-           input_stream = FileStream(argv[1])
-        lexer = grammar1Lexer(input_stream)
-        stream = CommonTokenStream(lexer)
-        parser = grammar1Parser(stream)
-        tree = parser.start()
+            ast.constantFold()
 
-        visistor = ASTGenerator()
-        ast = visistor.visit(tree)
+            ASTFixScoping(ast)
 
-        ast.constantFold()
+            with open("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
+                myFile.write(ast.getDot())
 
-        ASTFixScoping(ast)
+            llvm = LLVMGenerator("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll", ast)
+            llvm.write()
 
-        with open("OutputFiles/LLVM/dotVisualization.dot", 'w') as myFile:
-            myFile.write(ast.getDot())
+            print("Compiling complete")
 
-        llvm = LLVMGenerator("OutputFiles/LLVM/code.ll", ast)
-        llvm.write()
-
-        print("Compiling complete")
-
-        print()
-        os.system("lli-9 " + "OutputFiles/LLVM/code.ll")
-        print("\nRunning complete")
-        os.system("lli-9 " + " OutputFiles/LLVM/code.ll")
-    else:
-        for filename in os.listdir("testFiles/juisteTestFiles"):
-            print("\n---------------")
-            try:
-                print(filename + ":")
-                input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
-                if(len(argv) > 1):
-                    input_stream = FileStream(argv[1])
-                lexer = grammar1Lexer(input_stream)
-                stream = CommonTokenStream(lexer)
-                parser = grammar1Parser(stream)
-                tree = parser.start()
-
-                visistor = ASTGenerator()
-                ast = visistor.visit(tree)
-
-                ast.constantFold()
-
-                ASTFixScoping(ast)
-
-                with open("OutputFiles/LLVM/dotVisualization.dot", 'w') as myFile:
-                    myFile.write(ast.getDot())
-
-                llvm = LLVMGenerator("OutputFiles/LLVM/" + filename.split(".")[0] + ".ll", ast)
-                llvm.write()
-
-                print("Compiling complete")
-
-                print()
-                os.system("lli-9 " + " OutputFiles/LLVM/" + filename.split(".")[0] + ".ll")
-                workingCounter += 1
-                print("\nRunning complete")
-                #if (workingCounter == 7):
-                #    break
-            except:
-                print("Failed")
-                brokenCounter += 1
-                brokenFiles.append(filename)
             print()
-
+            os.system("lli-9 " + " OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll")
+            workingCounter += 1
+            print("\nRunning complete")
+        except:
+            print("Failed")
+            brokenCounter += 1
+            brokenFiles.append(filename)
+    print()
     print("aantal werkende files:", workingCounter)
     print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
+def runOneMips(path):
+    pass
+
+def runMultipleMips():
+    pass
+
+def main(argv):
+    if argv[1] == "llvm" and len(argv) == 2:
+        runMutipleLLVM()
+    elif argv[1] == "llvm" and len(argv) == 3:
+        runOneLLVM(argv[2])
+    elif argv[1] == "mips" and len(argv) == 2:
+        runMultipleMips()
+    elif argv[1] == "mips" and len(argv) == 3:
+        runOneMips(argv[2])
     return 0
 
 
