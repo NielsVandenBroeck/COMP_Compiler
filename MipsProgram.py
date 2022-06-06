@@ -95,7 +95,7 @@ class MipsProgram:
         """
         MipsProgram.checkRegister(currentRegisterLocation)
         MipsProgram.variables[varName] = MipsVariable(varName, currentRegisterLocation, MipsProgram.stackPointer)
-        MipsProgram.addLineToProgramArray("sw\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1)
+        MipsProgram.addLineToProgramArray("sw\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "store variable: " + varName)
         MipsProgram.stackPointer -= 4
 
     @staticmethod
@@ -112,13 +112,17 @@ class MipsProgram:
         if MipsProgram.variables[varName].register != None:
             #indien de variable nog in een register zit
             fromRegister = MipsProgram.variables[varName].register
-            MipsProgram.addLineToProgramArray("move\t" + toStoreRegister + ", " + fromRegister, 1)
+            MipsProgram.addLineToProgramArray("move\t" + toStoreRegister + ", " + fromRegister, 1, "Load variable " + varName)
         else:
             #indien de variable uit het geheugen geladen moet worden
             stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
-            MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1)
+            MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
         if bitwise:
             MipsProgram.addLineToProgramArray("sgt\t" + toStoreRegister+ ", " + toStoreRegister + ", 0", 1)
+
+    @staticmethod
+    def registerToBit(registerName):
+        MipsProgram.addLineToProgramArray("sgt\t" + registerName + ", " + registerName + ", 0", 1, "convert register to 0 or 1")
 
     @staticmethod
     def printRegister(register):
@@ -180,3 +184,14 @@ class MipsProgram:
         """
         if MipsProgram.registers[register[1]][register] == True or MipsProgram.registers[register[1]][register] == None:
             MipsProgram.registers[register[1]][register] = None
+
+    @staticmethod
+    def releaseAllRegisters(registerCat: ['t', 's', 'a', 'v']):
+        """
+        Call this function every time a register can be released
+        :param register: register name to release
+        :return:
+        """
+        for tReg in MipsProgram.registers[registerCat]:
+            if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
+                MipsProgram.registers[registerCat][tReg].updateRegister(None)

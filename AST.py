@@ -279,9 +279,7 @@ class ASTFunction(AST):
     def CreateMipsCode(self):
         MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
         MipsProgram.startOfFunction(self.getScope().neededStackSpace())
-
         self.getScope().CreateMipsCode()
-
         MipsProgram.endOfFunction()
 
 class ASTFunctionName(AST):
@@ -299,6 +297,13 @@ class ASTFunctionName(AST):
 
     def getType(self):
         return self.type
+
+    def CreateMipsCode(self):
+        register = MipsProgram.getFreeTempRegister()
+        MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
+        MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
+        MipsProgram.releaseAllRegisters("t")
+        return register
 
 #OK
 class ASTDataType(AST):
@@ -355,14 +360,8 @@ class ASTValue(AST):
     def getType(self):
         exit("bruh")
 
-    def CreateMipsCode(self, bitwise=False):
+    def CreateMipsCode(self):
         value = self.root
-        #exception for chars
-        if bitwise and type(value) is chr:
-            value = ord(value)
-        # check for || an && operations to make value bitwise (0 or 1)
-        if bitwise and value != 0:
-            value = 1
         register = MipsProgram.getFreeTempRegister()
         MipsProgram.addLineToProgramArray("li\t" + register + ", " + str(value), 1)
         return register
@@ -422,9 +421,9 @@ class ASTVariable(AST):
             return int
         return self.type
 
-    def CreateMipsCode(self, bitwise=False):
+    def CreateMipsCode(self):
         register = MipsProgram.getFreeTempRegister()
-        MipsProgram.loadVariable(self.getVariableName(), register, bitwise)
+        MipsProgram.loadVariable(self.getVariableName(), register)
         return register
 
 class ASTVoid(AST):
@@ -535,13 +534,16 @@ class ASTOperator(AST):
             return self.nodes[0].getType()
         return self.nodes[1].getType()
 
-    def CreateMipsCode(self, bitwise=False):
+    def CreateMipsCode(self):
         register = MipsProgram.getFreeTempRegister()            #get a free register
         operator = self.getMipsOperator()
+
+        leftRegister = self.getLeftValue().CreateMipsCode()     #Get a register (locked) with a value of the left node
+        rightRegister = self.getRightValue().CreateMipsCode()   #Get a register (locked) with a value of the right node
         if operator == "and" or operator == "or":
-            bitwise = True
-        leftRegister = self.getLeftValue().CreateMipsCode(bitwise)     #Get a register (locked) with a value of the left node
-        rightRegister = self.getRightValue().CreateMipsCode(bitwise)   #Get a register (locked) with a value of the right node
+            MipsProgram.registerToBit(leftRegister)             #convert value to boolean
+            MipsProgram.registerToBit(rightRegister)            #convert value to boolean
+
         if operator == "%":
             MipsProgram.addLineToProgramArray("div\t" + leftRegister + ", " + rightRegister, 1,"operatie tussen 2 waarden")
             MipsProgram.addLineToProgramArray("mfhi\t"+register, 1, "slaat de rest van de deling op in het register")
@@ -617,6 +619,7 @@ class ASTOneTokenStatement(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+#OK
 class ASTReturn(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -625,6 +628,11 @@ class ASTReturn(AST):
         if self.nodes == None:
             return None
         return self.nodes[0]
+
+    def CreateMipsCode(self):
+        valueRegister = self.getReturnValue().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
+        MipsProgram.addLineToProgramArray("move\t$v0, " + valueRegister, 1, "Set the value for return in $v0")
+
 
 class ASTMultiDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
