@@ -525,7 +525,6 @@ class ASTPointer(AST):
                 register = self.getToObject().CreateMipsCode()
             else:
                 register = MipsProgram.getFreeRegister("t")
-                MipsProgram.releaseRegister(register)
             MipsProgram.updateVariable(self.getVariableName(), register)
             MipsProgram.releaseRegister(register)
         elif self.isChangeValueObject():        #bv *c = 10;    (zet een pointer op een waarde)
