@@ -270,6 +270,11 @@ class ASTFunction(AST):
             return self.nodes[2]
         return []
 
+    def getParametersList(self):
+        if len(self.nodes) == 4:
+            return self.nodes[2].nodes
+        return []
+
     def getScope(self):
         if len(self.nodes) == 4:
             return self.nodes[3]
@@ -278,9 +283,16 @@ class ASTFunction(AST):
     def CreateMipsCode(self):
         MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
         MipsProgram.startOfFunction(self.getScope().neededStackSpace())
+        aCounter = 0
+        for param in self.getParametersList():
+            param.CreateMipsCode()
+            MipsProgram.updateVariable(param.getVariableName(), "$a" + str(aCounter))
+            aCounter+=1
+        MipsProgram.releaseAllRegisters('a')
         self.getScope().CreateMipsCode()
         MipsProgram.endOfFunction()
 
+#OK
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):
         self.type = None
@@ -299,6 +311,11 @@ class ASTFunctionName(AST):
 
     def CreateMipsCode(self):
         register = MipsProgram.getFreeRegister('t')
+        MipsProgram.releaseAllRegisters("a")
+        for param in self.getFunctionParameters():
+            tempRegister = param.CreateMipsCode()
+            aRegister = MipsProgram.getFreeRegister('a')
+            MipsProgram.addLineToProgramArray("move\t" + aRegister + ", " + tempRegister, 1, "Move to a parameter register")
         MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
         MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
         MipsProgram.releaseAllRegisters("t")
@@ -341,7 +358,7 @@ class ASTDataType(AST):
             MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(value), 1)
         else:
             if self.getValue() is None:
-                valueRegister = MipsProgram.getFreeTempRegister()
+                valueRegister = MipsProgram.getFreeRegister('t')
             else:
                 valueRegister = self.getValueObject().CreateMipsCode()        #Get a register (locked) with a value in to safe in the variable
             MipsProgram.storeVariable(self.getVariableName(), valueRegister)  #store the register in the variable (sw)
@@ -426,10 +443,24 @@ class ASTVariable(AST):
             return int
         return self.type
 
+    def isSetVarible(self):
+        """
+        returns True if variable set, returns false for varible get
+        :return:
+        """
+        return not self.nodes == None
+
     def CreateMipsCode(self):
-        register = MipsProgram.getFreeRegister('t')
-        MipsProgram.loadVariable(self.getVariableName(), register)
-        return register
+        if self.isSetVarible():
+            #for varible change
+            valueRegister = self.nodes[0].CreateMipsCode()
+            MipsProgram.updateVariable(self.getVariableName(), valueRegister)
+            return valueRegister
+        else:
+            #for varble value
+            register = MipsProgram.getFreeRegister('t')
+            MipsProgram.loadVariable(self.getVariableName(), register)
+            return register
 
 class ASTVoid(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -612,6 +643,11 @@ class ASTForwardDeclaration(AST):
     def getParameters(self):
         if len(self.nodes) == 4:
             return self.nodes[2]
+        return []
+
+    def getParametersList(self):
+        if len(self.nodes) == 4:
+            return self.nodes[2].nodes
         return []
 
     def getScope(self):

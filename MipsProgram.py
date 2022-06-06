@@ -8,8 +8,12 @@ class MipsVariable:
         MipsProgram.registers[register[1]][register] = self
 
     def updateRegister(self, toReg):
-        MipsProgram.registers[self.register[1]][self.register] = toReg
+        if self.register != None:
+            MipsProgram.registers[self.register[1]][self.register] = None
+        if toReg != None:
+            MipsProgram.registers[toReg[1]][toReg] = self
         self.register = toReg
+
 
 class MipsProgram:
     stackPointer = 0
@@ -33,6 +37,7 @@ class MipsProgram:
         print(".data")
         for line in self.dataArray:
             print(line)
+        print(".globl main")
         print(".text")
         for line in self.programmArray:
             print(line)
@@ -104,7 +109,7 @@ class MipsProgram:
         MipsProgram.stackPointer -= 4
 
     @staticmethod
-    def loadVariable(varName, toStoreRegister, bitwise=False):
+    def loadVariable(varName, toStoreRegister):
         """
         loads a variable to a given register (auto choose between move and lw depending on the current state)
         :param varName: the name of the var in the AST
@@ -122,8 +127,20 @@ class MipsProgram:
             #indien de variable uit het geheugen geladen moet worden
             stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
             MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
-        if bitwise:
-            MipsProgram.addLineToProgramArray("sgt\t" + toStoreRegister+ ", " + toStoreRegister + ", 0", 1)
+
+    @staticmethod
+    def updateVariable(varName, toRegisterValue):
+        """
+        Change a varible to a new value, and update all registers
+        :param varName: varible to update
+        :param toRegisterValue: register with value
+        :return:
+        """
+        if varName in MipsProgram.variables:
+            MipsProgram.addLineToProgramArray("sw\t" + toRegisterValue + ", " + str(MipsProgram.variables[varName].stackPointerOffset) + "($fp)", 1,"update variable: " + varName)
+            MipsProgram.variables[varName].updateRegister(toRegisterValue)
+        else:
+            exit("Varible does not exists")
 
     @staticmethod
     def registerToBit(registerName):
@@ -200,3 +217,16 @@ class MipsProgram:
         for tReg in MipsProgram.registers[registerCat]:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
+
+    @staticmethod
+    def getVarByRegisterName(register):
+        """
+        Returns the var name from MipsVariable currently also safed in a register
+        :param register:
+        :return:
+        """
+        print("register", register)
+        if MipsProgram.registers[register[1]][register] != None and MipsProgram.registers[register[1]][register] != True:
+            return MipsProgram.registers[register[1]][register].name
+        else:
+            exit("If you are here you dit somthing wrong (getVarByRegisterName is not the function you need to call)")
