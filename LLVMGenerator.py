@@ -180,7 +180,7 @@ class LLVMGenerator:
 
     def _createAstScanfLLVM(self, node):
         printArgs = []
-        for printArg in node.getAllVaribles():
+        for printArg in node.getAllVariables():
             if type(printArg) == ASTAdress:
                 printArgs.append([printArg.getVariableName(), ASTAdress])
             else:

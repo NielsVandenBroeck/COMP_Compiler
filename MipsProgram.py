@@ -121,8 +121,12 @@ class MipsProgram:
         :param toStoreRegister: the name of te register to load to
         :return: None
         """
+        floatRegister = None
         MipsProgram.checkVariable(varName)
         MipsProgram.checkRegister(toStoreRegister)
+        if toStoreRegister[1] == 'f':
+            floatRegister = toStoreRegister
+            toStoreRegister = MipsProgram.getFreeRegister('t')
 
         if MipsProgram.variables[varName].register != None:
             #indien de variable nog in een register zit
@@ -132,6 +136,10 @@ class MipsProgram:
             #indien de variable uit het geheugen geladen moet worden
             stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
             MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
+
+        if floatRegister is not None:
+            MipsProgram.addLineToProgramArray("lwc1\t"+floatRegister+", 0("+toStoreRegister+")",1)
+
 
     @staticmethod
     def updateVariable(varName, toRegisterValue):
@@ -158,8 +166,11 @@ class MipsProgram:
         :param register:
         :return:
         """
+        if len(register) <= 1:
+            exit("incorrect register")
         if register[0] != "$":
             exit("Register stars with $")
+        return register[1]
 
     @staticmethod
     def checkVariable(varName):
@@ -245,7 +256,6 @@ class MipsProgram:
         :param register:
         :return:
         """
-        print("register", register)
         if MipsProgram.registers[register[1]][register] != None and MipsProgram.registers[register[1]][register] != True:
             return MipsProgram.registers[register[1]][register].name
         else:
