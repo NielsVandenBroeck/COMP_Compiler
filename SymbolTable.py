@@ -420,6 +420,7 @@ class SymbolTable():
             elif type(node) == ASTFunctionName:
                 self.checkFunctionCall(node)
                 variableType = self.findReturnTypeOfFunction(node.root)
+                node.type = variableType
             # string
             elif type(node) == ASTText:
                 variableType = str
