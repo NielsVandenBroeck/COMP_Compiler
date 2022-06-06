@@ -237,13 +237,22 @@ class AST():
         return None
 
     def CreateMipsCode(self):
-        MipsProgram.addLineToProgramArray(".text")
+        #MipsProgram.addLineToProgramArray(".text")
         if self.nodes != None:
             for node in self.nodes:
                 node.CreateMipsCode()
+
+    def neededStackSpace(self):
+        total = 0
+        if self.nodes != None:
+            for node in self.nodes:
+                total += node.neededStackSpace()
+        return total
+
     def getPointerDept(self):
         return 0
 
+#OK
 class ASTFunction(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -269,8 +278,11 @@ class ASTFunction(AST):
 
     def CreateMipsCode(self):
         MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
-        # for node in self.nodes:
-        # node.getMipsCode()
+        MipsProgram.startOfFunction(self.getScope().neededStackSpace())
+
+        self.getScope().CreateMipsCode()
+
+        MipsProgram.endOfFunction()
 
 class ASTFunctionName(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -288,6 +300,7 @@ class ASTFunctionName(AST):
     def getType(self):
         return self.type
 
+#OK
 class ASTDataType(AST):
     def __init__(self, value, line, position, childNodes=None):
         if value == "char":
@@ -311,22 +324,41 @@ class ASTDataType(AST):
         return self.root
 
     def getMipsType(self):
-        return self.root
+        return MipsProgram.mipsTypes[self.root]
+
+    def neededStackSpace(self):
+        return 4
 
     def CreateMipsCode(self):
         if self.getVariableName()[0] == "@":    #globaal gedefinnerd
-            MipsProgram.addLineToDataArray("\t" + self.getVariableName() + ":	" + self.getMipsType() + " " + self.getValue())
+            MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(self.getValue()), 1)
         else:
-            exit("TODO")
-        # for node in self.nodes:
-        # node.getMipsCode()
+            valueRegister = self.getValueObject().CreateMipsCode()           #Get a register (locked) with a value in to safe in the varible
+            MipsProgram.storeVarible(self.getVariableName(), valueRegister)  #store the register in the varible (sw)
+            MipsProgram.releaseRegister(valueRegister)                       #release the register for other use (unlock the register)
 
+#OK
+class ASTScope(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
+
+    def CreateMipsCode(self):
+        if self.nodes != None:
+            for node in self.nodes:
+                node.CreateMipsCode()
+
+#OK
 class ASTValue(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
     def getType(self):
         exit("bruh")
+
+    def CreateMipsCode(self):
+        register = MipsProgram.getFreeTempRegister()
+        MipsProgram.addLineToProgramArray("li\t" + register + ", " + str(self.root), 1)
+        return register
 
 class ASTInt(ASTValue):
     def __init__(self, value, line = 0, position = 0, childNodes=None):
@@ -349,6 +381,7 @@ class ASTFloat(ASTValue):
     def getType(self):
         return float
 
+#OK
 class ASTVariable(AST):
     def __init__(self, value, line = 0, position = 0, childNodes=None, type=None):
         self.type = type
@@ -381,6 +414,11 @@ class ASTVariable(AST):
         if self.type == None:
             return int
         return self.type
+
+    def CreateMipsCode(self):
+        register = MipsProgram.getFreeTempRegister()
+        MipsProgram.loadVarible(self.getVariableName(), register)
+        return register
 
 class ASTVoid(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -436,6 +474,13 @@ class ASTPrintf(AST):
         listOfItems = self.nodes[1:]
         return listOfItems
 
+    def CreateMipsCode(self):
+        #TODO gemaakt om int's te testen andere formaten!
+        for item in self.getAllVaribles():
+            register = item.CreateMipsCode()         #Get a register (locked) with a value to print
+            MipsProgram.printRegister(register)      #print the register (need to change only int)
+            MipsProgram.releaseRegister(register)    #release the register for other use (unlock the register)
+
 class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -457,9 +502,13 @@ class ASTText(AST):
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+        self.mipsOperations = {"+": "add", "-": "sub", "*": "mul", "/": "div"} #TODO more operations
 
     def getOperator(self):
         return self.root
+
+    def getMipsOperator(self):
+        return self.mipsOperations[self.getOperator()]
 
     def getLeftValue(self):
         if self.nodes == None:
@@ -478,6 +527,15 @@ class ASTOperator(AST):
         if convertScore[node0] > convertScore[node1]:
             return self.nodes[0].getType()
         return self.nodes[1].getType()
+
+    def CreateMipsCode(self):
+        register = MipsProgram.getFreeTempRegister()            #get a free register
+        leftRegister = self.getLeftValue().CreateMipsCode()     #Get a register (locked) with a value of the left node
+        rightRegister = self.getRightValue().CreateMipsCode()   #Get a register (locked) with a value of the right node
+        MipsProgram.addLineToProgramArray(self.getMipsOperator() + "\t" + register + ", " + leftRegister  + ", " + rightRegister , 1)
+        MipsProgram.releaseRegister(leftRegister)               #release the leftRegister for other use
+        MipsProgram.releaseRegister(rightRegister)              #release the rightRegister for other use
+        return register                                         #returns the register with the answer (register will be unlocked in the caller)
 
 class ASTWhile(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -538,10 +596,6 @@ class ASTFor(AST):
         super().__init__(value, line, position, childNodes)
 
 class ASTCondition(AST):
-    def __init__(self, value, line, position, childNodes=None):
-        super().__init__(value, line, position, childNodes)
-
-class ASTScope(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
