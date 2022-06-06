@@ -139,7 +139,7 @@ class LLVMGenerator:
 
     def _createAstPrintfLLVM(self, node):
         printArgs = []
-        for printArg in node.getAllVaribles():
+        for printArg in node.getAllVariables():
             if type(printArg) == ASTVariable:
                 if printArg.isArrayItem():
                     valueName = self.currentFunction.createUniqueRegister(printArg.getVariableName() + "pointerToValue")

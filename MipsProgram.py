@@ -1,6 +1,6 @@
 import struct
 
-class MipsVarible:
+class MipsVariable:
     def __init__(self, name, register, stackPointerOffset):
         self.name = name
         self.register = register
@@ -17,12 +17,12 @@ class MipsProgram:
     dataArray = []
     programmArray = []
     mipsTypes = {int: ".word"}
-    varibles = {}
+    variables = {}
 
     #blijft autmoatisch up to date
     #None: no value
     #True: lockt for calculations
-    #type=MipsVarible: same value as a item on the stack
+    #type=Mipsvariable: same value as a item on the stack
     registers = {"t": {"$t" + str(t) : None for t in range(0,10)},
                  "s": {"$s" + str(s): None for s in range(0, 8)},
                  "a": {"$a" + str(a): None for a in range(0, 4)},
@@ -38,14 +38,16 @@ class MipsProgram:
         pass
 
     @staticmethod
-    def addLineToProgramArray(line: str, inspring: int = 0):
+    def addLineToProgramArray(line: str, inspring: int = 0, comments: str=""):
         """
         Add a line to thr program array (.text part of the mips code)
         :param line: string with mips code
         :param inspring: tab count
         :return: None
         """
-        MipsProgram.programmArray.append((inspring * "\t") + line)
+        if comments != "":
+            comments = "\t\t # "+comments
+        MipsProgram.programmArray.append((inspring * "\t") + line + comments)
 
     @staticmethod
     def addLineToDataArray(line: str):
@@ -64,10 +66,10 @@ class MipsProgram:
         :return: None
         """
         reserve += 4 #allacte for return adress
-        MipsProgram.addLineToProgramArray("sw\t$fp, 0($sp)  # push oude frame pointer", 1)
-        MipsProgram.addLineToProgramArray("move\t$fp, $sp  # frame pointer wijst nu naar bovenaan de stack", 1)
+        MipsProgram.addLineToProgramArray("sw\t$fp, 0($sp)", 1, "push oude frame pointer")
+        MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1,  "frame pointer wijst nu naar bovenaan de stack")
         MipsProgram.addLineToProgramArray("subu\t$sp, $sp, " + str(reserve), 1)
-        MipsProgram.addLineToProgramArray("sw\t$ra, -4($fp)  # slaag het return adress op op de stack", 1)
+        MipsProgram.addLineToProgramArray("sw\t$ra, -4($fp)", 1, "slaag het return adress op op de stack")
         MipsProgram.stackPointer = -8
 
     @staticmethod
@@ -76,45 +78,47 @@ class MipsProgram:
         Funtion to add the end code for a function (returns to previeus function)
         :return: None
         """
-        MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)  # zet het return adres terug", 1)
-        MipsProgram.addLineToProgramArray("move\t$sp, $fp  #", 1)
-        MipsProgram.addLineToProgramArray("move\t$fp, $sp # frame pointer wijst nu naar bovenaan de stack", 1)
-        MipsProgram.addLineToProgramArray("lw    $fp, ($sp)  # zet oude frame pointer terug", 1)
-        MipsProgram.addLineToProgramArray("jr    $ra  # ga terug naar de aanroeper", 1)
+        MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)",1 ,"zet het return adres terug")
+        MipsProgram.addLineToProgramArray("move\t$sp, $fp", 1)
+        MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1, "frame pointer wijst nu naar bovenaan de stack")
+        MipsProgram.addLineToProgramArray("lw\t$fp, ($sp)", 1, "zet oude frame pointer terug")
+        MipsProgram.addLineToProgramArray("jr\t$ra", 1, "ga terug naar de aanroeper")
         MipsProgram.stackPointer = 0
 
     @staticmethod
-    def storeVarible(varName, currentRegisterLocation):
+    def storeVariable(varName, currentRegisterLocation):
         """
-        Make a new varible for an item currently in a register (store word + safes in dict's and changes the stackpointer)
+        Make a new variable for an item currently in a register (store word + safes in dict's and changes the stackpointer)
         :param varName: the varname
         :param currentRegisterLocation: the register
         :return: None
         """
         MipsProgram.checkRegister(currentRegisterLocation)
-        MipsProgram.varibles[varName] = MipsVarible(varName, currentRegisterLocation, MipsProgram.stackPointer)
+        MipsProgram.variables[varName] = MipsVariable(varName, currentRegisterLocation, MipsProgram.stackPointer)
         MipsProgram.addLineToProgramArray("sw\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1)
         MipsProgram.stackPointer -= 4
 
     @staticmethod
-    def loadVarible(varName, toStoreRegister):
+    def loadVariable(varName, toStoreRegister, bitwise=False):
         """
-        loads a varible to a given register (auto choose between move and lw depending on the current state)
+        loads a variable to a given register (auto choose between move and lw depending on the current state)
         :param varName: the name of the var in the AST
         :param toStoreRegister: the name of te register to load to
         :return: None
         """
-        MipsProgram.checkVarible(varName)
+        MipsProgram.checkVariable(varName)
         MipsProgram.checkRegister(toStoreRegister)
 
-        if MipsProgram.varibles[varName].register != None:
-            #indien de varible nog in een register zit
-            fromRegister = MipsProgram.varibles[varName].register
+        if MipsProgram.variables[varName].register != None:
+            #indien de variable nog in een register zit
+            fromRegister = MipsProgram.variables[varName].register
             MipsProgram.addLineToProgramArray("move\t" + toStoreRegister + ", " + fromRegister, 1)
         else:
-            #indien de varible uit het geheugen geladen moet worden
-            stackPointerOffset = MipsProgram.varibles[varName].stackPointerOffset
+            #indien de variable uit het geheugen geladen moet worden
+            stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
             MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1)
+        if bitwise:
+            MipsProgram.addLineToProgramArray("sgt\t" + toStoreRegister+ ", " + toStoreRegister + ", 0", 1)
 
     @staticmethod
     def printRegister(register):
@@ -139,14 +143,14 @@ class MipsProgram:
             exit("Register stars with $")
 
     @staticmethod
-    def checkVarible(varName):
+    def checkVariable(varName):
         """
-        function to check is varible is valid
+        function to check is variable is valid
         :param varName:
         :return:
         """
-        if not varName in MipsProgram.varibles:
-            exit("Varible not found")
+        if not varName in MipsProgram.variables:
+            exit("variable not found")
 
     @staticmethod
     def getFreeTempRegister():
@@ -160,11 +164,12 @@ class MipsProgram:
                 MipsProgram.registers["t"][tReg] = True
                 return tReg #retrun een vrij register
 
-        #TODO evnetueel meer geavanceerde code, momenteel clear an temp register with a varible already saved to the stack
+        #TODO evnetueel meer geavanceerde code, momenteel clear an temp register with a variable already saved to the stack
         for tReg in MipsProgram.registers["t"]:
-            if type(MipsProgram.registers["t"][tReg]) == MipsVarible:
+            if type(MipsProgram.registers["t"][tReg]) == MipsVariable:
                 MipsProgram.registers["t"][tReg].updateRegister(None)
                 return tReg
+        print("uh oh")
 
     @staticmethod
     def releaseRegister(register):

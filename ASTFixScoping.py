@@ -17,26 +17,26 @@ class ASTFixScoping:
             self.preOrderTraverse(scope)
 
 
-    def checkAndReplaceVariable(self, varible):
-        if type(varible) != ASTVariable:
+    def checkAndReplaceVariable(self, variable):
+        if type(variable) != ASTVariable:
             exit("wrong type not a ASTVariable")
-        varible.root = self.getMostCorrectName(varible.root)
+        variable.root = self.getMostCorrectName(variable.root)
 
 
-    def createVarible(self, varible):
-        if type(varible) != ASTDataType:
+    def createVariable(self, variable):
+        if type(variable) != ASTDataType:
             exit("wrong type not a ASTDataType")
-        if self.checkIfNameExists(varible.getVariableName()):
+        if self.checkIfNameExists(variable.getVariableName()):
             global number
-            self.symbolTable[varible.getVariableName()] = varible.getVariableName() + "scope" + str(number)
-            varible.nodes[0].root = varible.getVariableName() + "scope" + str(number)
+            self.symbolTable[variable.getVariableName()] = variable.getVariableName() + "scope" + str(number)
+            variable.nodes[0].root = variable.getVariableName() + "scope" + str(number)
             number += 1
         else:
-            self.symbolTable[varible.getVariableName()] = varible.getVariableName()
+            self.symbolTable[variable.getVariableName()] = variable.getVariableName()
 
         if self.isGlobal:
-            self.symbolTable[varible.getVariableName()] = '@' + varible.nodes[0].root
-            varible.nodes[0].root = '@' + varible.nodes[0].root
+            self.symbolTable[variable.getVariableName()] = '@' + variable.nodes[0].root
+            variable.nodes[0].root = '@' + variable.nodes[0].root
 
     def getMostCorrectName(self, varName):
         if varName in self.symbolTable:
@@ -62,7 +62,7 @@ class ASTFixScoping:
         elif type(ast) == ASTScope or type(ast) == ASTFunction:
             ASTFixScoping(ast, self)
         elif type(ast) == ASTDataType and ast.nodes != None:
-            self.createVarible(ast)
+            self.createVariable(ast)
         return
 
 

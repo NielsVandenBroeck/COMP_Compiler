@@ -333,8 +333,8 @@ class ASTDataType(AST):
         if self.getVariableName()[0] == "@":    #globaal gedefinnerd
             MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(self.getValue()), 1)
         else:
-            valueRegister = self.getValueObject().CreateMipsCode()           #Get a register (locked) with a value in to safe in the varible
-            MipsProgram.storeVarible(self.getVariableName(), valueRegister)  #store the register in the varible (sw)
+            valueRegister = self.getValueObject().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
+            MipsProgram.storeVariable(self.getVariableName(), valueRegister)  #store the register in the variable (sw)
             MipsProgram.releaseRegister(valueRegister)                       #release the register for other use (unlock the register)
 
 #OK
@@ -355,9 +355,16 @@ class ASTValue(AST):
     def getType(self):
         exit("bruh")
 
-    def CreateMipsCode(self):
+    def CreateMipsCode(self, bitwise=False):
+        value = self.root
+        #exception for chars
+        if bitwise and type(value) is chr:
+            value = ord(value)
+        # check for || an && operations to make value bitwise (0 or 1)
+        if bitwise and value != 0:
+            value = 1
         register = MipsProgram.getFreeTempRegister()
-        MipsProgram.addLineToProgramArray("li\t" + register + ", " + str(self.root), 1)
+        MipsProgram.addLineToProgramArray("li\t" + register + ", " + str(value), 1)
         return register
 
 class ASTInt(ASTValue):
@@ -415,9 +422,9 @@ class ASTVariable(AST):
             return int
         return self.type
 
-    def CreateMipsCode(self):
+    def CreateMipsCode(self, bitwise=False):
         register = MipsProgram.getFreeTempRegister()
-        MipsProgram.loadVarible(self.getVariableName(), register)
+        MipsProgram.loadVariable(self.getVariableName(), register, bitwise)
         return register
 
 class ASTVoid(AST):
@@ -470,13 +477,13 @@ class ASTPrintf(AST):
     def getPrintString(self):
         return self.nodes[0].root
 
-    def getAllVaribles(self):
+    def getAllVariables(self):
         listOfItems = self.nodes[1:]
         return listOfItems
 
     def CreateMipsCode(self):
         #TODO gemaakt om int's te testen andere formaten!
-        for item in self.getAllVaribles():
+        for item in self.getAllVariables():
             register = item.CreateMipsCode()         #Get a register (locked) with a value to print
             MipsProgram.printRegister(register)      #print the register (need to change only int)
             MipsProgram.releaseRegister(register)    #release the register for other use (unlock the register)
@@ -488,7 +495,7 @@ class ASTScanf(AST):
     def getScanString(self):
         return self.nodes[0].root
 
-    def getAllVaribles(self):
+    def getAllVariables(self):
         listOfItems = self.nodes[1:]
         return listOfItems
 
@@ -502,7 +509,7 @@ class ASTText(AST):
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
-        self.mipsOperations = {"+": "add", "-": "sub", "*": "mul", "/": "div"} #TODO more operations
+        self.mipsOperations = {"+": "add", "-": "sub", "*": "mul", "/": "div", "&&": "and", "||": "or", "<": "slt", ">": "sgt", "<=": "sle", ">=": "sge", "==": "seq", "!=": "sne", "%": "%"} #TODO modulo
 
     def getOperator(self):
         return self.root
@@ -528,11 +535,18 @@ class ASTOperator(AST):
             return self.nodes[0].getType()
         return self.nodes[1].getType()
 
-    def CreateMipsCode(self):
+    def CreateMipsCode(self, bitwise=False):
         register = MipsProgram.getFreeTempRegister()            #get a free register
-        leftRegister = self.getLeftValue().CreateMipsCode()     #Get a register (locked) with a value of the left node
-        rightRegister = self.getRightValue().CreateMipsCode()   #Get a register (locked) with a value of the right node
-        MipsProgram.addLineToProgramArray(self.getMipsOperator() + "\t" + register + ", " + leftRegister  + ", " + rightRegister , 1)
+        operator = self.getMipsOperator()
+        if operator == "and" or operator == "or":
+            bitwise = True
+        leftRegister = self.getLeftValue().CreateMipsCode(bitwise)     #Get a register (locked) with a value of the left node
+        rightRegister = self.getRightValue().CreateMipsCode(bitwise)   #Get a register (locked) with a value of the right node
+        if operator == "%":
+            MipsProgram.addLineToProgramArray("div\t" + leftRegister + ", " + rightRegister, 1,"operatie tussen 2 waarden")
+            MipsProgram.addLineToProgramArray("mfhi\t"+register, 1, "slaat de rest van de deling op in het register")
+        else:
+            MipsProgram.addLineToProgramArray(operator + "\t" + register + ", " + leftRegister  + ", " + rightRegister , 1, "operatie tussen 2 waarden")
         MipsProgram.releaseRegister(leftRegister)               #release the leftRegister for other use
         MipsProgram.releaseRegister(rightRegister)              #release the rightRegister for other use
         return register                                         #returns the register with the answer (register will be unlocked in the caller)
