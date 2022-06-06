@@ -18,7 +18,7 @@ class MipsProgram:
     programmArray = []
     mipsTypes = {int: ".word"}
     variables = {}
-
+    dataCounter = 0
     #blijft autmoatisch up to date
     #None: no value
     #True: lockt for calculations
@@ -33,6 +33,7 @@ class MipsProgram:
         print(".data")
         for line in self.dataArray:
             print(line)
+        print(".text")
         for line in self.programmArray:
             print(line)
         pass
@@ -56,7 +57,11 @@ class MipsProgram:
         :param line:
         :return:
         """
-        MipsProgram.dataArray.append("\t" + line)
+
+        name = "data"+str(MipsProgram.dataCounter)
+        MipsProgram.dataArray.append("\t" + name + ":\t" + line)
+        return name
+
 
     @staticmethod
     def startOfFunction(reserve = 0):

@@ -237,7 +237,6 @@ class AST():
         return None
 
     def CreateMipsCode(self):
-        #MipsProgram.addLineToProgramArray(".text")
         if self.nodes != None:
             for node in self.nodes:
                 node.CreateMipsCode()
@@ -335,12 +334,18 @@ class ASTDataType(AST):
         return 4
 
     def CreateMipsCode(self):
+        value = self.getValue()
+        if value is None:
+            value = 0
         if self.getVariableName()[0] == "@":    #globaal gedefinnerd
-            MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(self.getValue()), 1)
+            MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(value), 1)
         else:
-            valueRegister = self.getValueObject().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
+            if self.getValue() is None:
+                valueRegister = MipsProgram.getFreeTempRegister()
+            else:
+                valueRegister = self.getValueObject().CreateMipsCode()        #Get a register (locked) with a value in to safe in the variable
             MipsProgram.storeVariable(self.getVariableName(), valueRegister)  #store the register in the variable (sw)
-            MipsProgram.releaseRegister(valueRegister)                       #release the register for other use (unlock the register)
+            MipsProgram.releaseRegister(valueRegister)                        #release the register for other use (unlock the register)
 
 #OK
 class ASTScope(AST):
@@ -481,7 +486,10 @@ class ASTPrintf(AST):
         return listOfItems
 
     def CreateMipsCode(self):
-        #TODO gemaakt om int's te testen andere formaten!
+        if len(self.nodes) == 1:
+            self.nodes[0].CreateMipsCode()
+            MipsProgram.addLineToProgramArray("li\t$v0, 4", 1)
+            MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
         for item in self.getAllVariables():
             register = item.CreateMipsCode()         #Get a register (locked) with a value to print
             MipsProgram.printRegister(register)      #print the register (need to change only int)
@@ -498,12 +506,23 @@ class ASTScanf(AST):
         listOfItems = self.nodes[1:]
         return listOfItems
 
+    def CreateMipsCode(self):
+        register = MipsProgram.getFreeTempRegister()            #get a free register
+        MipsProgram.addLineToProgramArray("li\t$v0, 5", 1, "read integer")
+        MipsProgram.addLineToProgramArray("syscall", 1, "execute read")
+        MipsProgram.addLineToProgramArray("move\t"+register+", $v0", 1, "move input to other register")
+        #todo link register to adress or pointer of scanvariable
+
 class ASTText(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
     def getString(self):
         return self.root
+
+    def CreateMipsCode(self):
+        stringName = MipsProgram.addLineToDataArray(".asciiz\t\""+self.getString()+"\"")
+        MipsProgram.addLineToProgramArray("la\t$a0, "+stringName, 1, "loads the string into a register")
 
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
