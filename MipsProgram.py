@@ -23,6 +23,9 @@ class MipsProgram:
     mipsTypes = {int: ".word"}
     variables = {}
     dataCounter = 0
+    ifElseCounter = 0
+    whileCounter = 0
+    defaultTabInpring = 0
     #blijft autmoatisch up to date
     #None: no value
     #True: lockt for calculations
@@ -53,7 +56,7 @@ class MipsProgram:
         """
         if comments != "":
             comments = "\t\t # "+comments
-        MipsProgram.programmArray.append((inspring * "\t") + line + comments)
+        MipsProgram.programmArray.append((inspring * "\t") + (MipsProgram.defaultTabInpring * "\t") + line + comments)
 
     @staticmethod
     def addLineToDataArray(line: str):
@@ -76,7 +79,7 @@ class MipsProgram:
         :param reserve: How many bytes need to be allocate for this function
         :return: None
         """
-        reserve += 4 #allacte for return adress
+        reserve += 8 #allacte for return adress and so
         MipsProgram.addLineToProgramArray("sw\t$fp, 0($sp)", 1, "push oude frame pointer")
         MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1,  "frame pointer wijst nu naar bovenaan de stack")
         MipsProgram.addLineToProgramArray("subu\t$sp, $sp, " + str(reserve), 1)
@@ -92,7 +95,7 @@ class MipsProgram:
         MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)",1 ,"zet het return adres terug")
         MipsProgram.addLineToProgramArray("move\t$sp, $fp", 1)
         MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1, "frame pointer wijst nu naar bovenaan de stack")
-        MipsProgram.addLineToProgramArray("lw\t$fp, ($sp)", 1, "zet oude frame pointer terug")
+        MipsProgram.addLineToProgramArray("lw\t$fp, 0($sp)", 1, "zet oude frame pointer terug")
         MipsProgram.addLineToProgramArray("jr\t$ra", 1, "ga terug naar de aanroeper")
         MipsProgram.stackPointer = 0
 
@@ -198,15 +201,23 @@ class MipsProgram:
             MipsProgram.registers[register[1]][register] = None
 
     @staticmethod
-    def releaseAllRegisters(registerCat: chr):
+    def releaseAllRegisters(registerCat: chr = '*'):
         """
         Call this function every time a register can be released
         :param register: register name to release
         :return:
         """
+        if registerCat == '*':
+            MipsProgram.releaseAllRegisters('t')
+            MipsProgram.releaseAllRegisters('s')
+            MipsProgram.releaseAllRegisters('a')
+            MipsProgram.releaseAllRegisters('v')
+            return
+
         for tReg in MipsProgram.registers[registerCat]:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
+            MipsProgram.registers[registerCat][tReg] = None
 
     @staticmethod
     def getVarByRegisterName(register):

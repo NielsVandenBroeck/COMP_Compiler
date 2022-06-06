@@ -280,9 +280,16 @@ class ASTFunction(AST):
             return self.nodes[3]
         return self.nodes[2]
 
+    def neededStackSpace(self):
+        totalForParameters = 0
+        totalForScope = self.getScope().neededStackSpace()
+        if self.getParameters() != []:
+            totalForParameters = self.getParameters().neededStackSpace()
+        return totalForScope+totalForParameters + 4
+
     def CreateMipsCode(self):
         MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
-        MipsProgram.startOfFunction(self.getScope().neededStackSpace())
+        MipsProgram.startOfFunction(self.neededStackSpace())
         aCounter = 0
         for param in self.getParametersList():
             param.CreateMipsCode()
@@ -319,6 +326,7 @@ class ASTFunctionName(AST):
         MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
         MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
         MipsProgram.releaseAllRegisters("t")
+        MipsProgram.releaseAllRegisters("a")
         return register
 
 #OK
@@ -348,6 +356,7 @@ class ASTDataType(AST):
         return MipsProgram.mipsTypes[self.root]
 
     def neededStackSpace(self):
+        print("needed stack space" , self.getVariableName())
         return 4
 
     def CreateMipsCode(self):
@@ -653,6 +662,7 @@ class ASTOperator(AST):
         MipsProgram.releaseRegister(rightRegister)              #release the rightRegister for other use
         return register                                         #returns the register with the answer (register will be unlocked in the caller)
 
+#OK
 class ASTWhile(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -663,7 +673,31 @@ class ASTWhile(AST):
     def getScope(self):
         return self.nodes[1]
 
-#Stein
+    def CreateMipsCode(self):
+        MipsProgram.whileCounter += 1
+        whileCounter = MipsProgram.whileCounter
+
+        MipsProgram.addLineToProgramArray("whileCondition" + str(whileCounter) + ":", 1, "While Condition")
+        MipsProgram.defaultTabInpring += 1
+
+        MipsProgram.releaseAllRegisters()
+        register = self.getCondition().CreateMipsCode()
+        MipsProgram.registerToBit(register)
+        MipsProgram.addLineToProgramArray("beqz\t" + register + ", end" + str(whileCounter) , 1)
+        MipsProgram.releaseAllRegisters()
+
+        MipsProgram.defaultTabInpring -= 1
+        MipsProgram.addLineToProgramArray("whileLoop" + str(whileCounter) + ":", 1, "while loop")
+        MipsProgram.defaultTabInpring += 1
+
+        self.getScope().CreateMipsCode()      #if statement
+        MipsProgram.addLineToProgramArray("b\twhileCondition" + str(whileCounter), 1, "jump to condition")
+
+        MipsProgram.defaultTabInpring -= 1
+        MipsProgram.releaseAllRegisters()
+        MipsProgram.addLineToProgramArray("end" + str(whileCounter) + ":", 1, "end statement")
+
+#OK
 class ASTIfElse(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -682,31 +716,31 @@ class ASTIfElse(AST):
             return self.nodes[2]
 
     def CreateMipsCode(self):
-        MipsProgram.releaseAllRegisters("t")
-        MipsProgram.releaseAllRegisters("a")
-        MipsProgram.releaseAllRegisters("s")
-        MipsProgram.releaseAllRegisters("v")
-
         register = self.getCondition().CreateMipsCode()
         MipsProgram.registerToBit(register)
         MipsProgram.ifElseCounter += 1
-        MipsProgram.addLineToProgramArray("beqz\t" + register + ", else" + str(MipsProgram.ifElseCounter) , 1, "if statement")
+        ifElseCounter = MipsProgram.ifElseCounter
+        MipsProgram.addLineToProgramArray("beqz\t" + register + ", else" + str(ifElseCounter) , 1, "if statement")
+        MipsProgram.releaseAllRegisters()
 
-        MipsProgram.addLineToProgramArray("if" + str(MipsProgram.ifElseCounter) + ":", 1, "if statement")
+
+        MipsProgram.addLineToProgramArray("if" + str(ifElseCounter) + ":", 1, "if statement")
         MipsProgram.defaultTabInpring += 1
 
         self.getIfScope().CreateMipsCode()      #if statement
-        MipsProgram.addLineToProgramArray("b\tend" + str(MipsProgram.ifElseCounter), 1, "jump to the end")
+        MipsProgram.addLineToProgramArray("b\tend" + str(ifElseCounter), 1, "jump to the end")
 
         MipsProgram.defaultTabInpring -= 1
 
-        MipsProgram.addLineToProgramArray("else" + str(MipsProgram.ifElseCounter) + ":", 1, "else statement")
+        MipsProgram.addLineToProgramArray("else" + str(ifElseCounter) + ":", 1, "else statement")
 
         MipsProgram.defaultTabInpring += 1
-        self.getElseScope().CreateMipsCode()  # else statement
+        if self.containsElseScope():
+            MipsProgram.releaseAllRegisters()
+            self.getElseScope().CreateMipsCode()  # else statement
         MipsProgram.defaultTabInpring -= 1
-
-        MipsProgram.addLineToProgramArray("end" + str(MipsProgram.ifElseCounter) + ":", 1, "end statement")
+        MipsProgram.releaseAllRegisters()
+        MipsProgram.addLineToProgramArray("end" + str(ifElseCounter) + ":", 1, "end statement")
 
 #OK
 class ASTForwardDeclaration(AST):
