@@ -37,8 +37,8 @@ class MipsProgram:
         print(".data")
         for line in self.dataArray:
             print(line)
-        print(".globl main")
         print(".text")
+        print(".globl main")
         for line in self.programmArray:
             print(line)
         pass
@@ -65,6 +65,7 @@ class MipsProgram:
 
         name = "data"+str(MipsProgram.dataCounter)
         MipsProgram.dataArray.append("\t" + name + ":\t" + line)
+        MipsProgram.dataCounter+=1
         return name
 
 
@@ -146,17 +147,6 @@ class MipsProgram:
     def registerToBit(registerName):
         MipsProgram.addLineToProgramArray("sgt\t" + registerName + ", " + registerName + ", 0", 1, "convert register to 0 or 1")
 
-    @staticmethod
-    def printRegister(register):
-        """
-        Generates print code (syscall)#todo currently only int's
-        :param register: the register to print
-        :return:
-        """
-        MipsProgram.checkRegister(register)
-        MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
-        MipsProgram.addLineToProgramArray("li\t$v0, 1", 1)
-        MipsProgram.addLineToProgramArray("syscall", 1)
 
     @staticmethod
     def checkRegister(register):

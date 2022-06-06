@@ -209,7 +209,7 @@ class AST():
         #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
     def findType(self):
-        intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=']
+        intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=','+','-','/','*','%']
         typeDict = {float: 0, int: 1, chr: 2}
         if type(self) is ASTOperator:
             if self.root in intOps:
@@ -517,14 +517,36 @@ class ASTPrintf(AST):
         return listOfItems
 
     def CreateMipsCode(self):
+        #only one string
         if len(self.nodes) == 1:
             self.nodes[0].CreateMipsCode()
-            MipsProgram.addLineToProgramArray("li\t$v0, 4", 1)
-            MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
-        for item in self.getAllVariables():
-            register = item.CreateMipsCode()         #Get a register (locked) with a value to print
-            MipsProgram.printRegister(register)      #print the register (need to change only int)
-            MipsProgram.releaseRegister(register)    #release the register for other use (unlock the register)
+        else:
+            argument = False
+            strings = self.nodes[0].getString()
+            if strings[0] == '%':
+                argument = True
+            strings = strings.split('%')
+            for i in range(len(strings)-1):
+                strings[i+1] = strings[i+1][1:]
+            strings = list(filter(None, strings))
+            arguments = self.getAllVariables()
+            for item in range(len(strings)+len(arguments)):
+                if argument:
+                    object = arguments[int(item/2)]
+                    if type(object) is ASTText:
+                        object.CreateMipsCode()
+                        continue
+                    register = arguments[int(item/2)].CreateMipsCode()  # Get a register (locked) with a value to print
+                    MipsProgram.checkRegister(register)
+                    MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
+                    MipsProgram.addLineToProgramArray("li\t$v0, 1", 1)
+                    MipsProgram.addLineToProgramArray("syscall", 1)
+                    MipsProgram.releaseRegister(register)  # release the register for other use (unlock the register)
+                else:
+                    self.nodes[0].CreateMipsCodeString(strings[int(item/2)])
+                argument = not argument
+
+
 
 class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -551,9 +573,15 @@ class ASTText(AST):
     def getString(self):
         return self.root
 
+    def CreateMipsCodeString(self,string):
+        stringName = MipsProgram.addLineToDataArray(".asciiz\t\"" + string + "\"")
+        MipsProgram.addLineToProgramArray("la\t$a0, " + stringName, 1, "loads the string into a register")
+        MipsProgram.addLineToProgramArray("li\t$v0, 4", 1)
+        MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
+
     def CreateMipsCode(self):
-        stringName = MipsProgram.addLineToDataArray(".asciiz\t\""+self.getString()+"\"")
-        MipsProgram.addLineToProgramArray("la\t$a0, "+stringName, 1, "loads the string into a register")
+        self.CreateMipsCodeString(self.getString())
+
 
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
