@@ -299,7 +299,7 @@ class ASTFunctionName(AST):
         return self.type
 
     def CreateMipsCode(self):
-        register = MipsProgram.getFreeTempRegister()
+        register = MipsProgram.getFreeRegister('t')
         MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
         MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
         MipsProgram.releaseAllRegisters("t")
@@ -362,7 +362,7 @@ class ASTValue(AST):
 
     def CreateMipsCode(self):
         value = self.root
-        register = MipsProgram.getFreeTempRegister()
+        register = MipsProgram.getFreeRegister('t')
         MipsProgram.addLineToProgramArray("li\t" + register + ", " + str(value), 1)
         return register
 
@@ -422,7 +422,7 @@ class ASTVariable(AST):
         return self.type
 
     def CreateMipsCode(self):
-        register = MipsProgram.getFreeTempRegister()
+        register = MipsProgram.getFreeRegister('t')
         MipsProgram.loadVariable(self.getVariableName(), register)
         return register
 
@@ -535,7 +535,7 @@ class ASTOperator(AST):
         return self.nodes[1].getType()
 
     def CreateMipsCode(self):
-        register = MipsProgram.getFreeTempRegister()            #get a free register
+        register = MipsProgram.getFreeRegister('t')            #get a free register
         operator = self.getMipsOperator()
 
         leftRegister = self.getLeftValue().CreateMipsCode()     #Get a register (locked) with a value of the left node

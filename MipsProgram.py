@@ -157,21 +157,21 @@ class MipsProgram:
             exit("variable not found")
 
     @staticmethod
-    def getFreeTempRegister():
+    def getFreeRegister(registerCat: chr):
         """
         Get a free register, if there are no free registers, clears all registers (all data is saved on the stack) an returns the first
         :return:
         """
         #zoek voor een vrij register
-        for tReg in MipsProgram.registers["t"]:
-            if MipsProgram.registers["t"][tReg] == None:
-                MipsProgram.registers["t"][tReg] = True
+        for tReg in MipsProgram.registers[registerCat]:
+            if MipsProgram.registers[registerCat][tReg] == None:
+                MipsProgram.registers[registerCat][tReg] = True
                 return tReg #retrun een vrij register
 
         #TODO evnetueel meer geavanceerde code, momenteel clear an temp register with a variable already saved to the stack
-        for tReg in MipsProgram.registers["t"]:
-            if type(MipsProgram.registers["t"][tReg]) == MipsVariable:
-                MipsProgram.registers["t"][tReg].updateRegister(None)
+        for tReg in MipsProgram.registers[registerCat]:
+            if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
+                MipsProgram.registers[registerCat][tReg].updateRegister(None)
                 return tReg
         print("uh oh")
 
@@ -186,7 +186,7 @@ class MipsProgram:
             MipsProgram.registers[register[1]][register] = None
 
     @staticmethod
-    def releaseAllRegisters(registerCat: ['t', 's', 'a', 'v']):
+    def releaseAllRegisters(registerCat: chr):
         """
         Call this function every time a register can be released
         :param register: register name to release
