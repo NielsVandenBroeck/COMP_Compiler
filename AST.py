@@ -546,8 +546,6 @@ class ASTPrintf(AST):
                     self.nodes[0].CreateMipsCodeString(strings[int(item/2)])
                 argument = not argument
 
-
-
 class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -582,7 +580,7 @@ class ASTText(AST):
     def CreateMipsCode(self):
         self.CreateMipsCodeString(self.getString())
 
-
+#OK
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -641,6 +639,7 @@ class ASTWhile(AST):
     def getScope(self):
         return self.nodes[1]
 
+#Stein
 class ASTIfElse(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -657,6 +656,33 @@ class ASTIfElse(AST):
     def getElseScope(self):
         if self.containsElseScope():
             return self.nodes[2]
+
+    def CreateMipsCode(self):
+        MipsProgram.releaseAllRegisters("t")
+        MipsProgram.releaseAllRegisters("a")
+        MipsProgram.releaseAllRegisters("s")
+        MipsProgram.releaseAllRegisters("v")
+
+        register = self.getCondition().CreateMipsCode()
+        MipsProgram.registerToBit(register)
+        MipsProgram.ifElseCounter += 1
+        MipsProgram.addLineToProgramArray("beqz\t" + register + ", else" + str(MipsProgram.ifElseCounter) , 1, "if statement")
+
+        MipsProgram.addLineToProgramArray("if" + str(MipsProgram.ifElseCounter) + ":", 1, "if statement")
+        MipsProgram.defaultTabInpring += 1
+
+        self.getIfScope().CreateMipsCode()      #if statement
+        MipsProgram.addLineToProgramArray("b\tend" + str(MipsProgram.ifElseCounter), 1, "jump to the end")
+
+        MipsProgram.defaultTabInpring -= 1
+
+        MipsProgram.addLineToProgramArray("else" + str(MipsProgram.ifElseCounter) + ":", 1, "else statement")
+
+        MipsProgram.defaultTabInpring += 1
+        self.getElseScope().CreateMipsCode()  # else statement
+        MipsProgram.defaultTabInpring -= 1
+
+        MipsProgram.addLineToProgramArray("end" + str(MipsProgram.ifElseCounter) + ":", 1, "end statement")
 
 class ASTForwardDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -694,9 +720,13 @@ class ASTFor(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+#OK
 class ASTCondition(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+    def CreateMipsCode(self):
+        return self.nodes[0].CreateMipsCode()
 
 class ASTOneTokenStatement(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -715,7 +745,6 @@ class ASTReturn(AST):
     def CreateMipsCode(self):
         valueRegister = self.getReturnValue().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
         MipsProgram.addLineToProgramArray("move\t$v0, " + valueRegister, 1, "Set the value for return in $v0")
-
 
 class ASTMultiDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
