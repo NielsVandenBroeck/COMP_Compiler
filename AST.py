@@ -464,12 +464,12 @@ class ASTVariable(AST):
 
     def CreateMipsCode(self):
         if self.isSetVarible():
-            #for varible change
+            #for variable change
             valueRegister = self.nodes[0].CreateMipsCode()
             MipsProgram.updateVariable(self.getVariableName(), valueRegister)
             return valueRegister
         else:
-            #for varble value
+            #for variable value
             register = MipsProgram.getFreeRegister('t')
             MipsProgram.loadVariable(self.getVariableName(), register)
             return register
@@ -518,6 +518,7 @@ class ASTAdress(AST):
     def getType(self):
         return self.nodes[0].getType()
 
+#OK
 class ASTPrintf(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -534,24 +535,26 @@ class ASTPrintf(AST):
         if len(self.nodes) == 1:
             self.nodes[0].CreateMipsCode()
             return
-        argument = False
         strings = self.nodes[0].getString()
-        if strings[0] == '%':
-            argument = True
-        strings = strings.split('%')
-        for i in range(len(strings)-1):
-            strings[i+1] = strings[i+1][1:]
-        strings = list(filter(None, strings))
         arguments = self.getAllVariables()
-        for item in range(len(strings)+len(arguments)):
-            if argument:
-                object = arguments[int(item/2)]
+        result = []
+        for item in arguments:
+            for i in range(len(strings)):
+                if strings[i] == "%":
+                    midString = strings[0:i]
+                    if midString != "":
+                        result.append(midString)
+                    result.append(item)
+                    strings = strings[i+2:]
+                    break
+        for item in result:
+            if type(item) is not str:
+                object = item
                 if type(object) is ASTText:
                     object.CreateMipsCode()
                     continue
-                register = arguments[int(item/2)].CreateMipsCode()  # Get a register (locked) with a value to print
+                register =item.CreateMipsCode()  # Get a register (locked) with a value to print
                 MipsProgram.checkRegister(register)
-                print(object.getType())
                 if type(object) is ASTInt or object.getType() is int:
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
                     MipsProgram.addLineToProgramArray("li\t$v0, 1", 1, "print integer")
@@ -561,11 +564,11 @@ class ASTPrintf(AST):
                 elif type(object) is ASTChar or object.getType() is chr:
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1, "print char")
                     MipsProgram.addLineToProgramArray("li\t$v0, 11", 1)
-                MipsProgram.addLineToProgramArray("syscall", 1)
+                MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
                 MipsProgram.releaseRegister(register)  # release the register for other use (unlock the register)
             else:
-                self.nodes[0].CreateMipsCodeString(strings[int(item/2)])
-            argument = not argument
+                self.nodes[0].CreateMipsCodeString(item)
+
 
 class ASTScanf(AST):
     def __init__(self, value, line, position, childNodes=None):

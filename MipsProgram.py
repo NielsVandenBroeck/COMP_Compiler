@@ -30,10 +30,11 @@ class MipsProgram:
     #None: no value
     #True: lockt for calculations
     #type=Mipsvariable: same value as a item on the stack
-    registers = {"t": {"$t" + str(t) : None for t in range(0,10)},
-                 "s": {"$s" + str(s): None for s in range(0, 8)},
-                 "a": {"$a" + str(a): None for a in range(0, 4)},
-                 "v": {"$v" + str(v): None for v in range(0, 2)}}
+    registers = {"t": {"$t" + str(t) : None for t in range(10)},
+                 "s": {"$s" + str(s): None for s in range(8)},
+                 "a": {"$a" + str(a): None for a in range(4)},
+                 "v": {"$v" + str(v): None for v in range(2)},
+                 "f": {"$f" + str(f): None for f in range(31)}}
 
     def __init__(self, AST):
         AST.CreateMipsCode()
