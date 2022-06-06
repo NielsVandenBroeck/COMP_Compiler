@@ -151,7 +151,6 @@ class MipsProgram:
     def registerToBit(registerName):
         MipsProgram.addLineToProgramArray("sgt\t" + registerName + ", " + registerName + ", 0", 1, "convert register to 0 or 1")
 
-
     @staticmethod
     def checkRegister(register):
         """
@@ -189,7 +188,7 @@ class MipsProgram:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
                 return tReg
-        print("uh oh")
+        exit("uh oh")
 
     @staticmethod
     def releaseRegister(register):
@@ -204,7 +203,7 @@ class MipsProgram:
     @staticmethod
     def releaseAllRegisters(registerCat: chr = '*'):
         """
-        Call this function every time a register can be released
+        Call this function to reset all registers to a None state
         :param register: register name to release
         :return:
         """
@@ -219,6 +218,25 @@ class MipsProgram:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
             MipsProgram.registers[registerCat][tReg] = None
+
+    @staticmethod
+    def releaseAllMipsVaribleFromRegisters(registerCat: chr = '*'):
+        """
+        Call this function to reset all registers to a None state
+        :param register: register name to release
+        :return:
+        """
+        if registerCat == '*':
+            MipsProgram.releaseAllMipsVaribleFromRegisters('t')
+            MipsProgram.releaseAllMipsVaribleFromRegisters('s')
+            MipsProgram.releaseAllMipsVaribleFromRegisters('a')
+            MipsProgram.releaseAllMipsVaribleFromRegisters('v')
+            return
+
+        for tReg in MipsProgram.registers[registerCat]:
+            if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
+                MipsProgram.registers[registerCat][tReg].updateRegister(None)
+                MipsProgram.registers[registerCat][tReg] = None
 
     @staticmethod
     def getVarByRegisterName(register):

@@ -483,8 +483,9 @@ class ASTConst(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+#OK
 class ASTPointer(AST):
-    def __init__(self, value, line, position, childNodes=None, depth=1):
+    def __init__(self, value, line, position, childNodes=None, depth=1):#TODO depth overal laten werken
         self.depth = depth
         super().__init__(value, line, position, childNodes)
 
@@ -508,6 +509,52 @@ class ASTPointer(AST):
     def getVariableName(self):
         return self.getSetObject().getVariableName()
 
+    def isDeclaration(self):
+        return type(self.nodes[0]) == ASTDataType
+
+    def isChangeValueObject(self):
+        return type(self.nodes[0]) == ASTAdress
+
+    def isValueObject(self):
+        return type(self.nodes[0]) == ASTVariable
+
+    def CreateMipsCode(self):
+        if self.isDeclaration():                #bv int* i = &a (zet een pointer op een adress)
+            self.getSetObject().CreateMipsCode()
+            if self.getToObject() != None:
+                register = self.getToObject().CreateMipsCode()
+            else:
+                register = MipsProgram.getFreeRegister("t")
+                MipsProgram.releaseRegister(register)
+            MipsProgram.updateVariable(self.getVariableName(), register)
+            MipsProgram.releaseRegister(register)
+        elif self.isChangeValueObject():        #bv *c = 10;    (zet een pointer op een waarde)
+            valueRegister = self.getToObject().CreateMipsCode()
+            pointerRegister = MipsProgram.getFreeRegister("t")
+            variablePointerOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
+            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + str(variablePointerOffset) + "($fp)", 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
+
+            while self.depth > 1:
+                #MipsProgram.addLineToProgramArray("nop", 1)#TODO mag weg normaal
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                self.depth -= 1
+
+            MipsProgram.addLineToProgramArray("sw\t" + valueRegister + ", (" + pointerRegister + ")", 1, "update the register where " + self.getVariableName() + " is pointing add to " + valueRegister)
+            MipsProgram.releaseAllMipsVaribleFromRegisters()#reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
+            MipsProgram.releaseRegister(valueRegister)
+            MipsProgram.releaseRegister(pointerRegister)
+        elif self.isValueObject():              #bv int a = *b; (neem de waarde uit een pointer)
+            pointerRegister = MipsProgram.getFreeRegister("t")
+            variablePointerOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
+            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + str(variablePointerOffset) + "($fp)", 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
+            while self.depth > 0:
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                self.depth -= 1
+            return pointerRegister
+        else:
+            exit("undifiend operation with pointer")
+
+#OK
 class ASTAdress(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -517,6 +564,13 @@ class ASTAdress(AST):
 
     def getType(self):
         return self.nodes[0].getType()
+
+    def CreateMipsCode(self):
+        #returs the adress location of a variable in a register
+        register = MipsProgram.getFreeRegister("t")
+        variableOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
+        MipsProgram.addLineToProgramArray("addiu\t" + register + ", $fp, " + str(variableOffset), 1, "Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
+        return register
 
 #OK
 class ASTPrintf(AST):
@@ -531,7 +585,7 @@ class ASTPrintf(AST):
         return listOfItems
 
     def CreateMipsCode(self):
-        #only one string
+        # only one string
         if len(self.nodes) == 1:
             self.nodes[0].CreateMipsCode()
             return
@@ -545,7 +599,7 @@ class ASTPrintf(AST):
                     if midString != "":
                         result.append(midString)
                     result.append(item)
-                    strings = strings[i+2:]
+                    strings = strings[i + 2:]
                     break
         for item in result:
             if type(item) is not str:
@@ -553,7 +607,7 @@ class ASTPrintf(AST):
                 if type(object) is ASTText:
                     object.CreateMipsCode()
                     continue
-                register =item.CreateMipsCode()  # Get a register (locked) with a value to print
+                register = item.CreateMipsCode()  # Get a register (locked) with a value to print
                 MipsProgram.checkRegister(register)
                 if type(object) is ASTInt or object.getType() is int:
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
@@ -774,6 +828,7 @@ class ASTForwardDeclaration(AST):
     def CreateMipsCode(self):
         return
 
+#OK
 class ASTParameters(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
