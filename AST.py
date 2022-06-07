@@ -367,9 +367,16 @@ class ASTDataType(AST):
             MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(value), 1)
         else:
             if self.getValue() is None:
-                valueRegister = MipsProgram.getFreeRegister('t')
+                if self.getType() is float:
+                    valueRegister = MipsProgram.getFreeRegister('f')
+                else:
+                    valueRegister = MipsProgram.getFreeRegister('t')
             else:
                 valueRegister = self.getValueObject().CreateMipsCode()        #Get a register (locked) with a value in to safe in the variable
+                if MipsProgram.checkRegister(valueRegister) is float and self.getType() is not float:
+                    valueRegister = MipsProgram.floatToIntConversion(valueRegister)
+                elif MipsProgram.checkRegister(valueRegister) is int and self.getType() is float:
+                    valueRegister = MipsProgram.intToFloatConversion(valueRegister)
             MipsProgram.storeVariable(self.getVariableName(), valueRegister)  #store the register in the variable (sw)
             MipsProgram.releaseRegister(valueRegister)                        #release the register for other use (unlock the register)
 
@@ -426,7 +433,10 @@ class ASTFloat(ASTValue):
         name = MipsProgram.addLineToDataArray(".float\t" + str(value))
         register = MipsProgram.getFreeRegister('t')
         MipsProgram.addLineToProgramArray("la\t" + register + ", " + name, 1)
-        return register
+        floatRegister = MipsProgram.getFreeRegister('f')
+        MipsProgram.addLineToProgramArray("lwc1\t" + floatRegister + ", 0(" + register + ")", 1)
+        MipsProgram.releaseRegister(register)
+        return floatRegister
 
 #OK
 class ASTVariable(AST):
@@ -473,10 +483,15 @@ class ASTVariable(AST):
         if self.isSetVarible():
             #for variable change
             valueRegister = self.nodes[0].CreateMipsCode()
+            if MipsProgram.checkRegister(valueRegister) is float and self.getType() is not float:
+                valueRegister = MipsProgram.floatToIntConversion(valueRegister)
+            elif MipsProgram.checkRegister(valueRegister) is int and self.getType() is float:
+                valueRegister = MipsProgram.intToFloatConversion(valueRegister)
             MipsProgram.updateVariable(self.getVariableName(), valueRegister)
             return valueRegister
         else:
             #for variable value
+            print(self.getType())
             if self.type is float:
                 register = MipsProgram.getFreeRegister('f')
             else:
@@ -610,6 +625,8 @@ class ASTPrintf(AST):
                     result.append(item)
                     strings = strings[i + 2:]
                     break
+            if strings != "":
+                result.append(strings)
         for item in result:
             if type(item) is not str:
                 object = item
@@ -617,17 +634,11 @@ class ASTPrintf(AST):
                     object.CreateMipsCode()
                     continue
                 register = item.CreateMipsCode()  # Get a register (locked) with a value to print
-                registerType = MipsProgram.checkRegister(register)
                 if type(object) is ASTInt or object.getType() is int:
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
                     MipsProgram.addLineToProgramArray("li\t$v0, 1", 1, "print integer")
                 elif type(object) is ASTFloat or object.getType() is float:
-                    if registerType == 'f':
-                        MipsProgram.addLineToProgramArray("mov.s\t$f12," + register, 1, "print float")
-                    else:
-                        floatRegister = MipsProgram.getFreeRegister('f')
-                        MipsProgram.addLineToProgramArray("l.s\t"+floatRegister+", ("+register+")",1, "convert to float")
-                        MipsProgram.addLineToProgramArray("mov.s\t$f12,"+floatRegister, 1, "print float")
+                    MipsProgram.addLineToProgramArray("mov.s\t$f12," + register, 1, "print float")
                     MipsProgram.addLineToProgramArray("li\t$v0, 2", 1)
                 elif type(object) is ASTChar or object.getType() is chr:
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1, "print char")
@@ -740,19 +751,11 @@ class ASTOperator(AST):
 
         leftRegister = self.getLeftValue().CreateMipsCode()     #Get a register (locked) with a value of the left node
         if self.nodes[0].getType() is not returnType:
-            leftFloatRegister = MipsProgram.getFreeRegister('f')
-            MipsProgram.addLineToProgramArray("mtc1\t"+leftRegister+", "+leftFloatRegister,1)
-            MipsProgram.releaseRegister(leftRegister)
-            leftRegister = leftFloatRegister
-            MipsProgram.addLineToProgramArray("cvt.s.w\t"+leftRegister+", "+leftRegister,1)
+            leftRegister = MipsProgram.intToFloatConversion(leftRegister)
 
         rightRegister = self.getRightValue().CreateMipsCode()  # Get a register (locked) with a value of the right node
         if self.nodes[1].getType() is not returnType:
-            rightFloatRegister = MipsProgram.getFreeRegister('f')
-            MipsProgram.addLineToProgramArray("mtc1\t"+rightRegister+", "+rightFloatRegister,1)
-            MipsProgram.releaseRegister(rightRegister)
-            rightRegister = rightFloatRegister
-            MipsProgram.addLineToProgramArray("cvt.s.w\t"+rightRegister+", "+rightRegister,1)
+            rightRegister = MipsProgram.intToFloatConversion(rightRegister)
 
         if returnType is float:
             register = MipsProgram.getFreeRegister('f')  # get a free register
@@ -794,7 +797,7 @@ class ASTWhile(AST):
         MipsProgram.releaseAllRegisters()
         register = self.getCondition().CreateMipsCode()
         MipsProgram.registerToBit(register)
-        MipsProgram.addLineToProgramArray("beqz\t" + register + ", end" + str(whileCounter) , 1)
+        MipsProgram.addLineToProgramArray("beqz\t" + register + ", endWhile" + str(whileCounter) , 1)
         MipsProgram.releaseAllRegisters()
 
         MipsProgram.defaultTabInpring -= 1
@@ -806,7 +809,7 @@ class ASTWhile(AST):
 
         MipsProgram.defaultTabInpring -= 1
         MipsProgram.releaseAllRegisters()
-        MipsProgram.addLineToProgramArray("end" + str(whileCounter) + ":", 1, "end statement")
+        MipsProgram.addLineToProgramArray("endWhile" + str(whileCounter) + ":", 1, "end statement")
 
 #OK
 class ASTIfElse(AST):
@@ -839,7 +842,7 @@ class ASTIfElse(AST):
         MipsProgram.defaultTabInpring += 1
 
         self.getIfScope().CreateMipsCode()      #if statement
-        MipsProgram.addLineToProgramArray("b\tend" + str(ifElseCounter), 1, "jump to the end")
+        MipsProgram.addLineToProgramArray("b\tendIf" + str(ifElseCounter), 1, "jump to the end")
 
         MipsProgram.defaultTabInpring -= 1
 
@@ -851,7 +854,7 @@ class ASTIfElse(AST):
             self.getElseScope().CreateMipsCode()  # else statement
         MipsProgram.defaultTabInpring -= 1
         MipsProgram.releaseAllRegisters()
-        MipsProgram.addLineToProgramArray("end" + str(ifElseCounter) + ":", 1, "end statement")
+        MipsProgram.addLineToProgramArray("endIf" + str(ifElseCounter) + ":", 1, "end statement")
 
 #OK
 class ASTForwardDeclaration(AST):

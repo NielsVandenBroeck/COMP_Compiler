@@ -34,7 +34,7 @@ class MipsProgram:
                  "s": {"$s" + str(s): None for s in range(8)},
                  "a": {"$a" + str(a): None for a in range(4)},
                  "v": {"$v" + str(v): None for v in range(2)},
-                 "f": {"$f" + str(f): None for f in range(31)}}
+                 "f": {"$f" + str(f): None for f in range(32)}}
 
     def __init__(self, AST):
         AST.CreateMipsCode()
@@ -108,9 +108,12 @@ class MipsProgram:
         :param currentRegisterLocation: the register
         :return: None
         """
+        storeOperation = "sw"
+        if currentRegisterLocation[1] == 'f':
+            storeOperation = "swc1"
         MipsProgram.checkRegister(currentRegisterLocation)
         MipsProgram.variables[varName] = MipsVariable(varName, currentRegisterLocation, MipsProgram.stackPointer)
-        MipsProgram.addLineToProgramArray("sw\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "store variable: " + varName)
+        MipsProgram.addLineToProgramArray(storeOperation+"\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "store variable: " + varName)
         MipsProgram.stackPointer -= 4
 
     @staticmethod
@@ -121,24 +124,24 @@ class MipsProgram:
         :param toStoreRegister: the name of te register to load to
         :return: None
         """
-        floatRegister = None
         MipsProgram.checkVariable(varName)
         MipsProgram.checkRegister(toStoreRegister)
+
+        loadOperation = "lw"
+        moveOperation = "move"
         if toStoreRegister[1] == 'f':
-            floatRegister = toStoreRegister
-            toStoreRegister = MipsProgram.getFreeRegister('t')
+            loadOperation = "lwc1"
+            moveOperation = "mov.s"
 
         if MipsProgram.variables[varName].register != None:
             #indien de variable nog in een register zit
             fromRegister = MipsProgram.variables[varName].register
-            MipsProgram.addLineToProgramArray("move\t" + toStoreRegister + ", " + fromRegister, 1, "Load variable " + varName)
+            MipsProgram.addLineToProgramArray(moveOperation+"\t" + toStoreRegister + ", " + fromRegister, 1, "Load variable " + varName)
         else:
             #indien de variable uit het geheugen geladen moet worden
             stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
-            MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
+            MipsProgram.addLineToProgramArray(loadOperation+"\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
 
-        if floatRegister is not None:
-            MipsProgram.addLineToProgramArray("lwc1\t"+floatRegister+", 0("+toStoreRegister+")",1)
 
 
     @staticmethod
@@ -150,7 +153,10 @@ class MipsProgram:
         :return:
         """
         if varName in MipsProgram.variables:
-            MipsProgram.addLineToProgramArray("sw\t" + toRegisterValue + ", " + str(MipsProgram.variables[varName].stackPointerOffset) + "($fp)", 1,"update variable: " + varName)
+            storeOperation = "sw"
+            if toRegisterValue[1] == 'f':
+                storeOperation = "swc1"
+            MipsProgram.addLineToProgramArray(storeOperation+"\t" + toRegisterValue + ", " + str(MipsProgram.variables[varName].stackPointerOffset) + "($fp)", 1,"update variable: " + varName)
             MipsProgram.variables[varName].updateRegister(toRegisterValue)
         else:
             exit("Varible does not exists")
@@ -170,7 +176,13 @@ class MipsProgram:
             exit("incorrect register")
         if register[0] != "$":
             exit("Register stars with $")
-        return register[1]
+
+
+        #return type of register
+        if register[1] == 'f':
+            return float
+        else:
+            return int
 
     @staticmethod
     def checkVariable(varName):
@@ -259,4 +271,23 @@ class MipsProgram:
         if MipsProgram.registers[register[1]][register] != None and MipsProgram.registers[register[1]][register] != True:
             return MipsProgram.registers[register[1]][register].name
         else:
-            exit("If you are here you dit somthing wrong (getVarByRegisterName is not the function you need to call)")
+            exit("If you are here you did something wrong (getVarByRegisterName is not the function you need to call)")
+
+
+
+    @staticmethod
+    def floatToIntConversion(fRegister):
+        tRegister = MipsProgram.getFreeRegister('t')
+        MipsProgram.addLineToProgramArray("cvt.w.s\t" + fRegister + ", " + fRegister, 1)
+        MipsProgram.addLineToProgramArray("mfc1\t" + tRegister + ", " + fRegister, 1)
+        MipsProgram.releaseRegister(fRegister)
+        return tRegister
+
+    @staticmethod
+    def intToFloatConversion(tRegister):
+        fRegister = MipsProgram.getFreeRegister('f')
+        MipsProgram.addLineToProgramArray("mtc1\t" + tRegister + ", " + fRegister, 1)
+        MipsProgram.releaseRegister(tRegister)
+        MipsProgram.addLineToProgramArray("cvt.s.w\t" + fRegister + ", " + fRegister, 1)
+        MipsProgram.releaseRegister(tRegister)
+        return fRegister

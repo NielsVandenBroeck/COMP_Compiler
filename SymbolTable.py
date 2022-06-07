@@ -426,10 +426,10 @@ class SymbolTable():
                 variableType = str
             if array and variableType is chr and formatList[i - 1] is str:
                 continue
-            if variableType != formatList[i - 1]:
-                exit("[Error] line: " + str(node.line) + ", position: " + str(
-                    node.position) + ". Printf format specifies type '" + str(
-                    formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
+            #if variableType != formatList[i - 1]:
+            #    exit("[Error] line: " + str(node.line) + ", position: " + str(
+            #        node.position) + ". Printf format specifies type '" + str(
+            #        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def findReturnTypeOfFunction(self, functionName):
         if self.parent is not None:
