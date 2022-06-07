@@ -21,8 +21,9 @@ class ASTGenerator(grammar1Visitor):
             elif line.s is not None:
                 temp = self.visit(line.s)
                 if type(temp) is ASTFor:
-                    program.addNode(temp.nodes[0])
-                    program.addNode(temp.nodes[1])
+                    program.addNode(temp.nodes[2])
+                    temp.nodes.pop(2)
+                    program.addNode(temp)
                 else:
                     program.addNode(temp)
             elif line.f is not None:
