@@ -522,6 +522,7 @@ class SymbolTable():
                 if node.nodes is None and not scanf:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + " variable: \'" + node.root + "\' Incompatible conversion with arrays.")
+                #todo
                 # if int(node.nodes[0].root) >= object.arrayLength:
                 #     exit("[Error] line: " + str(node.line) + ", position: " + str(
                 #         node.position) + " variable: \'" + node.root + "\' Array index " + node.nodes[

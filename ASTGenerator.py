@@ -38,7 +38,7 @@ class ASTGenerator(grammar1Visitor):
         symbolTable = UpperSymbolTable(program)
         symbolTable.checkUnusedVariables(program)
         symbolTable.loopAST()
-        #ErrorAnalysis(program)
+        ErrorAnalysis(program)
 
         return program
 
