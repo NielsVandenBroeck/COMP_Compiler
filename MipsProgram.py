@@ -5,7 +5,8 @@ class MipsVariable:
         self.name = name
         self.register = register
         self.stackPointerOffset = stackPointerOffset
-        MipsProgram.registers[register[1]][register] = self
+        if register != None:
+            MipsProgram.registers[register[1]][register] = self
 
     def updateRegister(self, toReg):
         if self.register != None:
@@ -14,6 +15,16 @@ class MipsVariable:
             MipsProgram.registers[toReg[1]][toReg] = self
         self.register = toReg
 
+class MipsArray(MipsVariable):
+    def __init__(self, name, register, stackStartOfArrayOffset, length):
+        super(MipsArray, self).__init__(name, register, stackStartOfArrayOffset)
+        self.lenght = length
+
+    def getStartOfArrayOffset(self):
+        return self.stackPointerOffset
+
+    def updateRegister(self, toReg):
+        exit("regiset of mipsarray cannot be set")
 
 class MipsProgram:
     stackPointer = 0
@@ -26,6 +37,9 @@ class MipsProgram:
     ifElseCounter = 0
     whileCounter = 0
     defaultTabInpring = 0
+    allUsedRegistersInCurrentFunction = []
+    stackAllocationOfCurrentFunction = 0
+    currentFunctionName = ""
     #blijft autmoatisch up to date
     #None: no value
     #True: lockt for calculations
@@ -74,31 +88,47 @@ class MipsProgram:
 
 
     @staticmethod
-    def startOfFunction(reserve = 0):
+    def startOfFunction(functionName):
         """
         Funtion to add the start code for a function (stack pointer)
         :param reserve: How many bytes need to be allocate for this function
         :return: None
         """
-        reserve += 8 #allacte for return adress and so
+        MipsProgram.currentFunctionName = functionName
+        MipsProgram.addLineToProgramArray(functionName + ":")
         MipsProgram.addLineToProgramArray("sw\t$fp, 0($sp)", 1, "push oude frame pointer")
         MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1,  "frame pointer wijst nu naar bovenaan de stack")
-        MipsProgram.addLineToProgramArray("subu\t$sp, $sp, " + str(reserve), 1)
+        MipsProgram.stackAllocationOfCurrentFunction = len(MipsProgram.programmArray)
+        #Allocation wil be done on function end and will be iserted here
         MipsProgram.addLineToProgramArray("sw\t$ra, -4($fp)", 1, "slaag het return adress op op de stack")
         MipsProgram.stackPointer = -8
 
     @staticmethod
-    def endOfFunction():
+    def endOfFunction(reserve):
         """
         Funtion to add the end code for a function (returns to previeus function)
         :return: None
         """
+        reserve += 8
+        allocLocation = MipsProgram.stackAllocationOfCurrentFunction
+        allocSpace = len(MipsProgram.allUsedRegistersInCurrentFunction) * 4
+        MipsProgram.programmArray.insert(allocLocation, "\tsubu\t$sp, $sp, " + str(reserve + allocSpace) + "\t#stackpointer alloc") #insert at the beginning of the function
+
+        MipsProgram.addLineToProgramArray("endOf" + MipsProgram.currentFunctionName + ":", 1, "For returns")
+        for register in MipsProgram.allUsedRegistersInCurrentFunction:
+            MipsProgram.programmArray.insert(allocLocation + 1, "\tsw\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)\t\t#safe all registers that we will use in the stack")
+            MipsProgram.addLineToProgramArray("lw\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "load register value from before this function")
+            MipsProgram.stackPointer -= 4
+
+
         MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)",1 ,"zet het return adres terug")
         MipsProgram.addLineToProgramArray("move\t$sp, $fp", 1)
         MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1, "frame pointer wijst nu naar bovenaan de stack")
         MipsProgram.addLineToProgramArray("lw\t$fp, 0($sp)", 1, "zet oude frame pointer terug")
         MipsProgram.addLineToProgramArray("jr\t$ra", 1, "ga terug naar de aanroeper")
         MipsProgram.stackPointer = 0
+        MipsProgram.stackAllocationOfCurrentFunction = 0
+        MipsProgram.allUsedRegistersInCurrentFunction = []
 
     @staticmethod
     def storeVariable(varName, currentRegisterLocation):
@@ -112,6 +142,7 @@ class MipsProgram:
         if currentRegisterLocation[1] == 'f':
             storeOperation = "swc1"
         MipsProgram.checkRegister(currentRegisterLocation)
+        MipsProgram.addRegisterToUsedFunctionRegister(currentRegisterLocation)
         MipsProgram.variables[varName] = MipsVariable(varName, currentRegisterLocation, MipsProgram.stackPointer)
         MipsProgram.addLineToProgramArray(storeOperation+"\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "store variable: " + varName)
         MipsProgram.stackPointer -= 4
@@ -126,6 +157,7 @@ class MipsProgram:
         """
         MipsProgram.checkVariable(varName)
         MipsProgram.checkRegister(toStoreRegister)
+        MipsProgram.addRegisterToUsedFunctionRegister(toStoreRegister)
 
         loadOperation = "lw"
         moveOperation = "move"
@@ -152,6 +184,8 @@ class MipsProgram:
         :param toRegisterValue: register with value
         :return:
         """
+        print("testtesttest", varName, toRegisterValue)
+        MipsProgram.addRegisterToUsedFunctionRegister(toRegisterValue)
         if varName in MipsProgram.variables:
             storeOperation = "sw"
             if toRegisterValue[1] == 'f':
@@ -160,6 +194,68 @@ class MipsProgram:
             MipsProgram.variables[varName].updateRegister(toRegisterValue)
         else:
             exit("Varible does not exists")
+
+    @staticmethod
+    def createArray(arrayName, lenght):
+        MipsProgram.variables[arrayName] = MipsArray(arrayName, None,MipsProgram.stackPointer, lenght)
+        MipsProgram.stackPointer -= (4 * lenght) #reserve space for all elements
+
+    @staticmethod
+    def loadArray(arrayName, arrayIndexRegister, toStoreRegister):
+        """
+        loads a variable to a given register (auto choose between move and lw depending on the current state)
+        :param varName: the name of the var in the AST
+        :param toStoreRegister: the name of te register to load to
+        :return: None
+        """
+        MipsProgram.checkVariable(arrayName)
+        MipsProgram.checkRegister(arrayIndexRegister)
+        MipsProgram.checkRegister(toStoreRegister)
+        MipsProgram.addRegisterToUsedFunctionRegister(arrayIndexRegister)
+        MipsProgram.addRegisterToUsedFunctionRegister(toStoreRegister)
+
+        arrayItemLocation = MipsProgram.getFreeRegister("t")
+        # indien de variable uit het geheugen geladen moet worden
+        stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
+        MipsProgram.addLineToProgramArray("#----------------Load array item----------------",1)
+        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " +  str(stackPointerOffset),1)
+        four = MipsProgram.getFreeRegister("t")
+        MipsProgram.addLineToProgramArray("li\t" + four + ", 4",1)
+        MipsProgram.releaseRegister(four)
+        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1)
+        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1)
+        MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
+        MipsProgram.addLineToProgramArray("#----------------Load array item end----------------",1)
+        MipsProgram.releaseRegister(arrayItemLocation)
+
+    @staticmethod
+    def updateArray(arrayName, arrayIndexRegister, toRegisterValue):
+        """
+        Change a varible to a new value, and update all registers
+        :param varName: varible to update
+        :param toRegisterValue: register with value
+        :return:
+        """
+        MipsProgram.checkVariable(arrayName)
+        MipsProgram.checkRegister(arrayIndexRegister)
+        MipsProgram.checkRegister(toRegisterValue)
+        MipsProgram.addRegisterToUsedFunctionRegister(arrayIndexRegister)
+        MipsProgram.addRegisterToUsedFunctionRegister(toRegisterValue)
+
+        arrayItemLocation = MipsProgram.getFreeRegister("t")
+        # indien de variable uit het geheugen geladen moet worden
+        stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
+        MipsProgram.addLineToProgramArray("#----------------Store array item----------------",1)
+        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset),1)
+
+        four = MipsProgram.getFreeRegister("t")
+        MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1)
+        MipsProgram.releaseRegister(four)
+        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1)
+        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1)
+        MipsProgram.addLineToProgramArray("sw\t" + toRegisterValue + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
+        MipsProgram.addLineToProgramArray("#----------------Store array item end----------------",1)
+        MipsProgram.releaseRegister(arrayItemLocation)
 
     @staticmethod
     def registerToBit(registerName):
@@ -204,12 +300,14 @@ class MipsProgram:
         for tReg in MipsProgram.registers[registerCat]:
             if MipsProgram.registers[registerCat][tReg] == None:
                 MipsProgram.registers[registerCat][tReg] = True
+                MipsProgram.addRegisterToUsedFunctionRegister(tReg)
                 return tReg #retrun een vrij register
 
         #TODO evnetueel meer geavanceerde code, momenteel clear an temp register with a variable already saved to the stack
         for tReg in MipsProgram.registers[registerCat]:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
+                MipsProgram.addRegisterToUsedFunctionRegister(tReg)
                 return tReg
         exit("uh oh")
 
@@ -224,23 +322,24 @@ class MipsProgram:
             MipsProgram.registers[register[1]][register] = None
 
     @staticmethod
-    def releaseAllRegisters(registerCat: chr = '*'):
+    def releaseAllRegisters(registerCat: chr = '*', expect = None):
         """
         Call this function to reset all registers to a None state
         :param register: register name to release
         :return:
         """
         if registerCat == '*':
-            MipsProgram.releaseAllRegisters('t')
-            MipsProgram.releaseAllRegisters('s')
-            MipsProgram.releaseAllRegisters('a')
-            MipsProgram.releaseAllRegisters('v')
+            MipsProgram.releaseAllRegisters('t',expect)
+            MipsProgram.releaseAllRegisters('s',expect)
+            MipsProgram.releaseAllRegisters('a',expect)
+            MipsProgram.releaseAllRegisters('v',expect)
             return
 
         for tReg in MipsProgram.registers[registerCat]:
-            if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
-                MipsProgram.registers[registerCat][tReg].updateRegister(None)
-            MipsProgram.registers[registerCat][tReg] = None
+            if tReg != expect:
+                if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
+                    MipsProgram.registers[registerCat][tReg].updateRegister(None)
+                MipsProgram.registers[registerCat][tReg] = None
 
     @staticmethod
     def releaseAllMipsVaribleFromRegisters(registerCat: chr = '*'):
@@ -291,3 +390,9 @@ class MipsProgram:
         MipsProgram.addLineToProgramArray("cvt.s.w\t" + fRegister + ", " + fRegister, 1)
         MipsProgram.releaseRegister(tRegister)
         return fRegister
+
+    @staticmethod
+    def addRegisterToUsedFunctionRegister(register):
+        print("reserve register:" + register)
+        if not register in MipsProgram.allUsedRegistersInCurrentFunction:
+            MipsProgram.allUsedRegistersInCurrentFunction.append(register)

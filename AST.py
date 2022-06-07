@@ -288,8 +288,7 @@ class ASTFunction(AST):
         return totalForScope+totalForParameters + 4
 
     def CreateMipsCode(self):
-        MipsProgram.addLineToProgramArray(self.getFunctionName() + ":")
-        MipsProgram.startOfFunction(self.neededStackSpace())
+        MipsProgram.startOfFunction(self.getFunctionName())
         aCounter = 0
         for param in self.getParametersList():
             param.CreateMipsCode()
@@ -297,7 +296,7 @@ class ASTFunction(AST):
             aCounter+=1
         MipsProgram.releaseAllRegisters('a')
         self.getScope().CreateMipsCode()
-        MipsProgram.endOfFunction()
+        MipsProgram.endOfFunction(self.neededStackSpace())
 
 #OK
 class ASTFunctionName(AST):
@@ -325,7 +324,7 @@ class ASTFunctionName(AST):
             MipsProgram.addLineToProgramArray("move\t" + aRegister + ", " + tempRegister, 1, "Move to a parameter register")
         MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
         MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
-        MipsProgram.releaseAllRegisters("t")
+        MipsProgram.releaseAllRegisters("t", register)
         MipsProgram.releaseAllRegisters("a")
         return register
 
@@ -356,7 +355,6 @@ class ASTDataType(AST):
         return MipsProgram.mipsTypes[self.root]
 
     def neededStackSpace(self):
-        print("needed stack space" , self.getVariableName())
         return 4
 
     def CreateMipsCode(self):
@@ -477,27 +475,55 @@ class ASTVariable(AST):
         returns True if variable set, returns false for varible get
         :return:
         """
-        return not self.nodes == None
+        if self.isArrayItem():
+            return len(self.nodes) > 1
+        else:
+            return self.nodes != None
 
     def CreateMipsCode(self):
-        if self.isSetVarible():
-            #for variable change
-            valueRegister = self.nodes[0].CreateMipsCode()
-            if MipsProgram.checkRegister(valueRegister) is float and self.getType() is not float:
-                valueRegister = MipsProgram.floatToIntConversion(valueRegister)
-            elif MipsProgram.checkRegister(valueRegister) is int and self.getType() is float:
-                valueRegister = MipsProgram.intToFloatConversion(valueRegister)
-            MipsProgram.updateVariable(self.getVariableName(), valueRegister)
-            return valueRegister
-        else:
-            #for variable value
-            print(self.getType())
-            if self.type is float:
-                register = MipsProgram.getFreeRegister('f')
+        if self.isArrayItem():
+            if self.isSetVarible():
+                # for variable change
+                indexRegister = self.getIndexItem().CreateMipsCode()
+                valueRegister = self.nodes[1].CreateMipsCode()
+                if MipsProgram.checkRegister(valueRegister) is float and self.getType() is not float:
+                    valueRegister = MipsProgram.floatToIntConversion(valueRegister)
+                elif MipsProgram.checkRegister(valueRegister) is int and self.getType() is float:
+                    valueRegister = MipsProgram.intToFloatConversion(valueRegister)
+                MipsProgram.updateArray(self.getVariableName(), indexRegister, valueRegister)
+                MipsProgram.releaseRegister(indexRegister)
+                MipsProgram.releaseRegister(valueRegister)
+                return None #TODO veranderd mischien een fout  valueRegister
             else:
-                register = MipsProgram.getFreeRegister('t')
-            MipsProgram.loadVariable(self.getVariableName(), register)
-            return register
+                # for variable value
+                indexRegister = self.getIndexItem().CreateMipsCode()
+                if self.type is float:
+                    register = MipsProgram.getFreeRegister('f')
+                else:
+                    register = MipsProgram.getFreeRegister('t')
+                MipsProgram.loadArray(self.getVariableName(), indexRegister, register)
+                MipsProgram.releaseRegister(indexRegister)
+                return register
+        else:
+            if self.isSetVarible():
+                # for variable change
+                valueRegister = self.nodes[0].CreateMipsCode()
+                if MipsProgram.checkRegister(valueRegister) is float and self.getType() is not float:
+                    valueRegister = MipsProgram.floatToIntConversion(valueRegister)
+                elif MipsProgram.checkRegister(valueRegister) is int and self.getType() is float:
+                    valueRegister = MipsProgram.intToFloatConversion(valueRegister)
+                MipsProgram.updateVariable(self.getVariableName(), valueRegister)
+                MipsProgram.releaseRegister(valueRegister)
+                return None  # TODO veranderd mischien een fout  valueRegister
+            else:
+                # for variable value
+                print(self.getType())
+                if self.type is float:
+                    register = MipsProgram.getFreeRegister('f')
+                else:
+                    register = MipsProgram.getFreeRegister('t')
+                MipsProgram.loadVariable(self.getVariableName(), register)
+                return register
 
 class ASTVoid(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -718,11 +744,12 @@ class ASTOperator(AST):
     def getRightValue(self):
         if self.nodes == None:
             return None
-        if len(self.nodes) <= 1:
+        if len(self.nodes) <= 1:#TODO kan llvm code kapot maken
             return None
         return self.nodes[1]
 
     def getType(self):
+        #TODO kan llvm code kapot maken
         if len(self.nodes) <= 1:
             return self.nodes[0].getType()
         convertScore = {float: 2, int: 0, chr: 0}
@@ -913,6 +940,14 @@ class ASTOneTokenStatement(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+    def CreateMipsCode(self):
+        if self.root == "break":
+            MipsProgram.addLineToProgramArray("b\tendWhile" + str(MipsProgram.whileCounter), 1, "break")
+        elif self.root == "continue":
+            MipsProgram.addLineToProgramArray("b\twhileCondition" + str(MipsProgram.whileCounter), 1, "Continue")
+        else:
+            exit("fout")
+
 #OK
 class ASTReturn(AST):
     def __init__(self, value, line, position, childNodes=None):
@@ -926,12 +961,14 @@ class ASTReturn(AST):
     def CreateMipsCode(self):
         valueRegister = self.getReturnValue().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
         MipsProgram.addLineToProgramArray("move\t$v0, " + valueRegister, 1, "Set the value for return in $v0")
+        MipsProgram.addLineToProgramArray("b\tendOf" + MipsProgram.currentFunctionName, 1, "go to end of function")
 
 #OK
 class ASTMultiDeclaration(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
+#OK
 class ASTArray(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
@@ -946,6 +983,22 @@ class ASTArray(AST):
 
     def getType(self):
         return self.nodes[0].root
+
+    def getDataTypeObject(self):
+        return self.nodes[0]
+
+    def isGlobal(self):
+        return self.getVariableName()[0] == "@"
+
+    def neededStackSpace(self):
+        return self.getLength() * self.getDataTypeObject().neededStackSpace()
+
+    def CreateMipsCode(self):
+        if self.isGlobal():
+            exit("Nog aan bezig")
+        else:
+            MipsProgram.createArray(self.getVariableName(), self.getLength())
+            pass
 
 class ASTArrayLength(AST):
     def __init__(self, value, line, position, childNodes=None):
