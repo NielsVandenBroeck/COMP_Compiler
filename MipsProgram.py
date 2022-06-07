@@ -116,8 +116,13 @@ class MipsProgram:
 
         MipsProgram.addLineToProgramArray("endOf" + MipsProgram.currentFunctionName + ":", 1, "For returns")
         for register in MipsProgram.allUsedRegistersInCurrentFunction:
-            MipsProgram.programmArray.insert(allocLocation + 1, "\tsw\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)\t\t#safe all registers that we will use in the stack")
-            MipsProgram.addLineToProgramArray("lw\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "load register value from before this function")
+            storeOperation = "sw"
+            loadOperation = "lw"
+            if MipsProgram.checkRegister(register) is float:
+                storeOperation = "swc1"
+                loadOperation = "lwc1"
+            MipsProgram.programmArray.insert(allocLocation + 1, "\t"+storeOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)\t\t#safe all registers that we will use in the stack")
+            MipsProgram.addLineToProgramArray(loadOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "load register value from before this function")
             MipsProgram.stackPointer -= 4
 
 
