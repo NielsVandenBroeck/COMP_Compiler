@@ -617,16 +617,19 @@ class ASTPrintf(AST):
         arguments = self.getAllVariables()
         result = []
         for item in arguments:
+            found = False
             for i in range(len(strings)):
                 if strings[i] == "%":
+                    found = True
                     midString = strings[0:i]
                     if midString != "":
                         result.append(midString)
                     result.append(item)
                     strings = strings[i + 2:]
                     break
-            if strings != "":
-                result.append(strings)
+            if not found:
+                if strings != "":
+                    result.append(strings)
         for item in result:
             if type(item) is not str:
                 object = item
