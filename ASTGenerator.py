@@ -119,25 +119,23 @@ class ASTGenerator(grammar1Visitor):
 
     # Visit a parse tree produced by grammar1Parser#ForLoop.
     def visitForLoop(self, ctx):
-        root = ASTFor("", ctx.start.line, ctx.start.column)
         node1 = self.visitLvalue(ctx.lv).removePriority()
         dataTypeNode = node1.getFirstNonConst(node1)
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
 
-        node2 = ASTWhile("while", ctx.start.line, ctx.start.column)
+        root = ASTFor("while", ctx.start.line, ctx.start.column, node1)
 
         conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)
         conditionBody = self.visit(ctx.b)
         conditionNode.addNode(conditionBody)
-        node2.addNode(conditionNode)
+        root.addNode(conditionNode)
         whileScope = self.visit(ctx.s)
-        node2.addNode(whileScope)
+        root.addNode(whileScope)
 
         node3 = self.visit(ctx.step)
         whileScope.addNode(node3)
 
         root.addNode(node1)
-        root.addNode(node2)
         return root
 
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
@@ -154,8 +152,9 @@ class ASTGenerator(grammar1Visitor):
             elif line.s is not None:
                 temp = self.visitChildren(line)
                 if type(temp) is ASTFor:
-                    root.addNode(temp.nodes[0])
-                    root.addNode(temp.nodes[1])
+                    root.addNode(temp.nodes[2])
+                    temp.nodes.pop(2)
+                    root.addNode(temp)
                 else:
                     root.addNode(temp)
             elif line.f is not None:

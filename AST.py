@@ -497,7 +497,7 @@ class ASTVariable(AST):
             else:
                 # for variable value
                 indexRegister = self.getIndexItem().CreateMipsCode()
-                if self.type is float:
+                if self.getType() is float:
                     register = MipsProgram.getFreeRegister('f')
                 else:
                     register = MipsProgram.getFreeRegister('t')
@@ -658,18 +658,23 @@ class ASTPrintf(AST):
                     result.append(strings)
         for item in result:
             if type(item) is not str:
-                object = item
-                if type(object) is ASTText:
-                    object.CreateMipsCode()
+                if type(item) is ASTText:
+                    item.CreateMipsCode()
                     continue
                 register = item.CreateMipsCode()  # Get a register (locked) with a value to print
-                if type(object) is ASTInt or object.getType() is int:
+                if type(item) is ASTInt or item.getType() is int:
+                    if MipsProgram.checkRegister(register) is float:
+                        register = MipsProgram.floatToIntConversion(register)
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1)
                     MipsProgram.addLineToProgramArray("li\t$v0, 1", 1, "print integer")
-                elif type(object) is ASTFloat or object.getType() is float:
+                elif type(item) is ASTFloat or item.getType() is float:
+                    if MipsProgram.checkRegister(register) is not float:
+                        register = MipsProgram.intToFloatConversion(register)
                     MipsProgram.addLineToProgramArray("mov.s\t$f12," + register, 1, "print float")
                     MipsProgram.addLineToProgramArray("li\t$v0, 2", 1)
-                elif type(object) is ASTChar or object.getType() is chr:
+                elif type(item) is ASTChar or item.getType() is chr:
+                    if MipsProgram.checkRegister(register) is float:
+                        register = MipsProgram.floatToIntConversion(register)
                     MipsProgram.addLineToProgramArray("move\t$a0, " + register, 1, "print char")
                     MipsProgram.addLineToProgramArray("li\t$v0, 11", 1)
                 MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
@@ -787,15 +792,41 @@ class ASTOperator(AST):
         if self.nodes[1].getType() is not returnType:
             rightRegister = MipsProgram.intToFloatConversion(rightRegister)
 
-        if returnType is float:
+        if operator == "and" or operator == "or":
+            if MipsProgram.checkRegister(leftRegister) is float:
+                leftRegister = MipsProgram.floatToIntConversion(leftRegister)
+            if MipsProgram.checkRegister(rightRegister) is float:
+                rightRegister = MipsProgram.floatToIntConversion(rightRegister)
+            MipsProgram.registerToBit(leftRegister)             #convert value to boolean
+            MipsProgram.registerToBit(rightRegister)            #convert value to boolean
+            register = MipsProgram.getFreeRegister('t')  # get a free register
+        elif returnType is float:
+            if operator == "slt" or operator == "sgt" or operator == "sle" or operator == "sge" or operator == "seq" or operator == "sne":
+                negate = 0
+                if operator == "sgt" or operator == "sge":
+                    operator.replace('g','l')
+                    temp = leftRegister
+                    leftRegister = rightRegister
+                    rightRegister = temp
+                if operator == "sne":
+                    negate = 1
+                    operator = "seq"
+                operator = "c." + operator[1:] + ".s"
+                returnRegister = MipsProgram.getFreeRegister('t')
+                tempRegister = MipsProgram.getFreeRegister('t')
+                MipsProgram.addLineToProgramArray("li\t"+returnRegister+', '+str(negate),1,"loads 0 into the resultRegister for when operation is false")
+                MipsProgram.addLineToProgramArray("li\t" + tempRegister + ', '+str(1-negate), 1, "loads 1 into a temporary register for when operation is true")
+                MipsProgram.addLineToProgramArray(operator+"\t" + leftRegister + ', '+rightRegister, 1, "compares the two floats and stores the result in condition flag 0")
+                MipsProgram.addLineToProgramArray("movt\t"+ returnRegister+", "+ tempRegister,1, "sets resultRegister equal to the temporary register if the condition flag 0 is checked")
+
+                MipsProgram.releaseRegister(leftRegister)  # release the leftRegister for other use
+                MipsProgram.releaseRegister(rightRegister)  # release the rightRegister for other use
+                MipsProgram.releaseRegister(tempRegister)  # release the leftRegister for other use
+                return returnRegister
             register = MipsProgram.getFreeRegister('f')  # get a free register
             operator = operator+".s"
         else:
             register = MipsProgram.getFreeRegister('t')            #get a free register
-
-        if operator == "and" or operator == "or":
-            MipsProgram.registerToBit(leftRegister)             #convert value to boolean
-            MipsProgram.registerToBit(rightRegister)            #convert value to boolean
 
         if operator == "%":
             MipsProgram.addLineToProgramArray("div\t" + leftRegister + ", " + rightRegister, 1,"operatie tussen 2 waarden")
@@ -924,8 +955,9 @@ class ASTParameters(AST):
         return self.nodes
 
 #OK
-class ASTFor(AST):
-    def __init__(self, value, line, position, childNodes=None):
+class ASTFor(ASTWhile):
+    def __init__(self, value, line, position, nextOperation, childNodes=None):
+        self.nextOperation = nextOperation
         super().__init__(value, line, position, childNodes)
 
 #OK

@@ -599,7 +599,7 @@ class SymbolTable():
 
     @staticmethod
     def IsWhile(node):
-        return type(node) is ASTWhile
+        return type(node) is ASTWhile or type(node) is ASTFor
 
 
 class UpperSymbolTable(SymbolTable):

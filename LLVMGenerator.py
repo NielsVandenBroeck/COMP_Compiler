@@ -1,4 +1,4 @@
-from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile, ASTCondition, ASTIfElse, \
+from AST import ASTDataType, ASTPrintf, ASTVariable, ASTOperator, AST, ASTPointer, ASTWhile,ASTFor, ASTCondition, ASTIfElse, \
     ASTOneTokenStatement, ASTFunction, ASTFunctionName, ASTReturn, ASTParameters, ASTValue, ASTAdress, ASTScanf, \
     ASTArray, ASTForwardDeclaration, ASTInt, ASTText
 from LLVMProgram import LLVMProgram, LLVMFunction, LLVMWhile, LLVMIfElse
@@ -61,7 +61,7 @@ class LLVMGenerator:
         elif type(node) == ASTVariable:
             self._createSetAstVariableLLVM(node)
             return True
-        elif type(node) == ASTWhile:
+        elif type(node) == ASTWhile or type(node) == ASTFor:
             tempCurrentFuntion = self.currentFunction
             self.currentFunction = LLVMWhile(self.currentFunction.createUniqueRegister(), self.currentFunction)
             self.preOrderTraverse(node.getCondition())
