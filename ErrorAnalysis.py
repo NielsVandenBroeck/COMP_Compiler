@@ -48,7 +48,7 @@ class ErrorAnalysis:
                     break
                 elif type(node) is ASTOneTokenStatement and inLoop == 2:
                     del root.nodes[i+1:len(root.nodes)]
-                    root.nodes.insert(i-1,forNextOperation)
+                    root.nodes.insert(i,forNextOperation)
                     break
                 elif type(node) is ASTOneTokenStatement and not inLoop:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(

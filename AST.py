@@ -823,12 +823,17 @@ class ASTOperator(AST):
                 MipsProgram.releaseRegister(rightRegister)  # release the rightRegister for other use
                 MipsProgram.releaseRegister(tempRegister)  # release the leftRegister for other use
                 return returnRegister
-            register = MipsProgram.getFreeRegister('f')  # get a free register
-            operator = operator+".s"
+            if operator != "%":
+                register = MipsProgram.getFreeRegister('f')  # get a free register
+                operator = operator+".s"
+            else:
+                register = MipsProgram.getFreeRegister('t')            #get a free register
         else:
             register = MipsProgram.getFreeRegister('t')            #get a free register
 
         if operator == "%":
+            leftRegister = MipsProgram.floatToIntConversion(leftRegister)
+            rightRegister = MipsProgram.floatToIntConversion(rightRegister)
             MipsProgram.addLineToProgramArray("div\t" + leftRegister + ", " + rightRegister, 1,"operatie tussen 2 waarden")
             MipsProgram.addLineToProgramArray("mfhi\t"+register, 1, "slaat de rest van de deling op in het register")
         else:

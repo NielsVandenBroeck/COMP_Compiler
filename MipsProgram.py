@@ -381,6 +381,8 @@ class MipsProgram:
 
     @staticmethod
     def floatToIntConversion(fRegister):
+        if MipsProgram.checkRegister(fRegister) is not float:
+            return fRegister
         tRegister = MipsProgram.getFreeRegister('t')
         MipsProgram.addLineToProgramArray("cvt.w.s\t" + fRegister + ", " + fRegister, 1)
         MipsProgram.addLineToProgramArray("mfc1\t" + tRegister + ", " + fRegister, 1)
@@ -389,6 +391,8 @@ class MipsProgram:
 
     @staticmethod
     def intToFloatConversion(tRegister):
+        if MipsProgram.checkRegister(tRegister) is float:
+            return tRegister
         fRegister = MipsProgram.getFreeRegister('f')
         MipsProgram.addLineToProgramArray("mtc1\t" + tRegister + ", " + fRegister, 1)
         MipsProgram.releaseRegister(tRegister)

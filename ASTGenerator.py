@@ -123,7 +123,9 @@ class ASTGenerator(grammar1Visitor):
         dataTypeNode = node1.getFirstNonConst(node1)
         dataTypeNode.addNode(self.visitRvalue(ctx.rv).removePriority())
 
-        root = ASTFor("while", ctx.start.line, ctx.start.column, node1)
+        node3 = self.visit(ctx.step)
+
+        root = ASTFor("while", ctx.start.line, ctx.start.column, node3)
 
         conditionNode = ASTCondition("Condition", ctx.start.line, ctx.start.column)
         conditionBody = self.visit(ctx.b)
@@ -132,7 +134,7 @@ class ASTGenerator(grammar1Visitor):
         whileScope = self.visit(ctx.s)
         root.addNode(whileScope)
 
-        node3 = self.visit(ctx.step)
+
         whileScope.addNode(node3)
 
         root.addNode(node1)
