@@ -293,7 +293,6 @@ class ASTFunction(AST):
         aCounter = 0
         for param in self.getParametersList():
             param.CreateMipsCode()
-            print(param)
             MipsProgram.updateVariable(param.getVariableName(), "$a" + str(aCounter))
             aCounter+=1
         MipsProgram.releaseAllRegisters('a')
@@ -315,7 +314,6 @@ class ASTFunctionName(AST):
         return self.nodes[0].nodes
 
     def getType(self):
-        print("functionName type", self.type)
         return self.type
 
     def CreateMipsCode(self):
@@ -615,7 +613,6 @@ class ASTPointer(AST):
                 depth -= 1
             return pointerRegister
         else:
-            print(type(self.getSetObject()))
             exit("undifiend operation with pointer")
 
 #OK
@@ -738,7 +735,6 @@ class ASTScanf(AST):
                     while (format.isnumeric() or format == '') and counter < len(todoString):
                         format = todoString[counter]
                         counter += 1
-                    print("%" + format)
                     if format == "i" or format == "d":
                         #register = MipsProgram.getFreeRegister('t')  # get a free register
                         MipsProgram.addLineToProgramArray("li\t$v0, 5", 1, "read int")

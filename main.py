@@ -19,7 +19,7 @@ from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
 import subprocess
 
-def runOneLLVM(path):
+def runOneLLVM(path, runLLVM):
     print(path + ":")
     input_stream = FileStream(path)
     lexer = grammar1Lexer(input_stream)
@@ -42,9 +42,10 @@ def runOneLLVM(path):
 
     print("Compiling complete")
     print()
-    os.system("lli-9 " + "OutputFiles/LLVM/OneFile/code.ll")
+    if runLLVM:
+        os.system("lli-9 " + "OutputFiles/LLVM/OneFile/code.ll")
 
-def runMutipleLLVM():
+def runMutipleLLVM(runLLVM):
     workingCounter = 0
     brokenCounter = 0
     brokenFiles = []
@@ -74,7 +75,8 @@ def runMutipleLLVM():
             print("Compiling complete")
 
             print()
-            os.system("lli-9 " + " OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll")
+            if runLLVM:
+                os.system("lli-9 " + " OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll")
             workingCounter += 1
             print("\nRunning complete")
         except:
@@ -85,7 +87,7 @@ def runMutipleLLVM():
     print("aantal werkende files:", workingCounter)
     print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
-def runOneMips(path):
+def runOneMips(path, runMips):
     print(path + ":")
     input_stream = FileStream(path)
     lexer = grammar1Lexer(input_stream)
@@ -105,9 +107,10 @@ def runOneMips(path):
         myFile.write(ast.getDot())
 
     MipsProgram(ast,"OutputFiles/Mips/OneFile/code.s")
-    os.system("java -jar Mars.jar " + "OutputFiles/MIPS/OneFile/code.s")
+    if runMips:
+        os.system("java -jar Mars.jar " + "OutputFiles/MIPS/OneFile/code.s")
 
-def runMultipleMips():
+def runMultipleMips(runMips):
     workingCounter = 0
     brokenCounter = 0
     brokenFiles = []
@@ -127,18 +130,20 @@ def runMultipleMips():
             ast.constantFold()
 
             ASTFixScoping(ast)
+            ASTFixStrings(ast)
 
-            with open("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
+            with open("OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
                 myFile.write(ast.getDot())
 
             print("Compiling complete")
 
             MipsProgram(ast, "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
-            os.system("java -jar Mars.jar " + "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
+            if runMips:
+                os.system("java -jar Mars.jar " + "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
             workingCounter += 1
             print("\nRunning complete")
-        except:
-            print("Failed")
+        except Exception as e:
+            print("Failed: ", str(e))
             brokenCounter += 1
             brokenFiles.append(filename)
     print()
@@ -146,14 +151,20 @@ def runMultipleMips():
     print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
 def main(argv):
-    if argv[1] == "llvm" and len(argv) == 2:
-        runMutipleLLVM()
-    elif argv[1] == "llvm" and len(argv) == 3:
-        runOneLLVM(argv[2])
-    elif argv[1] == "mips" and len(argv) == 2:
-        runMultipleMips()
+    if argv[1] == "llvm" and len(argv) == 3:
+        runMutipleLLVM(argv[2] == "True")
+    elif argv[1] == "llvm" and len(argv) == 4:
+        runOneLLVM(argv[3], argv[2]  == "True")
     elif argv[1] == "mips" and len(argv) == 3:
-        runOneMips(argv[2])
+        runMultipleMips(argv[2]  == "True")
+    elif argv[1] == "mips" and len(argv) == 4:
+        runOneMips(argv[3], argv[2]  == "True")
+    else:
+        print("wrong format start program with following parameters:")
+        print("\t-python main.py llvm True/False\t\t([0]=language, [1]=run program after compile)")
+        print("\t-python main.py llvm True/False file.c\t\t([0]=language, [1]=run program after compile, [2]=.c file location)")
+        print("\t-python main.py mips True/False\t\t([0]=language, [1]=run program after compile)")
+        print("\t-python main.py mips True/False file.c\t\t([0]=language, [1]=run program after compile, [2]=.c file location)")
     return 0
 
 

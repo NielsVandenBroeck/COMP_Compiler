@@ -527,7 +527,6 @@ class SymbolTable():
         varName = node.getVariableName()
         if varName in self.SymbolList:
             object = self.SymbolList[varName]
-            print(varName, object, object.type)
             node.type = object.type
             if object.array == True:
                 if node.nodes is None and not scanf:

@@ -83,9 +83,32 @@ class MipsProgram:
             for line in self.programmArray:
                 myFile.write(line+"\n")
 
-        self.programmArray.clear()
-        self.dataArray.clear()
+        # MipsProgram.programmArray.clear()
+        # MipsProgram.dataArray.clear()
+        MipsProgram.resetMipsProgram()
         pass
+
+    @staticmethod
+    def resetMipsProgram():
+        MipsProgram.stackPointer = 0
+        MipsProgram.framePointer = 0
+        MipsProgram.dataArray = []
+        MipsProgram.programmArray = []
+        MipsProgram.mipsTypes = {int: ".word", float: ".float", chr: ".word"}
+        MipsProgram.variables = {}
+        MipsProgram.dataCounter = 0
+        MipsProgram.ifElseCounter = 0
+        MipsProgram.whileCounter = 0
+        MipsProgram.defaultTabInpring = 0
+        MipsProgram.allUsedRegistersInCurrentFunction = []
+        MipsProgram.stackAllocationOfCurrentFunction = 0
+        MipsProgram.currentFunctionName = ""
+        MipsProgram.scanfCounter = 0
+        MipsProgram.registers = {"t": {"$t" + str(t): None for t in range(10)},
+                     "s": {"$s" + str(s): None for s in range(8)},
+                     "a": {"$a" + str(a): None for a in range(4)},
+                     "v": {"$v" + str(v): None for v in range(2)},
+                     "f": {"$f" + str(f): None for f in range(32)}}
 
     def write(self):
         #self.currentFunction.setReturnValue(0)
@@ -455,6 +478,5 @@ class MipsProgram:
 
     @staticmethod
     def addRegisterToUsedFunctionRegister(register):
-        print("reserve register:" + register)
         if not register in MipsProgram.allUsedRegistersInCurrentFunction:
             MipsProgram.allUsedRegistersInCurrentFunction.append(register)
