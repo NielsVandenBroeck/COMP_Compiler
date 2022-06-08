@@ -373,6 +373,15 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def enterVariableExpressionIdentifier(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def exitVariableExpressionIdentifier(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#identifierOP.
     def enterIdentifierOP(self, ctx):
         pass

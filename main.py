@@ -104,7 +104,7 @@ def runOneMips(path):
     with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
-    MipsProgram(ast, path)
+    MipsProgram(ast,"OutputFiles/Mips/OneFile/code.txt")
 
 def runMultipleMips():
     workingCounter = 0

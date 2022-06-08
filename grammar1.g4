@@ -95,7 +95,7 @@ dataType
 
 body
     : paren
-    | data
+    | d=data
     | bodyOperationBody
     | unary
     | functionCall
@@ -138,7 +138,8 @@ data
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
     | pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')?                     #PointerValueExpression
-    | value=NAME ('[' array=body ']')?                                              #VariableExpression
+    | identifier=identifierOP? value=NAME ('[' array=body ']')?                         #VariableExpression
+    | value=NAME ('[' array=body ']')? identifier=identifierOP                          #VariableExpressionIdentifier
     ;
 
     //++ and --

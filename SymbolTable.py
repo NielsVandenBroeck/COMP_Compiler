@@ -157,7 +157,10 @@ class SymbolTable():
 
     def pointerDeclaration(self, node, constness, array):
         objectConstness = False
-        pointerType = node.nodes[0].root
+        typeObject = node.nodes[0]
+        while type(typeObject) is ASTPointer:
+            typeObject = typeObject.nodes[0]
+        pointerType = typeObject.root
         if type(node.getSetObject()) is ASTConst:
             objectConstness = True
             pointerName = node.getSetObject().nodes[0].getVariableName()
@@ -524,6 +527,7 @@ class SymbolTable():
         varName = node.getVariableName()
         if varName in self.SymbolList:
             object = self.SymbolList[varName]
+            print(varName, object, object.type)
             node.type = object.type
             if object.array == True:
                 if node.nodes is None and not scanf:

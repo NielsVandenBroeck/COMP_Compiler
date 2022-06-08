@@ -417,8 +417,54 @@ class ASTGenerator(grammar1Visitor):
             body = self.visit(ctx.array)
             index.addNode(body)
             variable.addNode(index)
+        if ctx.identifier is not None:
+            operator = ctx.identifier.getText()[0]
+            operationVariable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
+            operation = ASTOperator(operator, ctx.start.line, ctx.start.column,
+                        [operationVariable, ASTInt(1, ctx.start.line, ctx.start.column)])
+            identifier = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column,[operation])
+            if ctx.array is not None:
+                index1 = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+                body1 = self.visit(ctx.array)
+                index1.addNode(body1)
+                operationVariable.addNode(index1)
+
+                index2 = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+                body2 = self.visit(ctx.array)
+                index2.addNode(body2)
+                identifier = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column,[index2,operation])
+
+            variable = ASTTempIdentifier(ASTTempIdentifier, ctx.start.line, ctx.start.column,[identifier,variable])
         return variable
 
+    # Visit a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def visitVariableExpressionIdentifier(self, ctx):
+        variable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
+        if ctx.array is not None:
+            index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+            body = self.visit(ctx.array)
+            index.addNode(body)
+            variable.addNode(index)
+        if ctx.identifier is not None:
+            operator = ctx.identifier.getText()[0]
+            operationVariable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
+            operation = ASTOperator(operator, ctx.start.line, ctx.start.column,
+                                    [operationVariable, ASTInt(1, ctx.start.line, ctx.start.column)])
+            identifier = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column, [operation])
+            if ctx.array is not None:
+                index1 = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+                body1 = self.visit(ctx.array)
+                index1.addNode(body1)
+                operationVariable.addNode(index1)
+
+                index2 = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
+                body2 = self.visit(ctx.array)
+                index2.addNode(body2)
+                identifier = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column, [index2, operation])
+
+            variable = ASTTempIdentifier(ASTTempIdentifier, ctx.start.line, ctx.start.column,
+                                         [variable, identifier])
+        return variable
 
 
 
@@ -470,15 +516,3 @@ class ASTGenerator(grammar1Visitor):
         return pointer
 
 
-
-
-        #if ctx.identifier is None:
-        #    return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column,
-        #                      [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)])
-        #else:
-        #    operation = ctx.identifier.getText()[0]
-        #    root = ASTOperator(operation, ctx.start.line, ctx.start.column,
-        #                       [ASTPointer(ASTPointer, ctx.start.line, ctx.start.column,
-        #                                   [ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)]),
-        #                        ASTInt(1, ctx.start.line, ctx.start.column)])
-        #    return root

@@ -24,7 +24,7 @@ int main()
       }
       if(c == i){
          printf("%d\n",i);
-         count++z;
+         count++;
       }
       i++;
    }

@@ -1103,3 +1103,7 @@ class ASTArrayLength(AST):
 class ASTArrayIndex(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
+
+class ASTTempIdentifier(AST):
+    def __init__(self, value, line, position, childNodes=None):
+        super().__init__(value, line, position, childNodes)
