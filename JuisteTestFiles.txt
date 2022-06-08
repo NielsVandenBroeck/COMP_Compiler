@@ -1,95 +1,126 @@
 binaryOperations1.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 binaryOperations2.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 breakAndContinue.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 comparisons1.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 comparisons2.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 dereferenceAssignment.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 fibonacciRecursive.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 floatToIntConversion.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 for.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 forwardDeclaration.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 if.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 ifElse.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 intToFloatConversion.c:
-    OK
+    LLVM:NOPE
+    MIPS: NOPE
 
 modulo.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 pointerArgument.c:
-     OK
+    LLVM:OK
+    MIPS: /
 
 prime.c
-    OK
+    LLVM:OK
+    MIPS: /
 
 printf1.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 printf2.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 printf3.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 scanf1.c:
-    OK
+    LLVM:OK
+    MIPS: OK
 
 scanf2.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 scoping.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 unaryOperations.c:
-    TODO ++ en -- zijn optioneel
+     LLVM:TODO ++ en -- zijn optioneel
 
 variables1.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables2.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables3.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables4.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables5.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables6.c:
-    OK TODO: SymbolTable + llvm
+    LLVM:FOUT TODO: SymbolTable + llvm
+    MIPS:OK
 
 variables7.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 variables8.c:
-    OK
+    LLVM:OK
+    MIPS:OK
 
 while.c:
-    OK
+    LLVM:OK
+    MIPS:OK
