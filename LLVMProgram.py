@@ -523,11 +523,13 @@ class LLVMVarible:
         loadString = ""
         varType = self.type
         counter = 0
-        currentAdress = loadAdress + str(counter)
+        currentAdress = str(self.LLVMname)
         while "*" in varType:
-            loadString += "%" + loadAdress + str(counter) + " = load " + varType + ", " + varType + "* " + self.llvmChar + str(self.LLVMname) + ", align " + str(self.align) + "\n\t"
+            loadString += "%" + loadAdress + str(counter) + " = load " + varType + ", " + varType + "* " + self.llvmChar + currentAdress + ", align " + str(self.align) + "\n\t"
             varType = varType[:-1]
-        loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* " + self.llvmChar + loadAdress + str(counter) + ", align " + str(self.align)
+            currentAdress = loadAdress + str(counter)
+            counter += 1
+        loadString += "%" + loadAdress + " = load " + varType + ", " + varType + "* " + self.llvmChar + currentAdress + ", align " + str(self.align)
         return loadString
 
 class LLVMArray(LLVMVarible):

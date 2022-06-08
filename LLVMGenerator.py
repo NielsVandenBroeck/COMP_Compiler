@@ -118,7 +118,7 @@ class LLVMGenerator:
             self.currentFunction._getLLVMVariableLoadString(self.currentFunction.getVariable(node.getSetObject().getVariableName()), tempReg)
             self._createAstOperatorLLVM(tempReg, node.getToObject())
         else:
-            self.currentFunction.newSmartVariblePointer(node.getSetObject().getVariableName(), node.getSetObject().getType(), 1)
+            self.currentFunction.newSmartVariblePointer(node.getSetObject().getVariableName(), node.getSetObject().getType(), node.getPointerDepth())
             self._createSetAstVariableLLVM(node)
 
     def _createASTReturnItem(self, node):
