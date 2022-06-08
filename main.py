@@ -104,7 +104,8 @@ def runOneMips(path):
     with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
-    MipsProgram(ast,"OutputFiles/Mips/OneFile/code.txt")
+    MipsProgram(ast,"OutputFiles/Mips/OneFile/code.s")
+    os.system("java -jar Mars.jar " + "OutputFiles/MIPS/OneFile/code.s")
 
 def runMultipleMips():
     workingCounter = 0
@@ -132,8 +133,8 @@ def runMultipleMips():
 
             print("Compiling complete")
 
-            MipsProgram(ast, "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".txt")
-
+            MipsProgram(ast, "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
+            os.system("java -jar Mars.jar " + "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
             workingCounter += 1
             print("\nRunning complete")
         except:

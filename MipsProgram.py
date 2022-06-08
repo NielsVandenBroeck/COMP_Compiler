@@ -79,6 +79,7 @@ class MipsProgram:
                 myFile.write(line+"\n")
             myFile.write(".text\n")
             myFile.write(".globl main\n")
+            myFile.write("b\tmain\n")
             for line in self.programmArray:
                 myFile.write(line+"\n")
 
@@ -158,22 +159,27 @@ class MipsProgram:
         MipsProgram.programmArray.insert(allocLocation, "\tsubu\t$sp, $sp, " + str(reserve + allocSpace) + "\t#stackpointer alloc") #insert at the beginning of the function
 
         MipsProgram.addLineToProgramArray("endOf" + MipsProgram.currentFunctionName + ":", 1, "For returns")
-        for register in MipsProgram.allUsedRegistersInCurrentFunction:
-            storeOperation = "sw"
-            loadOperation = "lw"
-            if MipsProgram.checkRegister(register) is float:
-                storeOperation = "swc1"
-                loadOperation = "lwc1"
-            MipsProgram.programmArray.insert(allocLocation + 1, "\t"+storeOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)\t\t#safe all registers that we will use in the stack")
-            MipsProgram.addLineToProgramArray(loadOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "load register value from before this function")
-            MipsProgram.stackPointer -= 4
+
+        if MipsProgram.currentFunctionName != "main":
+            for register in MipsProgram.allUsedRegistersInCurrentFunction:
+                storeOperation = "sw"
+                loadOperation = "lw"
+                if MipsProgram.checkRegister(register) is float:
+                    storeOperation = "swc1"
+                    loadOperation = "lwc1"
+                MipsProgram.programmArray.insert(allocLocation + 1, "\t"+storeOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)\t\t#safe all registers that we will use in the stack")
+                MipsProgram.addLineToProgramArray(loadOperation+"\t" + register + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "load register value from before this function")
+                MipsProgram.stackPointer -= 4
 
 
-        MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)",1 ,"zet het return adres terug")
-        MipsProgram.addLineToProgramArray("move\t$sp, $fp", 1)
-        MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1, "frame pointer wijst nu naar bovenaan de stack")
-        MipsProgram.addLineToProgramArray("lw\t$fp, 0($sp)", 1, "zet oude frame pointer terug")
-        MipsProgram.addLineToProgramArray("jr\t$ra", 1, "ga terug naar de aanroeper")
+            MipsProgram.addLineToProgramArray("lw\t$ra, -4($fp)",1 ,"zet het return adres terug")
+            MipsProgram.addLineToProgramArray("move\t$sp, $fp", 1)
+            MipsProgram.addLineToProgramArray("move\t$fp, $sp", 1, "frame pointer wijst nu naar bovenaan de stack")
+            MipsProgram.addLineToProgramArray("lw\t$fp, 0($sp)", 1, "zet oude frame pointer terug")
+            MipsProgram.addLineToProgramArray("jr\t$ra", 1, "ga terug naar de aanroeper")
+        else:
+            MipsProgram.addLineToProgramArray("li\t$v0, 10", 1)
+            MipsProgram.addLineToProgramArray("syscall\t", 1, "End of program")
         MipsProgram.stackPointer = 0
         MipsProgram.stackAllocationOfCurrentFunction = 0
         MipsProgram.allUsedRegistersInCurrentFunction = []

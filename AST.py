@@ -547,12 +547,11 @@ class ASTConst(AST):
 
 #OK
 class ASTPointer(AST):
-    def __init__(self, value, line, position, childNodes=None, depth=1):#TODO depth overal laten werken
-        self.depth = depth
+    def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
 
     def getSetObject(self):
-        if self.nodes[0] is ASTPointer:
+        if type(self.nodes[0]) is ASTPointer:
             return self.nodes[0].getSetObject()
         return self.nodes[0]
 
@@ -566,23 +565,24 @@ class ASTPointer(AST):
 
     def getPointerDepth(self):
         add = 1
-        if self.nodes[0] == ASTPointer:
-            add = self.getSetObject().getPointerDepth() + 1
+        if type(self.nodes[0]) == ASTPointer:
+            add += self.nodes[0].getPointerDepth()
         return add
 
     def getVariableName(self):
         return self.getSetObject().getVariableName()
 
     def isDeclaration(self):
-        return type(self.nodes[0]) == ASTDataType
+        return type(self.getSetObject()) == ASTDataType
 
     def isChangeValueObject(self):
-        return type(self.nodes[0]) == ASTAdress
+        return type(self.getSetObject()) == ASTAdress
 
     def isValueObject(self):
-        return type(self.nodes[0]) == ASTVariable
+        return type(self.getSetObject()) == ASTVariable
 
     def CreateMipsCode(self):
+        depth = self.getPointerDepth()
         if self.isDeclaration():                #bv int* i = &a (zet een pointer op een adress)
             self.getSetObject().CreateMipsCode()
             if self.getToObject() != None:
@@ -597,10 +597,10 @@ class ASTPointer(AST):
             memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
             MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
 
-            while self.depth > 1:
+            while depth > 1:
                 #MipsProgram.addLineToProgramArray("nop", 1)#TODO mag weg normaal
                 MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
-                self.depth -= 1
+                depth -= 1
 
             MipsProgram.addLineToProgramArray("sw\t" + valueRegister + ", (" + pointerRegister + ")", 1, "update the register where " + self.getVariableName() + " is pointing add to " + valueRegister)
             MipsProgram.releaseAllMipsVaribleFromRegisters()#reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
@@ -610,11 +610,12 @@ class ASTPointer(AST):
             pointerRegister = MipsProgram.getFreeRegister("t")
             memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
             MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
-            while self.depth > 0:
+            while depth > 0:
                 MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
-                self.depth -= 1
+                depth -= 1
             return pointerRegister
         else:
+            print(type(self.getSetObject()))
             exit("undifiend operation with pointer")
 
 #OK
