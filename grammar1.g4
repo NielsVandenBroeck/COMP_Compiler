@@ -8,7 +8,6 @@ programLine
     : l=line SEMICOLON
     | SingleComment
     | MultiLineComment
-    | s=scope
     | f=function
     | m=multiAssignmentsDeclarations SEMICOLON
     | IncludeStdio
@@ -30,7 +29,7 @@ scope
     : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                                           #IfStatement
     | 'while' '(' b=body ')' s=scope                                                            #WhileLoop
     | 'for' '(' lv=lvalue IS rv=rvalue ';' b=body ';' step=line ')' s=scope                     #ForLoop
-    | '{' (programLine)* '}'                                                                    #EmptyScope
+    | '{' (programLine|scope)* '}'                                                              #EmptyScope
     ;
 
 line: newline

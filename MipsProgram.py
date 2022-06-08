@@ -75,15 +75,16 @@ class MipsProgram:
         MipsProgram.programmArray.append((inspring * "\t") + (MipsProgram.defaultTabInpring * "\t") + line + comments)
 
     @staticmethod
-    def addLineToDataArray(line: str):
+    def addLineToDataArray(line: str, comments: str=""):
         """
         Add a line to the data array (.data part of the mips code)
         :param line:
         :return:
         """
-
+        if comments != "":
+            comments = "\t\t # "+comments
         name = "data"+str(MipsProgram.dataCounter)
-        MipsProgram.dataArray.append("\t" + name + ":\t" + line)
+        MipsProgram.dataArray.append("\t" + name + ":\t" + line + comments)
         MipsProgram.dataCounter+=1
         return name
 

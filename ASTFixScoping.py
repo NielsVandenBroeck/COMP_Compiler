@@ -20,16 +20,14 @@ class ASTFixScoping:
     def checkAndReplaceVariable(self, variable):
         if type(variable) != ASTVariable:
             exit("wrong type not a ASTVariable")
-        print(variable.root)
         variable.root = self.getMostCorrectName(variable.root)
-        print(variable.root)
 
     def createVariable(self, variable):
         if type(variable) != ASTDataType:
             exit("wrong type not a ASTDataType")
         if self.checkIfNameExists(variable.getVariableName()):
             global number
-            print( variable.getVariableName() + "scope" + str(number))
+
             self.symbolTable[variable.getVariableName()] = variable.getVariableName() + "scope" + str(number)
             variable.nodes[0].root = variable.getVariableName() + "scope" + str(number)
             number += 1
@@ -41,7 +39,6 @@ class ASTFixScoping:
             variable.nodes[0].root = '@' + variable.nodes[0].root
 
     def getMostCorrectName(self, varName):
-        print(self.symbolTable)
         if varName in self.symbolTable:
             return self.symbolTable[varName]
         elif self.parantScope != None:

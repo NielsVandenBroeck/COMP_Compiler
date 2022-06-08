@@ -18,14 +18,6 @@ class ASTGenerator(grammar1Visitor):
                 if object is not None:
                     object = object.removePriority()
                     program.addNode(object)
-            elif line.s is not None:
-                temp = self.visit(line.s)
-                if type(temp) is ASTFor:
-                    program.addNode(temp.nodes[2])
-                    temp.nodes.pop(2)
-                    program.addNode(temp)
-                else:
-                    program.addNode(temp)
             elif line.f is not None:
                 object = self.visit(line.f)
                 if object is not None:
@@ -36,10 +28,10 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        symbolTable = UpperSymbolTable(program)
-        symbolTable.checkUnusedVariables(program)
-        symbolTable.loopAST()
-        ErrorAnalysis(program)
+        #symbolTable = UpperSymbolTable(program)
+        #symbolTable.checkUnusedVariables(program)
+        #symbolTable.loopAST()
+        #ErrorAnalysis(program)
 
         return program
 
@@ -155,9 +147,11 @@ class ASTGenerator(grammar1Visitor):
             elif line.s is not None:
                 temp = self.visitChildren(line)
                 if type(temp) is ASTFor:
-                    root.addNode(temp.nodes[2])
+                    scope = ASTScope("scope", ctx.start.line, ctx.start.column)
+                    root.addNode(scope)
+                    scope.addNode(temp.nodes[2])
                     temp.nodes.pop(2)
-                    root.addNode(temp)
+                    scope.addNode(temp)
                 else:
                     root.addNode(temp)
             elif line.f is not None:

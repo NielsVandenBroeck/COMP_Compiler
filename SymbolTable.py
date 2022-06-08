@@ -301,6 +301,7 @@ class SymbolTable():
                 if function is not None:
                     compared = self.compareFunction(function, root)
                     if compared is True:
+                        root.type = function.returnType
                         if function.scope is None:
                             self.addundefinedReferenceToUpper(function.functionName)
                         return
@@ -390,7 +391,7 @@ class SymbolTable():
                         root.position) + ". Unknown Format Type.")
         if len(formatList) != len(root.nodes) - 1:
             exit("[Error] line: " + str(root.line) + ", position: " + str(
-                root.position) + ". Too many/few parameters were given in scanf function.")
+                root.position) + ". Too many/few parameters were given in printf function.")
         for i in range(1, len(root.nodes)):
             node = root.nodes[i]
             variableType = None

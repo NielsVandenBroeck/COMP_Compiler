@@ -293,6 +293,7 @@ class ASTFunction(AST):
         aCounter = 0
         for param in self.getParametersList():
             param.CreateMipsCode()
+            print(param)
             MipsProgram.updateVariable(param.getVariableName(), "$a" + str(aCounter))
             aCounter+=1
         MipsProgram.releaseAllRegisters('a')
@@ -317,14 +318,21 @@ class ASTFunctionName(AST):
         return self.type
 
     def CreateMipsCode(self):
-        register = MipsProgram.getFreeRegister('t')
         MipsProgram.releaseAllRegisters("a")
         for param in self.getFunctionParameters():
             tempRegister = param.CreateMipsCode()
             aRegister = MipsProgram.getFreeRegister('a')
-            MipsProgram.addLineToProgramArray("move\t" + aRegister + ", " + tempRegister, 1, "Move to a parameter register")
+            if MipsProgram.checkRegister(tempRegister) is float:
+                MipsProgram.addLineToProgramArray("mfc1\t" + aRegister + ", "+tempRegister, 1, "Move to a parameter register")
+            else:
+                MipsProgram.addLineToProgramArray("move\t" + aRegister + ", " + tempRegister, 1, "Move to a parameter register")
         MipsProgram.addLineToProgramArray("jal\t" + self.getFunctionName(), 1, "Go to function " + self.getFunctionName())
-        MipsProgram.addLineToProgramArray("move\t" + register + ", " + "$v0", 1,"Get return value of function")
+        if self.type is float:
+            register = MipsProgram.getFreeRegister('f')
+            MipsProgram.addLineToProgramArray("mtc1\t$v0, " + register, 1, "Get return value of function")
+        else:
+            register = MipsProgram.getFreeRegister('t')
+            MipsProgram.addLineToProgramArray("move\t" + register + ", $v0", 1,"Get return value of function")
         MipsProgram.releaseAllRegisters("t", register)
         MipsProgram.releaseAllRegisters("a")
         return register
@@ -518,7 +526,6 @@ class ASTVariable(AST):
                 return None  # TODO veranderd mischien een fout  valueRegister
             else:
                 # for variable value
-                print(self.getType())
                 if self.type is float:
                     register = MipsProgram.getFreeRegister('f')
                 else:
@@ -657,19 +664,16 @@ class ASTPrintf(AST):
         arguments = self.getAllVariables()
         result = []
         for item in arguments:
-            found = False
             for i in range(len(strings)):
                 if strings[i] == "%":
-                    found = True
                     midString = strings[0:i]
                     if midString != "":
                         result.append(midString)
                     result.append(item)
                     strings = strings[i + 2:]
                     break
-            if not found:
-                if strings != "":
-                    result.append(strings)
+        if len(strings) != 0:
+            result.append(strings)
         for item in result:
             if type(item) is not str:
                 if type(item) is ASTText:
@@ -1028,8 +1032,13 @@ class ASTReturn(AST):
         return self.nodes[0]
 
     def CreateMipsCode(self):
+        if self.getReturnValue() is None:
+            return
         valueRegister = self.getReturnValue().CreateMipsCode()           #Get a register (locked) with a value in to safe in the variable
-        MipsProgram.addLineToProgramArray("move\t$v0, " + valueRegister, 1, "Set the value for return in $v0")
+        if MipsProgram.checkRegister(valueRegister) is float:
+            MipsProgram.addLineToProgramArray("mfc1\t$v0," + valueRegister, 1, "Set the value for return in $v0")
+        else:
+            MipsProgram.addLineToProgramArray("move\t$v0, " + valueRegister, 1, "Set the value for return in $v0")
         MipsProgram.addLineToProgramArray("b\tendOf" + MipsProgram.currentFunctionName, 1, "go to end of function")
 
 #OK

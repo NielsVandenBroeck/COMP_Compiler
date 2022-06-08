@@ -6,7 +6,6 @@ int main(){
 	int x = 10;
 	int* xp = &x;
 	int** xpp = &xp;
-	int*** xppp = &xpp;
-	printf("%d; %d; %d", x, *xp, **xpp, ***xppp);
+	printf("%d; %d; %d", x, *xp, **xpp);
 	return 1;
 }
