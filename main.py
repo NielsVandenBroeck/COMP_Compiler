@@ -7,6 +7,7 @@ import time
 from antlr4 import *
 
 from ASTFixScoping import ASTFixScoping
+from ASTFixStrings import ASTFixStrings
 from LLVMProgram import LLVMProgram, LLVMFunction
 from MipsProgram import MipsProgram
 from grammar1Lexer import grammar1Lexer
@@ -98,6 +99,7 @@ def runOneMips(path):
     ast.constantFold()
 
     ASTFixScoping(ast)
+    ASTFixStrings(ast)
 
     with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())

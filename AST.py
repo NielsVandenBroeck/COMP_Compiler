@@ -1,4 +1,5 @@
 import operator
+import re
 from typing import Any
 from pydoc import locate
 from MipsProgram import MipsProgram
@@ -616,11 +617,24 @@ class ASTAdress(AST):
         return self.nodes[0].getType()
 
     def CreateMipsCode(self):
-        #returs the adress location of a variable in a register
-        register = MipsProgram.getFreeRegister("t")
-        variableOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
-        MipsProgram.addLineToProgramArray("addiu\t" + register + ", $fp, " + str(variableOffset), 1, "Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
-        return register
+        if self.nodes[0].isArrayItem():
+            arrayIndexRegister = self.nodes[0].getIndexItem().CreateMipsCode()
+            arrayItemLocation = MipsProgram.getFreeRegister("t")
+            # indien de variable uit het geheugen geladen moet worden
+            stackPointerOffset = MipsProgram.variables[self.getVariableName()].getStartOfArrayOffset()
+            MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset), 1, "calculate array location")
+            four = MipsProgram.getFreeRegister("t")
+            MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1, "calculate array location")
+            MipsProgram.releaseRegister(four)
+            MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four, 1, "calculate array location")
+            MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister, 1, "calculate array location")
+            return arrayItemLocation
+        else:
+            # returs the adress location of a variable in a register
+            register = MipsProgram.getFreeRegister("t")
+            variableOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
+            MipsProgram.addLineToProgramArray("addiu\t" + register + ", $fp, " + str(variableOffset), 1,"Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
+            return register
 
 #OK
 class ASTPrintf(AST):
@@ -695,23 +709,41 @@ class ASTScanf(AST):
         return listOfItems
 
     def CreateMipsCode(self):
-        inputType = self.nodes[0][1] #todo bv %5s
-        if inputType == "i" or "d":
-            register = MipsProgram.getFreeRegister('t')            #get a free register
-            MipsProgram.addLineToProgramArray("li\t$v0, 5", 1, "read integer")
-        if inputType == "f":
-            register = MipsProgram.getFreeRegister('f')            #get a free register
-            MipsProgram.addLineToProgramArray("li\t$v0, 6", 1, "read integer")
-        if inputType == "c":
-            register = MipsProgram.getFreeRegister('t')            #get a free register
-            MipsProgram.addLineToProgramArray("li\t$v0, 12", 1, "read integer")
-        if inputType == "s":
-            o = 0
-            #todo idk hoe the fuck dees ga werken
-        MipsProgram.addLineToProgramArray("syscall", 1, "execute read")
-        MipsProgram.addLineToProgramArray("move\t" + register + ", $v0", 1, "move input to other register")
-        #todo link register to adress or pointer of scanvariable
-
+        #MipsProgram.scanfCounter += 1
+        todoString = self.nodes[0].getString()
+        for setItem in self.getAllVariables():
+            itemIsSet = False
+            while not itemIsSet:
+                if todoString[0] == '%':
+                    format = ''
+                    counter = 1
+                    while (format.isnumeric() or format == '') and counter < len(todoString):
+                        format = todoString[counter]
+                        counter += 1
+                    print("%" + format)
+                    if format == "i" or format == "d":
+                        #register = MipsProgram.getFreeRegister('t')  # get a free register
+                        MipsProgram.addLineToProgramArray("li\t$v0, 5", 1, "read int")
+                    elif format == "f":
+                        #register = MipsProgram.getFreeRegister('f')  # get a free register
+                        MipsProgram.addLineToProgramArray("li\t$v0, 6", 1, "read float")
+                    elif format == "c":
+                        MipsProgram.addLineToProgramArray("li\t$v0, 12", 1, "read char")
+                    elif format == "s":
+                        MipsProgram.addLineToProgramArray("li\t$v0, 8", 1, "read string")
+                        toRegister = setItem.CreateMipsCode()
+                        MipsProgram.addLineToProgramArray("move\t $a0, " + toRegister, 1, "Set array location as argument")
+                        MipsProgram.addLineToProgramArray("li\t $a1, 6", 1, "Set the lenght as argument")
+                    else:
+                        exit("type is not supported")
+                    MipsProgram.addLineToProgramArray("syscall", 1, "execute read")
+                    if format != "s":
+                        toRegister = setItem.CreateMipsCode()
+                        MipsProgram.addLineToProgramArray("sw\t $v0, (" + toRegister + ")", 1, "update the variable")
+                    MipsProgram.releaseRegister(toRegister)
+                    MipsProgram.releaseAllMipsVaribleFromRegisters()  # reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
+                    itemIsSet = True
+                todoString = todoString[1:]
 #OK
 class ASTText(AST):
     def __init__(self, value, line, position, childNodes=None):

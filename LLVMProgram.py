@@ -293,7 +293,7 @@ class LLVMFunction(LLVMProgram):
             valueVariable2 = newValueVariable2
 
         if operationType == float:
-            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "%":"frem", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge", "&&": "and", "||": "or"}
+            operations = {"+": "fadd", "-": "fsub", "*": "fmul", "/": "fsdiv", "%":"srem", "<": "icmp slt", ">": "icmp sgt","==": "icmp eq", "!=": "icmp ne", "<=": "icmp sle", ">=": "icmp sge", "&&": "and", "||": "or"}
 
         tempRegName = self.createUniqueRegister()
         self._addLine("%" + tempRegName + " = " + operations[operation] + " " + self.typeToLLVMType(operationType) + " %" + valueVariable1 + ", %" + valueVariable2 + "")

@@ -40,6 +40,7 @@ class MipsProgram:
     allUsedRegistersInCurrentFunction = []
     stackAllocationOfCurrentFunction = 0
     currentFunctionName = ""
+    scanfCounter = 0
     #blijft autmoatisch up to date
     #None: no value
     #True: lockt for calculations
@@ -222,15 +223,13 @@ class MipsProgram:
         arrayItemLocation = MipsProgram.getFreeRegister("t")
         # indien de variable uit het geheugen geladen moet worden
         stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
-        MipsProgram.addLineToProgramArray("#----------------Load array item----------------",1)
-        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " +  str(stackPointerOffset),1)
+        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " +  str(stackPointerOffset),1, "calculate array location")
         four = MipsProgram.getFreeRegister("t")
-        MipsProgram.addLineToProgramArray("li\t" + four + ", 4",1)
+        MipsProgram.addLineToProgramArray("li\t" + four + ", 4",1, "calculate array location")
         MipsProgram.releaseRegister(four)
-        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1)
-        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1)
+        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1, "calculate array location")
+        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
         MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
-        MipsProgram.addLineToProgramArray("#----------------Load array item end----------------",1)
         MipsProgram.releaseRegister(arrayItemLocation)
 
     @staticmethod
@@ -250,16 +249,14 @@ class MipsProgram:
         arrayItemLocation = MipsProgram.getFreeRegister("t")
         # indien de variable uit het geheugen geladen moet worden
         stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
-        MipsProgram.addLineToProgramArray("#----------------Store array item----------------",1)
-        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset),1)
+        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset),1, "calculate array location")
 
         four = MipsProgram.getFreeRegister("t")
-        MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1)
+        MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1, "calculate array location")
         MipsProgram.releaseRegister(four)
-        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1)
-        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1)
+        MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1, "calculate array location")
+        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
         MipsProgram.addLineToProgramArray("sw\t" + toRegisterValue + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
-        MipsProgram.addLineToProgramArray("#----------------Store array item end----------------",1)
         MipsProgram.releaseRegister(arrayItemLocation)
 
     @staticmethod
