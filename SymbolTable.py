@@ -404,6 +404,7 @@ class SymbolTable():
             elif type(node) == ASTOperator:
                 self.searchAllvars(node)
                 variableType = node.findType()
+                self.checkBody(node)
             # pointer
             elif type(node) == ASTPointer:
                 while type(node) is ASTPointer:
@@ -427,6 +428,7 @@ class SymbolTable():
             # string
             elif type(node) == ASTText:
                 variableType = str
+            # operation
             if array and variableType is chr and formatList[i - 1] is str:
                 continue
             #if variableType != formatList[i - 1]:

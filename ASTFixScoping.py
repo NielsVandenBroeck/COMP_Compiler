@@ -3,10 +3,11 @@ from AST import ASTScope, ASTVariable, ASTDataType, AST, ASTParameters, ASTFunct
 number = 0
 
 class ASTFixScoping:
-    def __init__(self,scope, parantScope = None):
+    def __init__(self,scope, parantScope = None, isMips = False):
         self.symbolTable = {}
         self.parantScope = parantScope
         self.isGlobal = False
+        self.isMips = isMips
         if type(scope) == AST:
             self.isGlobal = True
 
@@ -34,9 +35,12 @@ class ASTFixScoping:
         else:
             self.symbolTable[variable.getVariableName()] = variable.getVariableName()
 
-        if self.isGlobal:
+        if self.isGlobal and not self.isMips:
             self.symbolTable[variable.getVariableName()] = '@' + variable.nodes[0].root
             variable.nodes[0].root = '@' + variable.nodes[0].root
+        elif self.isGlobal and self.isMips:
+            self.symbolTable[variable.getVariableName()] = 'µ' + variable.nodes[0].root
+            variable.nodes[0].root = 'µ' + variable.nodes[0].root
 
     def getMostCorrectName(self, varName):
         if varName in self.symbolTable:
@@ -60,7 +64,7 @@ class ASTFixScoping:
             for node in ast.nodes:
                 self.preOrderTraverse(node)
         elif type(ast) == ASTScope or type(ast) == ASTFunction:
-            ASTFixScoping(ast, self)
+            ASTFixScoping(ast, self, self.isMips)
         elif type(ast) == ASTDataType and ast.nodes != None:
             self.createVariable(ast)
         return

@@ -1,10 +1,12 @@
 import struct
 
 class MipsVariable:
-    def __init__(self, name, register, stackPointerOffset):
+    def __init__(self, name, register, stackPointerOffset, isGlobal = False):
         self.name = name
         self.register = register
-        self.stackPointerOffset = stackPointerOffset
+        self.isGlobal = isGlobal
+        if isGlobal == False:
+            self.stackPointerOffset = stackPointerOffset
         if register != None:
             MipsProgram.registers[register[1]][register] = self
 
@@ -15,23 +17,41 @@ class MipsVariable:
             MipsProgram.registers[toReg[1]][toReg] = self
         self.register = toReg
 
+    def getMemoryLocation(self):
+        if self.isGlobal:
+            return self.name
+        return str(self.stackPointerOffset) + "($fp)"
+
+    def getLocationOfsetString(self):
+        if self.isGlobal:
+            return self.name
+        return " $fp, " + str(self.stackPointerOffset)
+
+
 class MipsArray(MipsVariable):
-    def __init__(self, name, register, stackStartOfArrayOffset, length):
-        super(MipsArray, self).__init__(name, register, stackStartOfArrayOffset)
+    def __init__(self, name, register, stackStartOfArrayOffset, length, isGlobal = False):
+        super(MipsArray, self).__init__(name, register, stackStartOfArrayOffset,isGlobal)
         self.lenght = length
 
     def getStartOfArrayOffset(self):
         return self.stackPointerOffset
 
+    def getLocationOfsetString(self):
+        if self.isGlobal:
+            return self.name
+        return " $fp, " + str(self.stackPointerOffset)
+
     def updateRegister(self, toReg):
         exit("regiset of mipsarray cannot be set")
+
+
 
 class MipsProgram:
     stackPointer = 0
     framePointer = 0
     dataArray = []
     programmArray = []
-    mipsTypes = {int: ".word"}
+    mipsTypes = {int: ".word", float: ".float", chr: ".word"}
     variables = {}
     dataCounter = 0
     ifElseCounter = 0
@@ -85,7 +105,7 @@ class MipsProgram:
         MipsProgram.programmArray.append((inspring * "\t") + (MipsProgram.defaultTabInpring * "\t") + line + comments)
 
     @staticmethod
-    def addLineToDataArray(line: str, comments: str=""):
+    def addDataNumberLineToDataArray(line: str, comments: str=""):
         """
         Add a line to the data array (.data part of the mips code)
         :param line:
@@ -97,6 +117,17 @@ class MipsProgram:
         MipsProgram.dataArray.append("\t" + name + ":\t" + line + comments)
         MipsProgram.dataCounter+=1
         return name
+
+    @staticmethod
+    def addDataLineToDataArray(line: str, comments: str = ""):
+        """
+        Add a line to the data array (.data part of the mips code)
+        :param line:
+        :return:
+        """
+        if comments != "":
+            comments = "\t\t # " + comments
+        MipsProgram.dataArray.append("\t" + line + comments)
 
 
     @staticmethod
@@ -148,7 +179,7 @@ class MipsProgram:
         MipsProgram.allUsedRegistersInCurrentFunction = []
 
     @staticmethod
-    def storeVariable(varName, currentRegisterLocation):
+    def storeVariable(varName, currentRegisterLocation, isGLobal = False):
         """
         Make a new variable for an item currently in a register (store word + safes in dict's and changes the stackpointer)
         :param varName: the varname
@@ -158,11 +189,13 @@ class MipsProgram:
         storeOperation = "sw"
         if currentRegisterLocation[1] == 'f':
             storeOperation = "swc1"
+
         MipsProgram.checkRegister(currentRegisterLocation)
         MipsProgram.addRegisterToUsedFunctionRegister(currentRegisterLocation)
         MipsProgram.variables[varName] = MipsVariable(varName, currentRegisterLocation, MipsProgram.stackPointer)
         MipsProgram.addLineToProgramArray(storeOperation+"\t" + currentRegisterLocation + ", " + str(MipsProgram.stackPointer) + "($fp)", 1, "store variable: " + varName)
         MipsProgram.stackPointer -= 4
+
 
     @staticmethod
     def loadVariable(varName, toStoreRegister):
@@ -188,8 +221,8 @@ class MipsProgram:
             MipsProgram.addLineToProgramArray(moveOperation+"\t" + toStoreRegister + ", " + fromRegister, 1, "Load variable " + varName)
         else:
             #indien de variable uit het geheugen geladen moet worden
-            stackPointerOffset = MipsProgram.variables[varName].stackPointerOffset
-            MipsProgram.addLineToProgramArray(loadOperation+"\t" + toStoreRegister + ", " + str(stackPointerOffset) + "($fp)", 1, "Load variable " + varName)
+            memoryLocation = MipsProgram.variables[varName].getMemoryLocation()
+            MipsProgram.addLineToProgramArray(loadOperation+"\t" + toStoreRegister + ", " + str(memoryLocation), 1, "Load variable " + varName)
 
 
 
@@ -207,7 +240,7 @@ class MipsProgram:
             storeOperation = "sw"
             if toRegisterValue[1] == 'f':
                 storeOperation = "swc1"
-            MipsProgram.addLineToProgramArray(storeOperation+"\t" + toRegisterValue + ", " + str(MipsProgram.variables[varName].stackPointerOffset) + "($fp)", 1,"update variable: " + varName)
+            MipsProgram.addLineToProgramArray(storeOperation+"\t" + toRegisterValue + ", " + MipsProgram.variables[varName].getMemoryLocation(), 1,"update variable: " + varName)
             MipsProgram.variables[varName].updateRegister(toRegisterValue)
         else:
             exit("Varible does not exists")
@@ -233,13 +266,16 @@ class MipsProgram:
 
         arrayItemLocation = MipsProgram.getFreeRegister("t")
         # indien de variable uit het geheugen geladen moet worden
-        stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
-        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " +  str(stackPointerOffset),1, "calculate array location")
+        locationOfsetString = MipsProgram.variables[arrayName].getLocationOfsetString()
+        if MipsProgram.variables[arrayName].isGlobal:
+            MipsProgram.addLineToProgramArray("la\t" + arrayItemLocation + "," + locationOfsetString, 1, "calculate array location")
+        else:
+            MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", " + locationOfsetString,1, "calculate array location")
         four = MipsProgram.getFreeRegister("t")
         MipsProgram.addLineToProgramArray("li\t" + four + ", 4",1, "calculate array location")
         MipsProgram.releaseRegister(four)
         MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1, "calculate array location")
-        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
+        MipsProgram.addLineToProgramArray("add\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
         MipsProgram.addLineToProgramArray("lw\t" + toStoreRegister + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
         MipsProgram.releaseRegister(arrayItemLocation)
 
@@ -259,14 +295,17 @@ class MipsProgram:
 
         arrayItemLocation = MipsProgram.getFreeRegister("t")
         # indien de variable uit het geheugen geladen moet worden
-        stackPointerOffset = MipsProgram.variables[arrayName].getStartOfArrayOffset()
-        MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset),1, "calculate array location")
+        locationOfsetString = MipsProgram.variables[arrayName].getLocationOfsetString()
+        if MipsProgram.variables[arrayName].isGlobal:
+            MipsProgram.addLineToProgramArray("la\t" + arrayItemLocation + "," + locationOfsetString, 1,"calculate array location")
+        else:
+            MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", " + locationOfsetString,1, "calculate array location")
 
         four = MipsProgram.getFreeRegister("t")
         MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1, "calculate array location")
         MipsProgram.releaseRegister(four)
         MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four,1, "calculate array location")
-        MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
+        MipsProgram.addLineToProgramArray("add\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister,1, "calculate array location")
         MipsProgram.addLineToProgramArray("sw\t" + toRegisterValue + ", (" + arrayItemLocation + ")", 1,"Load variable " + arrayName + "[" + arrayIndexRegister +"]")
         MipsProgram.releaseRegister(arrayItemLocation)
 

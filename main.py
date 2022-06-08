@@ -98,13 +98,13 @@ def runOneMips(path):
 
     ast.constantFold()
 
-    ASTFixScoping(ast)
+    ASTFixScoping(ast, None, True)
     ASTFixStrings(ast)
 
     with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
-    MipsProgram(ast)
+    MipsProgram(ast, path)
 
 def runMultipleMips():
     workingCounter = 0

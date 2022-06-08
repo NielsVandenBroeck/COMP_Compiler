@@ -2,7 +2,7 @@ import operator
 import re
 from typing import Any
 from pydoc import locate
-from MipsProgram import MipsProgram
+from MipsProgram import MipsProgram, MipsVariable, MipsArray
 import graphviz
 
 class AST():
@@ -315,6 +315,7 @@ class ASTFunctionName(AST):
         return self.nodes[0].nodes
 
     def getType(self):
+        print("functionName type", self.type)
         return self.type
 
     def CreateMipsCode(self):
@@ -370,8 +371,10 @@ class ASTDataType(AST):
         value = self.getValue()
         if value is None:
             value = 0
-        if self.getVariableName()[0] == "@":    #globaal gedefinnerd
-            MipsProgram.addLineToDataArray(self.getVariableName().replace("@", "GBL") + ":	" + self.getMipsType() + " " + str(value), 1)
+        if self.getVariableName()[0] == "µ":    #globaal gedefinnerd
+            varName = self.getVariableName()
+            MipsProgram.addDataLineToDataArray(varName + ":	" + self.getMipsType() + " " + str(value))
+            MipsProgram.variables[varName] = MipsVariable(varName, None, None, True)
         else:
             if self.getValue() is None:
                 if self.getType() is float:
@@ -437,7 +440,7 @@ class ASTFloat(ASTValue):
 
     def CreateMipsCode(self):
         value = self.root
-        name = MipsProgram.addLineToDataArray(".float\t" + str(value))
+        name = MipsProgram.addDataNumberLineToDataArray(".float\t" + str(value))
         register = MipsProgram.getFreeRegister('t')
         MipsProgram.addLineToProgramArray("la\t" + register + ", " + name, 1)
         floatRegister = MipsProgram.getFreeRegister('f')
@@ -591,8 +594,8 @@ class ASTPointer(AST):
         elif self.isChangeValueObject():        #bv *c = 10;    (zet een pointer op een waarde)
             valueRegister = self.getToObject().CreateMipsCode()
             pointerRegister = MipsProgram.getFreeRegister("t")
-            variablePointerOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
-            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + str(variablePointerOffset) + "($fp)", 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
+            memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
 
             while self.depth > 1:
                 #MipsProgram.addLineToProgramArray("nop", 1)#TODO mag weg normaal
@@ -605,8 +608,8 @@ class ASTPointer(AST):
             MipsProgram.releaseRegister(pointerRegister)
         elif self.isValueObject():              #bv int a = *b; (neem de waarde uit een pointer)
             pointerRegister = MipsProgram.getFreeRegister("t")
-            variablePointerOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
-            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + str(variablePointerOffset) + "($fp)", 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
+            memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
             while self.depth > 0:
                 MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
                 self.depth -= 1
@@ -630,19 +633,27 @@ class ASTAdress(AST):
             arrayIndexRegister = self.nodes[0].getIndexItem().CreateMipsCode()
             arrayItemLocation = MipsProgram.getFreeRegister("t")
             # indien de variable uit het geheugen geladen moet worden
-            stackPointerOffset = MipsProgram.variables[self.getVariableName()].getStartOfArrayOffset()
-            MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", $fp, " + str(stackPointerOffset), 1, "calculate array location")
+            locationOfsetString = MipsProgram.variables[self.getVariableName()].getLocationOfsetString()
+            #MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + ", " + str(locationOfsetString), 1, "calculate array location")
+            if MipsProgram.variables[self.getVariableName()].isGlobal:
+                MipsProgram.addLineToProgramArray("la\t" + arrayItemLocation + "," + locationOfsetString, 1,"Get adress of variable in register (" + arrayItemLocation + " = &" + self.getVariableName() + ")")
+            else:
+                MipsProgram.addLineToProgramArray("subi\t" + arrayItemLocation + "," + locationOfsetString, 1, "Get adress of variable in register (" + arrayItemLocation + " = &" + self.getVariableName() + ")")
+
             four = MipsProgram.getFreeRegister("t")
             MipsProgram.addLineToProgramArray("li\t" + four + ", 4", 1, "calculate array location")
             MipsProgram.releaseRegister(four)
             MipsProgram.addLineToProgramArray("mul\t" + arrayIndexRegister + ", " + arrayIndexRegister + ", " + four, 1, "calculate array location")
-            MipsProgram.addLineToProgramArray("sub\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister, 1, "calculate array location")
+            MipsProgram.addLineToProgramArray("add\t" + arrayItemLocation + ", " + arrayItemLocation + ", " + arrayIndexRegister, 1, "calculate array location")
             return arrayItemLocation
         else:
             # returs the adress location of a variable in a register
             register = MipsProgram.getFreeRegister("t")
-            variableOffset = MipsProgram.variables[self.getVariableName()].stackPointerOffset
-            MipsProgram.addLineToProgramArray("addiu\t" + register + ", $fp, " + str(variableOffset), 1,"Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
+            locationOfsetString = MipsProgram.variables[self.getVariableName()].getLocationOfsetString()
+            if MipsProgram.variables[self.getVariableName()].isGlobal:
+                MipsProgram.addLineToProgramArray("la\t" + register + "," + locationOfsetString, 1,"Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
+            else:
+                MipsProgram.addLineToProgramArray("addiu\t" + register + "," + locationOfsetString, 1,"Get adress of variable in register (" + register + " = &" + self.getVariableName() + ")")
             return register
 
 #OK
@@ -759,7 +770,7 @@ class ASTText(AST):
         return self.root
 
     def CreateMipsCodeString(self,string):
-        stringName = MipsProgram.addLineToDataArray(".asciiz\t\"" + string + "\"")
+        stringName = MipsProgram.addDataNumberLineToDataArray(".asciiz\t\"" + string + "\"")
         MipsProgram.addLineToProgramArray("la\t$a0, " + stringName, 1, "loads the string into a register")
         MipsProgram.addLineToProgramArray("li\t$v0, 4", 1)
         MipsProgram.addLineToProgramArray("syscall", 1, "executes the print function")
@@ -1064,18 +1075,23 @@ class ASTArray(AST):
     def getType(self):
         return self.nodes[0].root
 
+    def getMipsType(self):
+        return MipsProgram.mipsTypes[self.getType()]
+
     def getDataTypeObject(self):
         return self.nodes[0]
 
     def isGlobal(self):
-        return self.getVariableName()[0] == "@"
+        return self.getVariableName()[0] == "µ"
 
     def neededStackSpace(self):
         return self.getLength() * self.getDataTypeObject().neededStackSpace()
 
     def CreateMipsCode(self):
         if self.isGlobal():
-            exit("Nog aan bezig")
+            arrayName = self.getVariableName()
+            MipsProgram.variables[arrayName] = MipsArray(arrayName, None, MipsProgram.stackPointer, self.getLength(), True)
+            MipsProgram.addDataLineToDataArray(arrayName + ":	" + self.getMipsType() + " " + (("0, ")* self.getLength())[:-2])
         else:
             MipsProgram.createArray(self.getVariableName(), self.getLength())
             pass
