@@ -177,14 +177,24 @@ class SymbolTable():
         pointerObject = None
         if isinstance(object, ASTAdress):
             toObject = self.searchVariable(object.nodes[0])
+            if toObject.type != pointerType:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Incompatible conversion from " + str(
+                    pointerType) + " to " + str(
+                    toObject.type) + " with pointers. ")
             pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, array, objectConstness, toObject)
         elif isinstance(object, ASTVariable):
             pointerObject = self.searchVariable(object)
+            if pointerObject.type != pointerType:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Incompatible conversion from " + str(
+                    pointerType) + " to " + str(
+                    pointerObject.type) + " with pointers. ")
         elif object == None:
             pointerObject = SymbolObjectPointer(pointerType, pointerName, constness, array, objectConstness)
         else:
             exit("[Error] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". Variable: \'" + pointerName + "\' invalid conversion from 'idk' to 'idk*'.")
+                node.position) + ". Variable: \'" + pointerName + "\' incompatible conversion from non-pointer to pointer.")
 
         self.SymbolList[pointerName] = pointerObject
 
@@ -200,18 +210,20 @@ class SymbolTable():
         elif len(node.nodes) == 2:
             if type(node.nodes[1]) is ASTVariable:
                 if not self.searchVariable(node.nodes[1]).type is node.root:
-                    print("[Warning] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Implicit conversion from " + str(
-                        self.searchVariable(node.nodes[1]).type) + " to " + str(
-                        node.root) + ". ")
+                    if node.root is not float:
+                        print("[Warning] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Implicit conversion from " + str(
+                            self.searchVariable(node.nodes[1]).type) + " to " + str(
+                            node.root) + ". ")
             else:
                 self.checkBody(node.nodes[1])
                 bodyType = node.nodes[1].findType()
                 if bodyType != node.getType():
-                    print("[Warning] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Implicit conversion from " + str(
-                        bodyType) + " to " + str(
-                        node.getType()) + ". ")
+                    if node.root is not float:
+                        print("[Warning] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Implicit conversion from " + str(
+                            bodyType) + " to " + str(
+                            node.getType()) + ". ")
                 node.nodes[1].correctDataType(node.root)
         self.SymbolList[variable] = SymbolObject(node.root, variable, constness, array)
 
@@ -229,8 +241,8 @@ class SymbolTable():
 
         if self.searchVariable(newValue) != None and self.searchVariable(newValue).type != self.SymbolList[
             pointsToName].type:
-            print("[Warning] line: " + str(node.line) + ", position: " + str(
-                node.position) + ". Implicit conversion from '" + str(
+            exit("[Error] line: " + str(node.line) + ", position: " + str(
+                node.position) + ". Incompatible conversion from '" + str(
                 self.SymbolList[pointsToName].getObject().type) + "' to " + str(
                 self.searchVariable(var).type) + ". ")
 
@@ -256,6 +268,11 @@ class SymbolTable():
         # als het 2 pointers zijn bv: a = b
         if (type(value) is ASTVariable and type(variable) == SymbolObjectPointer and type(
                 symbolValue) == SymbolObjectPointer):
+            if variable.type != symbolValue.type:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Incompatible conversion from " + str(
+                    variable.type) + " to " + str(
+                    symbolValue.type) + " with pointers. ")
             variable.setPointer(symbolValue, node)
         # als er een waarde word gezet bv: *a = 10
         elif type(value) is ASTAdress:
@@ -263,18 +280,20 @@ class SymbolTable():
             variable.setPointer(self.searchVariable(value), node)
         elif type(value) is ASTVariable:
             if symbolValue.type is not variable.type:
-                print("[Warning] line: " + str(node.line) + ", position: " + str(
-                    node.position) + ". Implicit conversion from " + str(
-                    symbolValue.type) + " to " + str(
-                    variable.type) + ". ")
+                if variable.type is not float:
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        symbolValue.type) + " to " + str(
+                        variable.type) + ". ")
         else:
             self.checkBody(value)
             bodyType = value.findType()
             if bodyType != variable.type:
-                print("[Warning] line: " + str(node.line) + ", position: " + str(
-                    node.position) + ". Implicit conversion from " + str(
-                    bodyType) + " to " + str(
-                    variable.type) + ". ")
+                if variable.type is not float:
+                    print("[Warning] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Implicit conversion from " + str(
+                        bodyType) + " to " + str(
+                        variable.type) + ". ")
             value.correctDataType(variable.type)
 
     def checkBody(self, root):
@@ -351,18 +370,20 @@ class SymbolTable():
                     node.position) + ". Void function '" + self.functionName + "' should return a value.")
             elif type(node.nodes[0]) is ASTVariable:
                 if not self.searchVariable(node.nodes[0]).type is self.returnType:
-                    print("[Warning] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Implicit conversion from " + str(
-                        self.searchVariable(node.nodes[0]).type) + " to " + str(
-                        self.returnType) + ". ")
+                    if self.returnType is not float:
+                        print("[Warning] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Implicit conversion from " + str(
+                            self.searchVariable(node.nodes[0]).type) + " to " + str(
+                            self.returnType) + ". ")
             else:
                 self.checkBody(node.nodes[0])
                 bodyType = node.nodes[0].findType()
                 if bodyType != self.returnType:
-                    print("[Warning] line: " + str(node.line) + ", position: " + str(
-                        node.position) + ". Implicit conversion from " + str(
-                        bodyType) + " to " + str(
-                        self.returnType) + ". ")
+                    if self.returnType is not float:
+                        print("[Warning] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Implicit conversion from " + str(
+                            bodyType) + " to " + str(
+                            self.returnType) + ". ")
                 node.nodes[0].correctDataType(self.returnType)
 
     def checkPrintf(self, root):
