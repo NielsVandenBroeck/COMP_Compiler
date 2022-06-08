@@ -107,7 +107,42 @@ def runOneMips(path):
     MipsProgram(ast)
 
 def runMultipleMips():
-    pass
+    workingCounter = 0
+    brokenCounter = 0
+    brokenFiles = []
+    for filename in os.listdir("testFiles/juisteTestFiles"):
+        print("\n---------------")
+        try:
+            print(filename + ":")
+            input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
+            lexer = grammar1Lexer(input_stream)
+            stream = CommonTokenStream(lexer)
+            parser = grammar1Parser(stream)
+            tree = parser.start()
+
+            visistor = ASTGenerator()
+            ast = visistor.visit(tree)
+
+            ast.constantFold()
+
+            ASTFixScoping(ast)
+
+            with open("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
+                myFile.write(ast.getDot())
+
+            print("Compiling complete")
+
+            MipsProgram(ast, "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".txt")
+
+            workingCounter += 1
+            print("\nRunning complete")
+        except:
+            print("Failed")
+            brokenCounter += 1
+            brokenFiles.append(filename)
+    print()
+    print("aantal werkende files:", workingCounter)
+    print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
 def main(argv):
     if argv[1] == "llvm" and len(argv) == 2:

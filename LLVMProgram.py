@@ -179,7 +179,7 @@ class LLVMFunction(LLVMProgram):
             return parameterTypeList
         parameterList = parameters.getParameterList()
         for parameter in parameterList:
-            parameterTypeList.append(self.typeToLLVMType(parameter.getType()) + (parameter.getPointerDept() * "*"))
+            parameterTypeList.append(self.typeToLLVMType(parameter.getType()) + (parameter.getPointerDepth() * "*"))
         return parameterTypeList
 
     def _getParameterString(self, parameters):
@@ -188,7 +188,7 @@ class LLVMFunction(LLVMProgram):
         parameterList = parameters.getParameterList()
         parameterString = ""
         for parameter in parameterList:
-            parameterString += self.typeToLLVMType(parameter.getType()) + (parameter.getPointerDept() * "*") + " %" + str("parameter" + parameter.getVariableName()) + ", "
+            parameterString += self.typeToLLVMType(parameter.getType()) + (parameter.getPointerDepth() * "*") + " %" + str("parameter" + parameter.getVariableName()) + ", "
         parameterString = parameterString[:-2]
         return parameterString
 
@@ -198,8 +198,8 @@ class LLVMFunction(LLVMProgram):
         parameterList = parameters.getParameterList()
         for parameter in parameterList:
             if type(parameter) == ASTPointer:
-                self.newSmartVariblePointer("parameter" + parameter.getVariableName(), parameter.getType(), parameter.getPointerDept(), False)
-                self.newSmartVariblePointer(parameter.getVariableName(), parameter.getType(), parameter.getPointerDept())
+                self.newSmartVariblePointer("parameter" + parameter.getVariableName(), parameter.getType(), parameter.getPointerDepth(), False)
+                self.newSmartVariblePointer(parameter.getVariableName(), parameter.getType(), parameter.getPointerDepth())
             else:
                 self.newSmartVarible("parameter" + parameter.getVariableName(), parameter.getType(), False)
                 self.newSmartVarible(parameter.getVariableName(), parameter.getType())

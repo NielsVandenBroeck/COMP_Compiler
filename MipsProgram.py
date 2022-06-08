@@ -51,16 +51,26 @@ class MipsProgram:
                  "v": {"$v" + str(v): None for v in range(2)},
                  "f": {"$f" + str(f): None for f in range(32)}}
 
-    def __init__(self, AST):
+    def __init__(self, AST, file_name):
         AST.CreateMipsCode()
-        print(".data")
-        for line in self.dataArray:
-            print(line)
-        print(".text")
-        print(".globl main")
-        for line in self.programmArray:
-            print(line)
+        with open(file_name, 'w') as myFile:
+            myFile.write(".data\n")
+            for line in self.dataArray:
+                myFile.write(line+"\n")
+            myFile.write(".text\n")
+            myFile.write(".globl main\n")
+            for line in self.programmArray:
+                myFile.write(line+"\n")
+
+        self.programmArray.clear()
+        self.dataArray.clear()
         pass
+
+    def write(self):
+        #self.currentFunction.setReturnValue(0)
+        with open(self.file_name, 'w') as myFile:
+            myFile.write(self.program.output())
+            myFile.close()
 
     @staticmethod
     def addLineToProgramArray(line: str, inspring: int = 0, comments: str=""):
