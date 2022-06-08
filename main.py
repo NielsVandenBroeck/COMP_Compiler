@@ -129,7 +129,7 @@ def runMultipleMips(runMips):
 
             ast.constantFold()
 
-            ASTFixScoping(ast)
+            ASTFixScoping(ast, None, True)
             ASTFixStrings(ast)
 
             with open("OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
