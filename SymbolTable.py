@@ -147,6 +147,10 @@ class SymbolTable():
 
     def declaration(self, node, constness=False, array=False):
         if type(node) is ASTArray:
+            self.checkBody(node.nodes[1].nodes[0])
+            if node.nodes[1].nodes[0].findType() is float:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + " variable \'" + node.root + "\': index cannot be of float Type.")
             self.declaration(node.nodes[0], constness, True)
         elif type(node) is ASTConst:
             self.declaration(node.nodes[0], True, array)
@@ -259,6 +263,10 @@ class SymbolTable():
                 exit("[Error] line: " + str(node.line) + ", position: " + str(
                     node.position) + " variable \'" + node.root + "\': Array is not assignable.")
             value = node.nodes[1]
+            self.checkBody(node.nodes[0].nodes[0])
+            if node.nodes[0].nodes[0].findType() is float:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + " variable \'" + node.root + "\': index cannot be of float Type.")
         elif type(node.nodes[0]) is ASTArrayIndex:
             exit("[Error] line: " + str(node.line) + ", position: " + str(
                 node.position) + " variable \'" + node.root + "\' of non-Array type has no index.")

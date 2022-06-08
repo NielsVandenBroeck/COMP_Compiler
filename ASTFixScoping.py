@@ -12,8 +12,9 @@ class ASTFixScoping:
             self.isGlobal = True
 
         if type(scope) == ASTScope or type(scope) == ASTFunction:
-            for node in scope.nodes:
-                self.preOrderTraverse(node)
+            if scope.nodes is not None:
+                for node in scope.nodes:
+                    self.preOrderTraverse(node)
         else:
             self.preOrderTraverse(scope)
 

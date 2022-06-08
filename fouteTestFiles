@@ -2,7 +2,7 @@ testFiles/fouteTestFiles/arrayAccessTypeMismatch2.c
 
 
 arrayAccessTypeMismatch.c
-    OK (error in taal)
+    OK
 
 arrayAccessTypeMismatch2.c
     OK
@@ -11,7 +11,7 @@ arrayCompareError.c
     OK
 
 arraySizeTypeMismatch.c
-    OK (error in taal)
+    OK
 
 declarationDeclarationMismatch1.c
     OK
@@ -65,7 +65,7 @@ incompatibleTypes1.c
     OK (geeft geen error want type wordt omgezet)
 
 incompatibleTypes2.c
-    NIET OK (IN LLVM)
+    NIET OK
 
 incompatibleTypes3.c
     OK
@@ -74,10 +74,10 @@ incompatibleTypes4.c
     OK (error in taal)
 
 incompatibleTypes5.c
-    OK (error in taal)
+    NITE OK
 
 incompatibleTypes6.c
-    NIET OK (Moet error in llvm geven)
+    NIET OK ASTFIXSTRING
 
 incompatibleTypes7.c
     NIET OK (moet warning geven)
@@ -104,7 +104,7 @@ parameterRedefinition3.c
     OK
 
 pointerOperationError.c
-    OK (error in taal)
+    NIET OK
 
 returnOutsideFunction.c
     OK

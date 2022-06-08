@@ -210,7 +210,7 @@ class AST():
         #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
     def findType(self):
-        intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=','+','-','/','*','%']
+        intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=']
         typeDict = {float: 0, int: 1, chr: 2}
         if type(self) is ASTOperator:
             if self.root in intOps:
@@ -224,12 +224,17 @@ class AST():
                     return type1
                 else:
                     return type2
+            else:
+                print("oh uh")
         elif type(self) is ASTVariable or type(self) is ASTInt or type(self) is ASTFloat or type(self) is ASTChar:
             return self.getType()
         elif type(self) is ASTPointer:
             return self.nodes[0].findType()
         elif type(self) is ASTFunctionName:
             return self.getType()
+        else:
+            print("uh oh")
+            return float
 
     def getIndex(self):#TODO
         return None

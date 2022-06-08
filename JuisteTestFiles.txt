@@ -1,126 +1,126 @@
 binaryOperations1.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 binaryOperations2.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 breakAndContinue.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 comparisons1.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 comparisons2.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 dereferenceAssignment.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 fibonacciRecursive.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 floatToIntConversion.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 for.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 forwardDeclaration.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 if.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 ifElse.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 intToFloatConversion.c:
-    LLVM:NOPE
-    MIPS: NOPE
+    LLVM: OK
+    MIPS: OK
 
 modulo.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 pointerArgument.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 prime.c
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 printf1.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 printf2.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 printf3.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 scanf1.c:
-    LLVM:OK
+    LLVM: OK
     MIPS: OK
 
 scanf2.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 scoping.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 unaryOperations.c:
      LLVM:TODO ++ en -- zijn optioneel
 
 variables1.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables2.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables3.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables4.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables5.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables6.c:
-    LLVM:FOUT TODO: SymbolTable + llvm
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables7.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 variables8.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
 
 while.c:
-    LLVM:OK
-    MIPS:OK
+    LLVM: OK
+    MIPS: OK
