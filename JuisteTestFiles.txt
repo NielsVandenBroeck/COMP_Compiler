@@ -56,11 +56,11 @@ modulo.c:
 
 pointerArgument.c:
     LLVM:OK
-    MIPS: /
+    MIPS: OK
 
 prime.c
     LLVM:OK
-    MIPS: /
+    MIPS: OK
 
 printf1.c:
     LLVM:OK
