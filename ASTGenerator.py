@@ -28,10 +28,10 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         program.addNode(node)
-        #symbolTable = UpperSymbolTable(program)
-        #symbolTable.checkUnusedVariables(program)
-        #symbolTable.loopAST()
-        #ErrorAnalysis(program)
+        symbolTable = UpperSymbolTable(program)
+        symbolTable.checkUnusedVariables(program)
+        symbolTable.loopAST()
+        ErrorAnalysis(program)
 
         return program
 
@@ -41,7 +41,8 @@ class ASTGenerator(grammar1Visitor):
         if ctx.t is not None:
             if ctx.pointer is not None:
                 returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
-                returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
+                for i in range(len(ctx.pointer.text)):
+                    returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
             else:
                 returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
         else:
@@ -62,7 +63,8 @@ class ASTGenerator(grammar1Visitor):
         if ctx.t is not None:
             if ctx.pointer is not None:
                 returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
-                returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
+                for i in range(len(ctx.pointer.text)):
+                    returnType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [returnType])
             else:
                 returnType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
         else:
@@ -169,12 +171,14 @@ class ASTGenerator(grammar1Visitor):
         lValue = ASTVariable(ctx.name.text, ctx.start.line, ctx.start.column)
         if ctx.pointer is not None:
             if ctx.t is None:
-                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+                for i in range(len(ctx.pointer.text)):
+                    lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
                 return lValue
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB is not None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
-            lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+            for i in range(len(ctx.pointer.text)):
+                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA is not None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
         else:
@@ -220,18 +224,12 @@ class ASTGenerator(grammar1Visitor):
         return root
 
     def getDataTypeForMultiDeclaration(self, ctx):
-        if ctx.pointer and ctx.t is None:
-            dataType = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column)
-            return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [dataType])
-
         if ctx.pointer is not None:
-            if ctx.t is None:
-                dataType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column)
-                return dataType
             dataType = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column)
             if ctx.constnessB is not None:
                 dataType = ASTConst("const", ctx.start.line, ctx.start.column, [dataType])
-            dataType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [dataType])
+            for i in range(len(ctx.pointer.text)):
+                dataType = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [dataType])
             if ctx.constnessA is not None:
                 dataType = ASTConst("const", ctx.start.line, ctx.start.column, [dataType])
         else:
@@ -252,7 +250,10 @@ class ASTGenerator(grammar1Visitor):
                 index.addNode(body)
                 lValue.addNode(index)
             lValue = ASTAdress(ASTAdress, ctx.start.line, ctx.start.column, [lValue])
-            return ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+            pointer = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+            for i in range(len(ctx.pointer.text)-1):
+                pointer = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [pointer])
+            return pointer
 
         #assignment
         if ctx.t is None:
@@ -266,10 +267,12 @@ class ASTGenerator(grammar1Visitor):
 
         #declaration
         if ctx.pointer is not None:
+            pointers = ctx.pointer.text
             lValue = ASTDataType(ctx.t.getText(), ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessB is not None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
-            lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
+            for x in range(len(pointers)):
+                lValue = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [lValue])
             if ctx.constnessA is not None:
                 lValue = ASTConst("const", ctx.start.line, ctx.start.column, [lValue])
         else:
@@ -455,7 +458,10 @@ class ASTGenerator(grammar1Visitor):
     # Visit a parse tree produced by grammar1Parser#PointerValueExpression.
     def visitPointerValueExpression(self, ctx):
         variable = ASTVariable(ctx.value.text, ctx.start.line, ctx.start.column)
+        pointers = ctx.pointer.text
         pointer = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [variable])
+        for x in range(len(pointers)-1):
+            pointer = ASTPointer(ASTPointer, ctx.start.line, ctx.start.column, [pointer])
         if ctx.array is not None:
             index = ASTArrayIndex('index', ctx.start.line, ctx.start.column)
             body = self.visit(ctx.array)

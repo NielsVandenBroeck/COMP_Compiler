@@ -406,8 +406,10 @@ class SymbolTable():
                 variableType = node.findType()
             # pointer
             elif type(node) == ASTPointer:
-                variableType = self.searchVariable(node.nodes[0], True).type
-                array =  self.searchVariable(node.nodes[0], True).array
+                while type(node) is ASTPointer:
+                    node = node.nodes[0]
+                variableType = self.searchVariable(node, True).type
+                array =  self.searchVariable(node, True).array
             # int
             elif type(node) == ASTInt:
                 variableType = int
@@ -507,7 +509,9 @@ class SymbolTable():
         if type(root) is ASTVariable:
             self.searchVariable(root)
         elif type(root) is ASTPointer:
-            self.searchVariable(root.nodes[0])
+            while type(root) is ASTPointer:
+                root = root.nodes[0]
+            self.searchVariable(root)
         elif type(root) is ASTOperator:
             for node in root.nodes:
                 self.searchAllvars(node)
@@ -523,12 +527,6 @@ class SymbolTable():
                 if node.nodes is None and not scanf:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + " variable: \'" + node.root + "\' Incompatible conversion with arrays.")
-                #todo
-                # if int(node.nodes[0].root) >= object.arrayLength:
-                #     exit("[Error] line: " + str(node.line) + ", position: " + str(
-                #         node.position) + " variable: \'" + node.root + "\' Array index " + node.nodes[
-                #              0].root + " is past the end of the array (which contains " + str(
-                #         object.arrayLength) + " elements).")
             return object
         elif self.parent is None:
             exit("[Error] line: " + str(node.line) + ", position: " + str(
@@ -641,12 +639,15 @@ class FunctionSymbolTable(SymbolTable):
                 if type(node) is ASTConst:
                     datatype = node.nodes[0].root
                     if type(node.nodes[0]) is ASTPointer:
+                        variable=node.nodes[0]
                         pointer = True
-                        if type(node.nodes[0].nodes[0]) is ASTConst:
-                            datatype = node.nodes[0].nodes[0].nodes[0].root
+                        while type(variable) is ASTPointer:
+                            variable = variable.nodes[0]
+                        if type(variable.nodes[0]) is ASTConst:
+                            datatype = variable.nodes[0].nodes[0].root
                         else:
-                            datatype = node.nodes[0].nodes[0].root
-                        self.pointerDeclaration(node.nodes[0], True, array)
+                            datatype = variable.nodes[0].root
+                        self.pointerDeclaration(variable, True, array)
                     elif type(node.nodes[0]) is ASTDataType:
                         self.variableDeclaration(node.nodes[0], True, array)
                     else:
@@ -656,9 +657,12 @@ class FunctionSymbolTable(SymbolTable):
                     self.variableDeclaration(node, False, array)
                 elif self.IsPointerDeclaration(node):
                     pointer = True
-                    if type(node.nodes[0]) is ASTConst:
-                        datatype = node.nodes[0].nodes[0].root
+                    variable = node.nodes[0]
+                    while type(variable) is ASTPointer:
+                        variable = variable.nodes[0]
+                    if type(variable) is ASTConst:
+                        datatype = variable.nodes[0].root
                     else:
-                        datatype = node.nodes[0].root
+                        datatype = variable.root
                     self.pointerDeclaration(node, False, array)
             self.parameters.append((datatype, pointer))

@@ -14,7 +14,7 @@ programLine
     ;
 
 function
-    : ((t=dataType (pointer=TIMES+)?)|'void') name=NAME '(' (p=params)? ')' s=scope
+    : ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params
@@ -22,7 +22,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType (pointer=TIMES+)? constnessA=CONST? name=NAME ('[' array=body ']')?
+    : constnessB=CONST? t=dataType (pointer=(MultiPointer|TIMES))? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 scope
@@ -43,7 +43,7 @@ newline
     | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
-    | ((t=dataType (pointer=TIMES+)?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
+    | ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
     ;
 
 printBodies
@@ -63,7 +63,7 @@ scanVariable
     ;
 
 multiAssignmentsDeclarations
-    : constnessB=CONST? t=dataType (pointer=TIMES+)? constnessA=CONST? multidecl=multideclarations
+    : constnessB=CONST? t=dataType (pointer=(MultiPointer|TIMES))? constnessA=CONST? multidecl=multideclarations
     ;
 
 multideclarations
@@ -75,7 +75,7 @@ multideclaration
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? (pointer=TIMES+)? constnessA=CONST? name=NAME ('[' array=body ']')?
+    : constnessB=CONST? t=dataType? (pointer=(MultiPointer|TIMES))? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 rvalue
@@ -136,7 +136,7 @@ data
     : value=CHARINPUT                                                                   #CharExpression
     | value=INTINPUT                                                                    #IntExpression
     | value=FLOATINPUT                                                                  #FloatExpression
-    | TIMES+ value=NAME ('[' array=body ']')?                                           #PointerValueExpression
+    | pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')?                     #PointerValueExpression
     | value=NAME ('[' array=body ']')?                                              #VariableExpression
     ;
 
@@ -145,6 +145,9 @@ data
     //| ((LPAREN value=NAME RPAREN)|(value=NAME))  identifier=identifierOP?               #VariableExpression
     //;
 
+MultiPointer
+    :  TIMES TIMES+
+    ;
 
 
 identifierOP

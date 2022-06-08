@@ -249,7 +249,7 @@ class AST():
                 total += node.neededStackSpace()
         return total
 
-    def getPointerDept(self):
+    def getPointerDepth(self):
         return 0
 
 #OK
@@ -549,6 +549,8 @@ class ASTPointer(AST):
         super().__init__(value, line, position, childNodes)
 
     def getSetObject(self):
+        if self.nodes[0] is ASTPointer:
+            return self.nodes[0].getSetObject()
         return self.nodes[0]
 
     def getToObject(self):
@@ -559,10 +561,10 @@ class ASTPointer(AST):
     def getType(self):
         return self.getSetObject().getType()
 
-    def getPointerDept(self):
+    def getPointerDepth(self):
         add = 1
-        if self.getSetObject() == ASTPointer:
-            add = self.getPointerDept() + 1
+        if self.nodes[0] == ASTPointer:
+            add = self.getSetObject().getPointerDepth() + 1
         return add
 
     def getVariableName(self):
@@ -785,7 +787,7 @@ class ASTOperator(AST):
     def getRightValue(self):
         if self.nodes == None:
             return None
-        if len(self.nodes) <= 1:#TODO kan llvm code kapot maken
+        if len(self.nodes) <= 1:
             return None
         return self.nodes[1]
 
