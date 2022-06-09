@@ -205,11 +205,6 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#PointerValueExpressionIdentifier.
-    def visitPointerValueExpressionIdentifier(self, ctx):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
         return self.visitChildren(ctx)

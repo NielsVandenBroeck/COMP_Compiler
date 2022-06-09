@@ -137,8 +137,7 @@ data
     : value=CHARINPUT                                                                           #CharExpression
     | value=INTINPUT                                                                            #IntExpression
     | value=FLOATINPUT                                                                          #FloatExpression
-    | identifier=identifierOP? pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')?    #PointerValueExpression
-    | pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')? identifier=identifierOP     #PointerValueExpressionIdentifier
+    | pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')?                             #PointerValueExpression
     | identifier=identifierOP? value=NAME ('[' array=body ']')?                                 #VariableExpression
     | value=NAME ('[' array=body ']')? identifier=identifierOP                                  #VariableExpressionIdentifier
     ;
