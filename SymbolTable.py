@@ -223,6 +223,11 @@ class SymbolTable():
                 self.checkBody(node.nodes[1])
                 bodyType = node.nodes[1].findType()
                 if bodyType != node.getType():
+                    if bodyType == "void":
+                        exit("[Error] line: " + str(node.line) + ", position: " + str(
+                            node.position) + ". Incompatible conversion from " + str(
+                            bodyType) + " to " + str(
+                            node.getType()) + ". ")
                     if node.root is not float:
                         print("[Warning] line: " + str(node.line) + ", position: " + str(
                             node.position) + ". Implicit conversion from " + str(
@@ -288,6 +293,11 @@ class SymbolTable():
             variable.setPointer(self.searchVariable(value), node)
         elif type(value) is ASTVariable:
             if symbolValue.type is not variable.type:
+                if symbolValue.type == "void":
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Incompatible conversion from " + str(
+                        symbolValue.type) + " to " + str(
+                        variable.type) + ". ")
                 if variable.type is not float:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". Implicit conversion from " + str(
@@ -297,6 +307,11 @@ class SymbolTable():
             self.checkBody(value)
             bodyType = value.findType()
             if bodyType != variable.type:
+                if bodyType == "void":
+                    exit("[Error] line: " + str(node.line) + ", position: " + str(
+                        node.position) + ". Incompatible conversion from " + str(
+                        bodyType) + " to " + str(
+                        variable.type) + ". ")
                 if variable.type is not float:
                     print("[Warning] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". Implicit conversion from " + str(
@@ -463,10 +478,10 @@ class SymbolTable():
             # operation
             if array and variableType is chr and formatList[i - 1] is str:
                 continue
-            #if variableType != formatList[i - 1]:
-            #    exit("[Error] line: " + str(node.line) + ", position: " + str(
-            #        node.position) + ". Printf format specifies type '" + str(
-            #        formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
+            if variableType != formatList[i - 1]:
+                exit("[Error] line: " + str(node.line) + ", position: " + str(
+                    node.position) + ". Printf format specifies type '" + str(
+                    formatList[i - 1]) + "', but the argument type is '" + str(variableType) + "'.")
 
     def findReturnTypeOfFunction(self, functionName):
         if self.parent is not None:

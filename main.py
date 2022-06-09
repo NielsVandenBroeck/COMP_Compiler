@@ -21,7 +21,6 @@ from LLVMGenerator import LLVMGenerator
 import subprocess
 
 def generateAST(filePath):
-    try:
         input_stream = FileStream(filePath)
         lexer = grammar1Lexer(input_stream)
         stream = CommonTokenStream(lexer)
@@ -31,8 +30,6 @@ def generateAST(filePath):
         visistor = ASTGenerator()
         ast = visistor.visit(tree)
         return ast
-    except:
-        exit()
 
 def runOneLLVM(path, runLLVM):
     print(path + ":")

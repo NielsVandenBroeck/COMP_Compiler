@@ -65,7 +65,7 @@ incompatibleTypes1.c
     OK (geeft geen error want type wordt omgezet)
 
 incompatibleTypes2.c
-    NIET OK
+    OK
 
 incompatibleTypes3.c
     OK
@@ -74,22 +74,22 @@ incompatibleTypes4.c
     OK (error in taal)
 
 incompatibleTypes5.c
-    NITE OK
+    NIET OK
 
 incompatibleTypes6.c
-    NIET OK ASTFIXSTRING
+    OK
 
 incompatibleTypes7.c
-    NIET OK (moet warning geven)
+    OK
 
 invalidIncludeError.c
-    Includes nog niet geimplementeerd (OK?)
+    OK
 
 invalidLoopControlStatement.c
     OK
 
 invalidUnaryOperation.c
-    ++ and -- niet geimplementeerd
+    OK
 
 mainNotFound.c
     OK
