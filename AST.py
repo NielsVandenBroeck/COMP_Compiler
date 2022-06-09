@@ -374,7 +374,7 @@ class ASTDataType(AST):
         value = self.getValue()
         if value is None:
             value = 0
-        if self.getVariableName()[0] == "µ":    #globaal gedefinnerd
+        if self.getVariableName()[0] == "_":    #globaal gedefinnerd
             varName = self.getVariableName()
             MipsProgram.addDataLineToDataArray(varName + ":	" + self.getMipsType() + " " + str(value))
             MipsProgram.variables[varName] = MipsVariable(varName, None, None, True)
@@ -1112,7 +1112,7 @@ class ASTArray(AST):
         return self.nodes[0]
 
     def isGlobal(self):
-        return self.getVariableName()[0] == "µ"
+        return self.getVariableName()[0] == "_"
 
     def neededStackSpace(self):
         return self.getLength() * self.getDataTypeObject().neededStackSpace()

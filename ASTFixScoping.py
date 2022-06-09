@@ -30,8 +30,12 @@ class ASTFixScoping:
         if self.checkIfNameExists(variable.getVariableName()):
             global number
 
-            self.symbolTable[variable.getVariableName()] = variable.getVariableName() + "scope" + str(number)
-            variable.nodes[0].root = variable.getVariableName() + "scope" + str(number)
+            if self.isMips:
+                self.symbolTable[variable.getVariableName()] = str(number) + variable.getVariableName() + "scope"
+                variable.nodes[0].root = str(number) + variable.getVariableName() + "scope"
+            else:
+                self.symbolTable[variable.getVariableName()] = variable.getVariableName() + "scope" + str(number)
+                variable.nodes[0].root = variable.getVariableName() + "scope" + str(number)
             number += 1
         else:
             self.symbolTable[variable.getVariableName()] = variable.getVariableName()
@@ -40,8 +44,8 @@ class ASTFixScoping:
             self.symbolTable[variable.getVariableName()] = '@' + variable.nodes[0].root
             variable.nodes[0].root = '@' + variable.nodes[0].root
         elif self.isGlobal and self.isMips:
-            self.symbolTable[variable.getVariableName()] = 'µ' + variable.nodes[0].root
-            variable.nodes[0].root = 'µ' + variable.nodes[0].root
+            self.symbolTable[variable.getVariableName()] = '_' + variable.nodes[0].root
+            variable.nodes[0].root = '_' + variable.nodes[0].root
 
     def getMostCorrectName(self, varName):
         if varName in self.symbolTable:
