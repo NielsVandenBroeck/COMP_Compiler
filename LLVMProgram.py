@@ -95,7 +95,6 @@ class LLVMProgram:
             fromType = self.typeToLLVMType(fromType)
             typeArray = {"i32": "si", "float": "fp", "i64": "i64"}
             typeArray1 = {"i32": "i32", "float": "float", "i8": "i8", "i64": "i64"}
-            print(fromType, toType)
             if (toType == chr and fromType == float) or (toType == "i8" and fromType == "float") or (toType == int and fromType == chr) or (toType == "i32" and fromType == "i8")  or (toType == "i64" and fromType == "i32"):
                 self._addLine("%" + toName + " = sext " + typeArray1[fromType] + " %" + fromName +" to " + typeArray1[toType])
             else:

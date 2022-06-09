@@ -5,6 +5,7 @@ import sys
 import time
 
 from antlr4 import *
+from antlr4.error.ErrorListener import ErrorListener
 
 from ASTFixScoping import ASTFixScoping
 from ASTFixStrings import ASTFixStrings
@@ -19,16 +20,23 @@ from ASTGenerator import ASTGenerator
 from LLVMGenerator import LLVMGenerator
 import subprocess
 
+def generateAST(filePath):
+    try:
+        input_stream = FileStream(filePath)
+        lexer = grammar1Lexer(input_stream)
+        stream = CommonTokenStream(lexer)
+        parser = grammar1Parser(stream)
+        tree = parser.start()
+
+        visistor = ASTGenerator()
+        ast = visistor.visit(tree)
+        return ast
+    except:
+        exit()
+
 def runOneLLVM(path, runLLVM):
     print(path + ":")
-    input_stream = FileStream(path)
-    lexer = grammar1Lexer(input_stream)
-    stream = CommonTokenStream(lexer)
-    parser = grammar1Parser(stream)
-    tree = parser.start()
-
-    visistor = ASTGenerator()
-    ast = visistor.visit(tree)
+    ast = generateAST(path)
 
     ast.constantFold()
 
@@ -53,14 +61,7 @@ def runMutipleLLVM(runLLVM):
         print("\n---------------")
         try:
             print(filename + ":")
-            input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
-            lexer = grammar1Lexer(input_stream)
-            stream = CommonTokenStream(lexer)
-            parser = grammar1Parser(stream)
-            tree = parser.start()
-
-            visistor = ASTGenerator()
-            ast = visistor.visit(tree)
+            ast = generateAST("testFiles/juisteTestFiles/" + filename)
 
             ast.constantFold()
 
@@ -89,14 +90,7 @@ def runMutipleLLVM(runLLVM):
 
 def runOneMips(path, runMips):
     print(path + ":")
-    input_stream = FileStream(path)
-    lexer = grammar1Lexer(input_stream)
-    stream = CommonTokenStream(lexer)
-    parser = grammar1Parser(stream)
-    tree = parser.start()
-
-    visistor = ASTGenerator()
-    ast = visistor.visit(tree)
+    ast = generateAST(path)
 
     ast.constantFold()
 
@@ -118,14 +112,7 @@ def runMultipleMips(runMips):
         print("\n---------------")
         try:
             print(filename + ":")
-            input_stream = FileStream("testFiles/juisteTestFiles/" + filename)
-            lexer = grammar1Lexer(input_stream)
-            stream = CommonTokenStream(lexer)
-            parser = grammar1Parser(stream)
-            tree = parser.start()
-
-            visistor = ASTGenerator()
-            ast = visistor.visit(tree)
+            ast = generateAST("testFiles/juisteTestFiles/" + filename)
 
             ast.constantFold()
 

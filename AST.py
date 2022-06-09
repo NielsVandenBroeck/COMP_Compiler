@@ -595,28 +595,56 @@ class ASTPointer(AST):
             MipsProgram.updateVariable(self.getVariableName(), register)
             MipsProgram.releaseRegister(register)
         elif self.isChangeValueObject():        #bv *c = 10;    (zet een pointer op een waarde)
-            valueRegister = self.getToObject().CreateMipsCode()
-            pointerRegister = MipsProgram.getFreeRegister("t")
-            memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
-            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
+            if self.getType() != float:
+                valueRegister = self.getToObject().CreateMipsCode()
+                pointerRegister = MipsProgram.getFreeRegister("t")
+                memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName()+ "  in register: " + pointerRegister)
 
-            while depth > 1:
-                #MipsProgram.addLineToProgramArray("nop", 1)#TODO mag weg normaal
-                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
-                depth -= 1
+                while depth > 1:
+                    MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                    depth -= 1
 
-            MipsProgram.addLineToProgramArray("sw\t" + valueRegister + ", (" + pointerRegister + ")", 1, "update the register where " + self.getVariableName() + " is pointing add to " + valueRegister)
-            MipsProgram.releaseAllMipsVaribleFromRegisters()#reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
-            MipsProgram.releaseRegister(valueRegister)
-            MipsProgram.releaseRegister(pointerRegister)
+                MipsProgram.addLineToProgramArray("sw\t" + valueRegister + ", (" + pointerRegister + ")", 1, "update the register where " + self.getVariableName() + " is pointing add to " + valueRegister)
+                MipsProgram.releaseAllMipsVaribleFromRegisters()#reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
+                MipsProgram.releaseRegister(valueRegister)
+                MipsProgram.releaseRegister(pointerRegister)
+            else:
+                valueRegister = self.getToObject().CreateMipsCode()
+                pointerRegister = MipsProgram.getFreeRegister("t")
+                memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1,"load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
+
+                while depth > 2:
+                    MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                    depth -= 1
+                pointerRegister1 = MipsProgram.getFreeRegister("f")
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister1 + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                MipsProgram.addLineToProgramArray("swc1\t" + valueRegister + ", (" + pointerRegister1 + ")", 1, "update the register where " + self.getVariableName() + " is pointing add to " + valueRegister)
+                MipsProgram.releaseAllMipsVaribleFromRegisters()  # reset all registers with MipsVariables in to prevent out of sync data between stack en regiser data
+                MipsProgram.releaseRegister(valueRegister)
+                MipsProgram.releaseRegister(pointerRegister)
+                MipsProgram.releaseRegister(pointerRegister1)
         elif self.isValueObject():              #bv int a = *b; (neem de waarde uit een pointer)
-            pointerRegister = MipsProgram.getFreeRegister("t")
-            memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
-            MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
-            while depth > 0:
-                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
-                depth -= 1
-            return pointerRegister
+            if self.getType() != float:
+                pointerRegister = MipsProgram.getFreeRegister("t")
+                memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
+                while depth > 0:
+                    MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                    depth -= 1
+                return pointerRegister
+            else:
+                pointerRegister = MipsProgram.getFreeRegister("t")
+                memoryLocation = MipsProgram.variables[self.getVariableName()].getMemoryLocation()
+                MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + memoryLocation, 1, "load adress stored in pointer " + self.getVariableName() + "  in register: " + pointerRegister)
+                while depth > 1:
+                    MipsProgram.addLineToProgramArray("lw\t" + pointerRegister + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                    depth -= 1
+                pointerRegister1 = MipsProgram.getFreeRegister("f")
+                MipsProgram.addLineToProgramArray("lwc1\t" + pointerRegister1 + ", " + "0(" + pointerRegister + ")", 1,"load adresses until the point to varible is reached")
+                MipsProgram.releaseRegister(pointerRegister)
+                return pointerRegister1
         else:
             exit("undifiend operation with pointer")
 

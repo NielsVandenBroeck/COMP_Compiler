@@ -263,7 +263,6 @@ class MipsProgram:
         :param toRegisterValue: register with value
         :return:
         """
-        print("testtesttest", varName, toRegisterValue)
         MipsProgram.addRegisterToUsedFunctionRegister(toRegisterValue)
         if varName in MipsProgram.variables:
             storeOperation = "sw"
@@ -384,13 +383,12 @@ class MipsProgram:
                 MipsProgram.addRegisterToUsedFunctionRegister(tReg)
                 return tReg #retrun een vrij register
 
-        #TODO evnetueel meer geavanceerde code, momenteel clear an temp register with a variable already saved to the stack
         for tReg in MipsProgram.registers[registerCat]:
             if type(MipsProgram.registers[registerCat][tReg]) == MipsVariable:
                 MipsProgram.registers[registerCat][tReg].updateRegister(None)
                 MipsProgram.addRegisterToUsedFunctionRegister(tReg)
                 return tReg
-        exit("uh oh")
+        exit("To many registers needed to perform this task")
 
     @staticmethod
     def releaseRegister(register):
