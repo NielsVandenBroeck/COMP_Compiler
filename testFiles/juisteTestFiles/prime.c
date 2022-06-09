@@ -20,13 +20,13 @@ int main()
          if ( i%c == 0 ){
             break;
          }
-	c = c + 1;
+	c++;
       }
       if(c == i){
          printf("%d\n",i);
-         count = count + 1;
+         count++;
       }
-      i = i + 1;
+      i++;
    }
 
    return 0;

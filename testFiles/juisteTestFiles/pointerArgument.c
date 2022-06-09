@@ -3,7 +3,7 @@
 // Should print the numbers: 42 42 43 43 44 44 45 45
 
 void f(int* a){
-	*a = *a + 1;
+	(*a)++;
 }
 
 int main(){
@@ -12,7 +12,7 @@ int main(){
 	*xp = 42;
 	printf("%d; ", x);
 	printf("%d\n", *xp);
-	*xp = *xp + 1;
+	*xp = *xp + 1; //aangepast
 	printf("%d; ", x);
 	printf("%d\n", *xp);
 	f(&x);

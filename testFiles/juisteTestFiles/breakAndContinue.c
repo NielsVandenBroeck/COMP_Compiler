@@ -8,7 +8,7 @@ int main(){
 		if (i == 5){
 			break;
 		} else {
-			i = i + 1; //HIER AANGEPAST
+			i++;
 			continue;
 		}
 		i = 10;

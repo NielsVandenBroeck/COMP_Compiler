@@ -17,8 +17,8 @@ int main(){
 	scanf("%d",&n);
 	int i = 1;
 	while(i <= n){
+	    i++; //aangepast
 		printf("fib(%d)\t= %d;\n", i, f(i));
-		i = i + 1;
 	}
 	return 0;
 }

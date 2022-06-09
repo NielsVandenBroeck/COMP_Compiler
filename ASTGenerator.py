@@ -131,9 +131,11 @@ class ASTGenerator(grammar1Visitor):
 
 
         whileScope.addNode(node3)
-
+        self.checkScopeForIncDecr(whileScope)
         root.addNode(node1)
         return root
+
+
 
     # Visit a parse tree produced by grammar1Parser#EmptyScope.
     def visitEmptyScope(self, ctx):
@@ -164,7 +166,44 @@ class ASTGenerator(grammar1Visitor):
                 if type(temp) is ASTMultiDeclaration:
                     for node in temp.nodes:
                         root.addNode(node)
+        self.checkScopeForIncDecr(root)
         return root
+
+    def checkScopeForIncDecr(self, scope):
+        i = 0
+        while i < len(scope.nodes):
+            if type(scope.nodes[i]) is ASTTempIdentifier:
+                pos = 1
+                if scope.nodes[i].nodes[0].nodes is not None:
+                    if type(scope.nodes[i].nodes[0].nodes[0]) is ASTArrayIndex:
+                        if len(scope.nodes[i].nodes[0].nodes) > 1:
+                            pos = 0
+                    else:
+                        pos = 0
+                scope.nodes[i] = scope.nodes[i].nodes[pos]
+            else:
+                self.checkNodeForIncDecr(scope,scope.nodes[i],i)
+            i+=1
+
+    def checkNodeForIncDecr(self, scope,node,pos):
+        if node.nodes is None:
+            return
+        for child in node.nodes:
+            if type(child) is ASTTempIdentifier:
+                #check if ++x of x++
+                incr = 1
+                if child.nodes[0].nodes is not None:
+                    if type(child.nodes[0].nodes[0].nodes[0]) is ASTArrayIndex:
+                        if len(child.nodes[0].nodes) > 1:
+                            incr = 0
+                    else:
+                        incr = 0
+                scope.nodes.insert(pos+incr,child.nodes[incr])
+                #remove ASTTemp
+                node.addNode(child.nodes[1-incr])
+                node.nodes.remove(child)
+            else:
+                self.checkNodeForIncDecr(scope,child,pos)
 
     # Visit a parse tree produced by grammar1Parser#param.
     def visitParam(self, ctx):
@@ -466,17 +505,6 @@ class ASTGenerator(grammar1Visitor):
                                          [variable, identifier])
         return variable
 
-
-
-
-        #if ctx.identifier is None:
-        #    return ASTVariable(variable, ctx.start.line, ctx.start.column)
-        #else:
-        #    operation = ctx.identifier.getText()[0]
-        #    root = ASTOperator(operation, ctx.start.line, ctx.start.column,
-        #                       [ASTVariable(variable, ctx.start.line, ctx.start.column),
-        #                        ASTInt(1, ctx.start.line, ctx.start.column)])
-        #    return root
 
     # Visit a parse tree produced by grammar1Parser#negation.
     def visitNegation(self, ctx):

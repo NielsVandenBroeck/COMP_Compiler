@@ -10,7 +10,7 @@ int main(){
 	int i = 1;
 	while(i < 4){
 		printf("%d; ", a[i-1]);
-		i = i + 1;
+		i++;
 	}
 	return 1;
 }
