@@ -51,7 +51,7 @@ class AST():
     def getDot(self):
         return "digraph G { \n" + self.getDotInternal(0) + "}"
 
-    def getDotInternal(self, number = 0): #TODO kan efficienter
+    def getDotInternal(self, number = 0):
         test = graphviz.Digraph('AST')
         id = ' (' + str(number) + ')'
         idPlusOne = ' (' + str(number + 1) + ')'
@@ -182,14 +182,11 @@ class AST():
         if self.nodes is not None:
             return
         originalType = type(self.root)
-        originalValue = self.root
-        conversion = False
         if destinationType == originalType:
             return
         if isinstance(self.root,str):
             self.root = self.root[1]
         if destinationType is float or destinationType is int:
-            conversion = True
             if originalType is float or originalType is int:
                 self.root = destinationType(self.root)
             else:
@@ -202,12 +199,8 @@ class AST():
             if originalType is str:
                 self.root = '\''+self.root+'\''
             else:
-                conversion = True
                 self.root = '\'' + chr(int((self.root))) + '\''
             self.__class__ = ASTChar
-        #if conversion:
-        #    print("[Warning] line: " + str(self.line) + ", position: " + str(
-        #        self.position) + ". Implicit conversion from "+str(originalType) +" to "+ str(destinationType) +" changes value from "+ str(originalValue) +" to " + str(self.root) +".")
 
     def findType(self):
         intOps = ['||', '&&', '<', '>', '==', '<=','>=','!=']
@@ -236,7 +229,7 @@ class AST():
             print("uh oh")
             return float
 
-    def getIndex(self):#TODO
+    def getIndex(self):
         return None
 
     def getIndexItem(self):
@@ -508,7 +501,7 @@ class ASTVariable(AST):
                 MipsProgram.updateArray(self.getVariableName(), indexRegister, valueRegister)
                 MipsProgram.releaseRegister(indexRegister)
                 MipsProgram.releaseRegister(valueRegister)
-                return None #TODO veranderd mischien een fout  valueRegister
+                return None
             else:
                 # for variable value
                 indexRegister = self.getIndexItem().CreateMipsCode()
@@ -529,7 +522,7 @@ class ASTVariable(AST):
                     valueRegister = MipsProgram.intToFloatConversion(valueRegister)
                 MipsProgram.updateVariable(self.getVariableName(), valueRegister)
                 MipsProgram.releaseRegister(valueRegister)
-                return None  # TODO veranderd mischien een fout  valueRegister
+                return None
             else:
                 # for variable value
                 if self.type is float:
@@ -812,7 +805,7 @@ class ASTText(AST):
 class ASTOperator(AST):
     def __init__(self, value, line, position, childNodes=None):
         super().__init__(value, line, position, childNodes)
-        self.mipsOperations = {"+": "add", "-": "sub", "*": "mul", "/": "div", "&&": "and", "||": "or", "<": "slt", ">": "sgt", "<=": "sle", ">=": "sge", "==": "seq", "!=": "sne", "%": "%"} #TODO modulo
+        self.mipsOperations = {"+": "add", "-": "sub", "*": "mul", "/": "div", "&&": "and", "||": "or", "<": "slt", ">": "sgt", "<=": "sle", ">=": "sge", "==": "seq", "!=": "sne", "%": "%"}
 
     def getOperator(self):
         return self.root
@@ -833,7 +826,6 @@ class ASTOperator(AST):
         return self.nodes[1]
 
     def getType(self):
-        #TODO kan llvm code kapot maken
         if len(self.nodes) <= 1:
             return self.nodes[0].getType()
         convertScore = {float: 2, int: 0, chr: 0}

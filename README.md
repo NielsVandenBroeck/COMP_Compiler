@@ -2,6 +2,8 @@
 Compiler From Stein Vandenbroeke and Niels Van den Broeck
 
 ### Implemented Features ###
+All features work for both LLVM and Mips
+
 - Project 1
   - (mandatory) Binary operations +, -, *, and /.
   - (mandatory) Binary operations >, <, and ==.

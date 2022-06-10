@@ -30,7 +30,7 @@ scope
     : 'if' '(' b=body ')' s1=scope ('else' s2=scope)?                                           #IfStatement
     | 'while' '(' b=body ')' s=scope                                                            #WhileLoop
     | 'for' '(' lv=lvalue IS rv=rvalue ';' b=body ';' step=line ')' s=scope                     #ForLoop
-    | '{' (programLine)* '}'                                                              #EmptyScope
+    | '{' (programLine)* '}'                                                                    #EmptyScope
     ;
 
 line: newline
@@ -40,11 +40,11 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | Print'('f=STRING pb=printBodies ')'                                                        #Printf
+    | Print'('f=STRING pb=printBodies ')'                                                       #Printf
     | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
-    | ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
+    | ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')'       #FunctionForwardDeclaration
     ;
 
 printBodies

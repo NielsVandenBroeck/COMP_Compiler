@@ -21,15 +21,15 @@ from LLVMGenerator import LLVMGenerator
 import subprocess
 
 def generateAST(filePath):
-        input_stream = FileStream(filePath)
-        lexer = grammar1Lexer(input_stream)
-        stream = CommonTokenStream(lexer)
-        parser = grammar1Parser(stream)
-        tree = parser.start()
+    input_stream = FileStream(filePath)
+    lexer = grammar1Lexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = grammar1Parser(stream)
+    tree = parser.start()
 
-        visistor = ASTGenerator()
-        ast = visistor.visit(tree)
-        return ast
+    visistor = ASTGenerator()
+    ast = visistor.visit(tree)
+    return ast
 
 def runOneLLVM(path, runLLVM):
     print(path + ":")
