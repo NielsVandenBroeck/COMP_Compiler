@@ -34,47 +34,51 @@ def generateAST(filePath):
 def runOneLLVM(path, runLLVM):
     print(path + ":")
     ast = generateAST(path)
-
+    path = path.split('.')[0]
     ast.constantFold()
 
     ASTFixScoping(ast)
 
-    with open("OutputFiles/LLVM/OneFile/dotVisualization.dot", 'w') as myFile:
+    with open(path+".dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
-    llvm = LLVMGenerator("OutputFiles/LLVM/OneFile/code.ll", ast)
+    llvm = LLVMGenerator(path+".ll", ast)
     llvm.write()
 
     print("Compiling complete")
     print()
     if runLLVM:
-        os.system("lli-9 " + "OutputFiles/LLVM/OneFile/code.ll")
+        os.system("lli-9 " + path+".ll")
 
-def runMutipleLLVM(runLLVM):
+def runMutipleLLVM(inputDir,runLLVM):
+    if not os.path.exists(inputDir+"OutputFiles"):
+        os.mkdir(inputDir + "OutputFiles")
+    outputPath = inputDir+"OutputFiles/"
+
     workingCounter = 0
     brokenCounter = 0
     brokenFiles = []
-    for filename in os.listdir("testFiles/juisteTestFiles"):
+    for filename in os.listdir(inputDir):
         print("\n---------------")
         try:
             print(filename + ":")
-            ast = generateAST("testFiles/juisteTestFiles/" + filename)
+            ast = generateAST(inputDir + filename)
 
             ast.constantFold()
 
             ASTFixScoping(ast)
 
-            with open("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
+            with open(outputPath + filename.split(".")[0] + ".dot", 'w') as myFile:
                 myFile.write(ast.getDot())
 
-            llvm = LLVMGenerator("OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll", ast)
+            llvm = LLVMGenerator(outputPath + filename.split(".")[0] + ".ll", ast)
             llvm.write()
 
             print("Compiling complete")
 
             print()
             if runLLVM:
-                os.system("lli-9 " + " OutputFiles/LLVM/MultipleFiles/" + filename.split(".")[0] + ".ll")
+                os.system("lli-9 " + outputPath + filename.split(".")[0] + ".ll")
             workingCounter += 1
             print("\nRunning complete")
         except:
@@ -88,42 +92,45 @@ def runMutipleLLVM(runLLVM):
 def runOneMips(path, runMips):
     print(path + ":")
     ast = generateAST(path)
-
+    path = path.split('.')[0]
     ast.constantFold()
 
     ASTFixScoping(ast, None, True)
     ASTFixStrings(ast)
 
-    with open("OutputFiles/MIPS/OneFile/dotVisualization.dot", 'w') as myFile:
+    with open(path+".dot", 'w') as myFile:
         myFile.write(ast.getDot())
 
-    MipsProgram(ast,"OutputFiles/Mips/OneFile/code.s")
+    MipsProgram(ast,path+".s")
     if runMips:
-        os.system("java -jar Mars.jar " + "OutputFiles/MIPS/OneFile/code.s")
+        os.system("java -jar Mars.jar " + path+".s")
 
-def runMultipleMips(runMips):
+def runMultipleMips(inputDir, runMips):
+    if not os.path.exists(inputDir+"OutputFiles"):
+        os.mkdir(inputDir + "OutputFiles")
+    outputPath = inputDir+"OutputFiles/"
     workingCounter = 0
     brokenCounter = 0
     brokenFiles = []
-    for filename in os.listdir("testFiles/juisteTestFiles"):
+    for filename in os.listdir(inputDir):
         print("\n---------------")
         try:
             print(filename + ":")
-            ast = generateAST("testFiles/juisteTestFiles/" + filename)
+            ast = generateAST(inputDir + filename)
 
             ast.constantFold()
 
             ASTFixScoping(ast, None, True)
             ASTFixStrings(ast)
 
-            with open("OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0] + ".dot", 'w') as myFile:
+            with open(outputPath + filename.split(".")[0] + ".dot", 'w') as myFile:
                 myFile.write(ast.getDot())
 
             print("Compiling complete")
 
-            MipsProgram(ast, "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
+            MipsProgram(ast, outputPath + filename.split(".")[0]+".s")
             if runMips:
-                os.system("java -jar Mars.jar " + "OutputFiles/Mips/MultipleFiles/" + filename.split(".")[0]+".s")
+                os.system("java -jar Mars.jar " + outputPath + filename.split(".")[0]+".s")
             workingCounter += 1
             print("\nRunning complete")
         except Exception as e:
@@ -135,20 +142,21 @@ def runMultipleMips(runMips):
     print("aantal niet werkende files:", brokenCounter, ": ", brokenFiles)
 
 def main(argv):
-    if argv[1] == "llvm" and len(argv) == 3:
-        runMutipleLLVM(argv[2] == "True")
-    elif argv[1] == "llvm" and len(argv) == 4:
-        runOneLLVM(argv[3], argv[2]  == "True")
-    elif argv[1] == "mips" and len(argv) == 3:
-        runMultipleMips(argv[2]  == "True")
-    elif argv[1] == "mips" and len(argv) == 4:
-        runOneMips(argv[3], argv[2]  == "True")
+    language = argv[1]
+    runCompiledfile = argv[2] == "True"
+    input = argv[3]
+    if language == "llvm" and os.path.isdir(input):
+        runMutipleLLVM(input, runCompiledfile)
+    elif language == "llvm" and os.path.isfile(input):
+        runOneLLVM(input, runCompiledfile)
+    elif language == "mips"  and os.path.isdir(input):
+        runMultipleMips(input,runCompiledfile)
+    elif language == "mips"  and os.path.isfile(input):
+        runOneMips(input, runCompiledfile)
     else:
         print("wrong format start program with following parameters:")
-        print("\t-python main.py llvm True/False\t\t([0]=language, [1]=run program after compile)")
-        print("\t-python main.py llvm True/False file.c\t\t([0]=language, [1]=run program after compile, [2]=.c file location)")
-        print("\t-python main.py mips True/False\t\t([0]=language, [1]=run program after compile)")
-        print("\t-python main.py mips True/False file.c\t\t([0]=language, [1]=run program after compile, [2]=.c file location)")
+        print("\t-python main.py llvm True/False file/folder\t\t::([0]=language, [1]=run program after compile, [2]=file/folder location)")
+        print("\t-python main.py mips True/False file/folder\t\t::([0]=language, [1]=run program after compile, [2]=file/folder location)")
     return 0
 
 
