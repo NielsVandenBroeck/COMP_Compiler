@@ -171,6 +171,8 @@ class ASTGenerator(grammar1Visitor):
 
     def checkScopeForIncDecr(self, scope):
         i = 0
+        if scope.nodes is None:
+            return
         while i < len(scope.nodes):
             if type(scope.nodes[i]) is ASTTempIdentifier:
                 pos = 1
