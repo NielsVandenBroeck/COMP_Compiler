@@ -8,12 +8,14 @@ programLine
     : l=line SEMICOLON
     | SingleComment
     | MultiLineComment
-    | s=scope
     | f=function
+    | s=scope
+    | m=multiAssignmentsDeclarations SEMICOLON
+    | IncludeStdio
     ;
 
 function
-    : ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')' s=scope
+    : ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')' s=scope
     ;
 
 params
@@ -21,7 +23,7 @@ params
     ;
 
 param
-    : constnessB=CONST? t=dataType pointer='*'? constnessA=CONST? name=NAME
+    : constnessB=CONST? t=dataType (pointer=(MultiPointer|TIMES))? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 scope
@@ -38,16 +40,43 @@ newline
     : lv=lvalue IS rv=rvalue                                                                    #LValueRvalue
     | lvalue                                                                                    #LValue
     | body                                                                                      #Expression
-    | name=NAME op=identifierOP                                                                 #IdentifierOperationExpression
-    | Print'('PrintFormat*(',' body)*')'                                                        #Printf
-    | Scan'('ScanFormat(','body)*')'                                                            #Scanf
+    | Print'('f=STRING pb=printBodies ')'                                                       #Printf
+    | Scan'('f=STRING  sv=scanVariables ')'                                                     #Scanf
     | OneTokenStatement                                                                         #OneTokenStatement
     | 'return' b=rvalue?                                                                        #ReturnKeyword
-    | ((t=dataType pointer='*'?)|'void') name=NAME '(' (p=params)? ')'                          #FunctionForwardDeclaration
+    | ((t=dataType (pointer=(MultiPointer|TIMES))?)|'void') name=NAME '(' (p=params)? ')'       #FunctionForwardDeclaration
+    ;
+
+printBodies
+    : printBody*
+    ;
+
+printBody
+    : ',' (b=body|s=STRING)
+    ;
+
+scanVariables
+    : scanVariable+
+    ;
+
+scanVariable
+    : ',' (d=data|v=variableAdress)
+    ;
+
+multiAssignmentsDeclarations
+    : constnessB=CONST? t=dataType (pointer=(MultiPointer|TIMES))? constnessA=CONST? multidecl=multideclarations
+    ;
+
+multideclarations
+    : multideclaration (',' multideclaration)+
+    ;
+
+multideclaration
+    : name=NAME (('[' array=body ']')|(IS rval=rvalue))?
     ;
 
 lvalue
-    : constnessB=CONST? t=dataType? pointer='*'? constnessA=CONST? name=NAME
+    : constnessB=CONST? t=dataType? (pointer=(MultiPointer|TIMES))? constnessA=CONST? name=NAME ('[' array=body ']')?
     ;
 
 rvalue
@@ -56,12 +85,7 @@ rvalue
     ;
 
 variableAdress
-    : ('&')?name=NAME;
-
-identifierOP
-    : PLUS PLUS
-    | MINUS MINUS
-    ;
+    : '&'name=NAME ('[' array=body ']')?;
 
 dataType
     : INT
@@ -71,27 +95,30 @@ dataType
 
 body
     : paren
-    | data
+    | d=data
     | bodyOperationBody
     | unary
     | functionCall
+    | negation
     ;
 
 functionCall
-    : name=NAME '(' body? (',' body)* ')'
+    : name=NAME '(' (variableAdress|body)? (',' (variableAdress|body))* ')'
     ;
 
 leftOperationBody
-    :paren
-    |data
-    |unary
+    : paren
+    | data
+    | unary
     | functionCall
+    | negation
     ;
 
 unaryBody
     : paren
     | data
     | bodyOperationBody
+    | negation
     ;
 
 unary
@@ -107,11 +134,31 @@ paren
     ;
 
 data
-    : value=CHARINPUT                                                   #CharExpression
-    | value=INTINPUT                                                    #IntExpression
-    | value=FLOATINPUT                                                  #FloatExpression
-    | '*'value=NAME                                                     #PointerValueExpression
-    | NAME                                                              #VariableExpression
+    : value=CHARINPUT                                                                           #CharExpression
+    | value=INTINPUT                                                                            #IntExpression
+    | value=FLOATINPUT                                                                          #FloatExpression
+    | pointer=(MultiPointer|TIMES) value=NAME ('[' array=body ']')?                             #PointerValueExpression
+    | identifier=identifierOP? value=NAME ('[' array=body ']')?                                 #VariableExpression
+    | value=NAME ('[' array=body ']')? identifier=identifierOP                                  #VariableExpressionIdentifier
+    ;
+
+    //++ and --
+    //| ((LPAREN '*'value=NAME RPAREN)|('*'value=NAME)) identifier=identifierOP?          #PointerValueExpression
+    //| ((LPAREN value=NAME RPAREN)|(value=NAME))  identifier=identifierOP?               #VariableExpression
+    //;
+
+MultiPointer
+    :  TIMES TIMES+
+    ;
+
+
+identifierOP
+    : PLUS PLUS
+    | MINUS MINUS
+    ;
+
+negation
+    : NEGATE b=body
     ;
 
 operation
@@ -140,20 +187,15 @@ Print
     : 'printf'
     ;
 
-PrintFormat
-    : '"'(~('\'' | '%' | '"') | ScanFormat)*'"'
+STRING
+    : '"'((~('"'))*)'"'
     ;
+
 
 Scan
     : 'scanf'
     ;
 
-ScanFormat
-    : '%d'
-    | '%i'
-    | '%s'
-    | '%c'
-    ;
 
 INT
     : 'int'
@@ -236,15 +278,19 @@ RPAREN
     ;
 
 INTINPUT
-    : ('!')?  [0-9]+
+    : [0-9]+
     ;
 
 FLOATINPUT
-    : ('!')?  [0-9]+('.'[0-9]+)?
+    : [0-9]+('.'[0-9]+)?
     ;
 
 CHARINPUT
     : '\'' ((~('\'')) | ('\\' '\'') | ('\\n') | ('\\r') | ('\\t')) '\''
+    ;
+
+NEGATE
+    : '!'
     ;
 
 CONST
@@ -261,6 +307,10 @@ SingleComment
 
 MultiLineComment
     : '/*'.*?'*/'
+    ;
+
+IncludeStdio
+    : '#include <stdio.h>'
     ;
 
 WS

@@ -121,21 +121,21 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def enterIdentifierOperationExpression(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def exitIdentifierOperationExpression(self, ctx):
-        pass
-
-
     # Enter a parse tree produced by grammar1Parser#Printf.
     def enterPrintf(self, ctx):
         pass
 
     # Exit a parse tree produced by grammar1Parser#Printf.
     def exitPrintf(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#Scanf.
+    def enterScanf(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#Scanf.
+    def exitScanf(self, ctx):
         pass
 
 
@@ -166,6 +166,69 @@ class grammar1Listener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by grammar1Parser#printBodies.
+    def enterPrintBodies(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#printBodies.
+    def exitPrintBodies(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#printBody.
+    def enterPrintBody(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#printBody.
+    def exitPrintBody(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#scanVariables.
+    def enterScanVariables(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#scanVariables.
+    def exitScanVariables(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#scanVariable.
+    def enterScanVariable(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#scanVariable.
+    def exitScanVariable(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def enterMultiAssignmentsDeclarations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def exitMultiAssignmentsDeclarations(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#multideclarations.
+    def enterMultideclarations(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multideclarations.
+    def exitMultideclarations(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#multideclaration.
+    def enterMultideclaration(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#multideclaration.
+    def exitMultideclaration(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by grammar1Parser#lvalue.
     def enterLvalue(self, ctx):
         pass
@@ -190,15 +253,6 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#variableAdress.
     def exitVariableAdress(self, ctx):
-        pass
-
-
-    # Enter a parse tree produced by grammar1Parser#identifierOP.
-    def enterIdentifierOP(self, ctx):
-        pass
-
-    # Exit a parse tree produced by grammar1Parser#identifierOP.
-    def exitIdentifierOP(self, ctx):
         pass
 
 
@@ -316,6 +370,33 @@ class grammar1Listener(ParseTreeListener):
 
     # Exit a parse tree produced by grammar1Parser#VariableExpression.
     def exitVariableExpression(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def enterVariableExpressionIdentifier(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def exitVariableExpressionIdentifier(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#identifierOP.
+    def enterIdentifierOP(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#identifierOP.
+    def exitIdentifierOP(self, ctx):
+        pass
+
+
+    # Enter a parse tree produced by grammar1Parser#negation.
+    def enterNegation(self, ctx):
+        pass
+
+    # Exit a parse tree produced by grammar1Parser#negation.
+    def exitNegation(self, ctx):
         pass
 
 

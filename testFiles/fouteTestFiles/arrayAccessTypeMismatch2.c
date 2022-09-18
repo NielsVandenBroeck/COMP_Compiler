@@ -1,4 +1,5 @@
 int main(){
     int x;
-    int y = x;
+    x[1];
+	return 0;
 }

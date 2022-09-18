@@ -1,6 +1,6 @@
 from AST import *
 
-class SemanticErrorAnalysis:
+class ErrorAnalysis:
     def __init__(self, root):
         self.variables = {}
         self.loopAST(root)
@@ -18,7 +18,8 @@ class SemanticErrorAnalysis:
                     self.variables[node.root] = self.variables.get(node.root,0) + 1
                 self.loopAST(node)
 
-    def checkFunctions(self, root, foundMain=False):
+    def checkFunctions(self, root):
+        foundMain = False
         functionNames = []
         if root.nodes is None:
             return
@@ -36,22 +37,28 @@ class SemanticErrorAnalysis:
             exit("[Error] No main function found.")
 
 
-    def checkOneTokenStatements(self, root, inLoop=False):
+    def checkOneTokenStatements(self, root, inLoop=0, forNextOperation=None):
         if root.nodes is None:
             return
         for i in range(len(root.nodes)):
             node = root.nodes[i]
             if node is not None:
-                if type(node) is ASTOneTokenStatement and inLoop:
+                if type(node) is ASTOneTokenStatement and inLoop == 1:
                     del root.nodes[i+1:len(root.nodes)]
+                    break
+                elif type(node) is ASTOneTokenStatement and inLoop == 2:
+                    del root.nodes[i+1:len(root.nodes)]
+                    root.nodes.insert(i,forNextOperation)
                     break
                 elif type(node) is ASTOneTokenStatement and not inLoop:
                     exit("[Error] line: " + str(node.line) + ", position: " + str(
                         node.position) + ". " + node.root+" statement not in a loop.")
                 elif type(node) is ASTWhile:
-                    self.checkOneTokenStatements(node, True)
+                    self.checkOneTokenStatements(node, 1, forNextOperation)
+                elif type(node) is ASTFor:
+                    self.checkOneTokenStatements(node, 2, node.nextOperation)
                 else:
-                    self.checkOneTokenStatements(node, inLoop)
+                    self.checkOneTokenStatements(node, inLoop, forNextOperation)
 
     def checkReturnKeyword(self, root, inFunction=False):
         if root.nodes is None:

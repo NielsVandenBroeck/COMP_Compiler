@@ -70,13 +70,13 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#IdentifierOperationExpression.
-    def visitIdentifierOperationExpression(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#Printf.
+    def visitPrintf(self, ctx):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by grammar1Parser#Printf.
-    def visitPrintf(self, ctx):
+    # Visit a parse tree produced by grammar1Parser#Scanf.
+    def visitScanf(self, ctx):
         return self.visitChildren(ctx)
 
 
@@ -95,6 +95,41 @@ class grammar1Visitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by grammar1Parser#printBodies.
+    def visitPrintBodies(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#printBody.
+    def visitPrintBody(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#scanVariables.
+    def visitScanVariables(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#scanVariable.
+    def visitScanVariable(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#multiAssignmentsDeclarations.
+    def visitMultiAssignmentsDeclarations(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#multideclarations.
+    def visitMultideclarations(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#multideclaration.
+    def visitMultideclaration(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by grammar1Parser#lvalue.
     def visitLvalue(self, ctx):
         return self.visitChildren(ctx)
@@ -107,11 +142,6 @@ class grammar1Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by grammar1Parser#variableAdress.
     def visitVariableAdress(self, ctx):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by grammar1Parser#identifierOP.
-    def visitIdentifierOP(self, ctx):
         return self.visitChildren(ctx)
 
 
@@ -177,6 +207,21 @@ class grammar1Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by grammar1Parser#VariableExpression.
     def visitVariableExpression(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#VariableExpressionIdentifier.
+    def visitVariableExpressionIdentifier(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#identifierOP.
+    def visitIdentifierOP(self, ctx):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by grammar1Parser#negation.
+    def visitNegation(self, ctx):
         return self.visitChildren(ctx)
 
 
