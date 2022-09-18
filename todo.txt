@@ -1,2 +1,0 @@
-llvm: lli-9 OutputFiles/code.ll
-mips: spim -file OUTputFiles/code.s
